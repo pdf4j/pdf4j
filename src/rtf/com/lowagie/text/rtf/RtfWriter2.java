@@ -1,5 +1,5 @@
 /*
- * $Id: RtfWriter2.java 3583 2008-08-12 00:00:09Z xlv $
+ * $Id: RtfWriter2.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2001, 2002, 2003, 2004 by Mark Hall
  *
@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.EventListener;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
@@ -70,7 +71,7 @@ import com.lowagie.text.rtf.text.RtfNewPage;
 /**
  * The RtfWriter allows the creation of rtf documents via the iText system
  *
- * Version: $Id: RtfWriter2.java 3583 2008-08-12 00:00:09Z xlv $
+ * Version: $Id: RtfWriter2.java 4065 2009-09-16 23:09:11Z psoares33 $
  * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class RtfWriter2 extends DocWriter {
@@ -285,7 +286,7 @@ public class RtfWriter2 extends DocWriter {
      */
     public void importRtfDocument(InputStream documentSource, EventListener[] events ) throws IOException, DocumentException {
         if(!this.open) {
-            throw new DocumentException("The document must be open to import RTF documents.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("the.document.must.be.open.to.import.rtf.documents"));
         }
     	RtfParser rtfImport = new RtfParser(this.document);
     	if(events != null) {
@@ -334,7 +335,7 @@ public class RtfWriter2 extends DocWriter {
      */
     public void importRtfFragment(InputStream documentSource, RtfImportMappings mappings, EventListener[] events ) throws IOException, DocumentException {
         if(!this.open) {
-            throw new DocumentException("The document must be open to import RTF fragments.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("the.document.must.be.open.to.import.rtf.fragments"));
         }
     	RtfParser rtfImport = new RtfParser(this.document);
     	if(events != null) {

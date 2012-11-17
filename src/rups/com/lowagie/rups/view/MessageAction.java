@@ -1,5 +1,5 @@
 /*
- * $Id: MessageAction.java 3117 2008-01-31 05:53:22Z xlv $
+ * $Id: MessageAction.java 4040 2009-07-24 10:43:22Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
-import com.lowagie.rups.Rups;
 import com.lowagie.text.Document;
 
 public class MessageAction implements ActionListener {
@@ -33,12 +32,10 @@ public class MessageAction implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		String message = "Unspecified message";
 		if (RupsMenuBar.ABOUT.equals(evt.getActionCommand())) {
-			message = "RUPS is a tool by lowagie.com.\nIt uses iText, a Free Java-PDF Library\nand SUN's PDF Renderer.\nVisit http://www.lowagie.com/iText/ for more info.";
+			message = "RUPS is a tool by 1T3XT BVBA.\nIt uses iText, a Free Java-PDF Library.\nVisit http://www.1t3xt.com/ for more info.";
 		}
-		else if (RupsMenuBar.VERSIONS.equals(evt.getActionCommand())) {
-			message = "RUPS version String: " + Rups.VERSION
-			+ "\niText version String: " + Document.getVersion()
-			+ "\nSUN's PDF Renderer version: version unknown";
+		else if (RupsMenuBar.VERSION.equals(evt.getActionCommand())) {
+			message = "iText version: " + Document.getVersion();
 		}
         JOptionPane.showMessageDialog(null, message);
 	}

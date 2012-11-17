@@ -1,5 +1,5 @@
 /*
- * $Id: Chunk.java 3427 2008-05-24 18:32:31Z xlv $
+ * $Id: Chunk.java 4092 2009-11-11 17:58:16Z psoares33 $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -53,6 +53,7 @@ import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.HyphenationEvent;
 import com.lowagie.text.pdf.PdfAction;
@@ -259,7 +260,7 @@ public class Chunk implements Element {
 	public Chunk(DrawInterface separator, float tabPosition, boolean newline) {
 		this(OBJECT_REPLACEMENT_CHARACTER, new Font());
 		if (tabPosition < 0) {
-			throw new IllegalArgumentException("A tab position may not be lower than 0; yours is " + tabPosition);
+			throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.tab.position.may.not.be.lower.than.0.yours.is.1", String.valueOf(tabPosition)));
 		}
 		setAttribute(TAB, new Object[] {separator, new Float(tabPosition), Boolean.valueOf(newline), new Float(0)});
 	}
@@ -875,4 +876,31 @@ public class Chunk implements Element {
 	/** Key for encoding. */
 	public static final String ENCODING = "ENCODING";
 
+	/**
+	 * Key for character spacing.
+	 */
+	public static final String CHAR_SPACING = "CHAR_SPACING";
+
+	/**
+	 * Sets the character spacing.
+	 * 
+	 * @param charSpace the character spacing value
+	 * @return this <CODE>Chunk</CODE>
+	 */
+	public Chunk setCharacterSpacing(float charSpace) {
+		return setAttribute(CHAR_SPACING, new Float(charSpace));
+	}
+	
+	/**
+	 * Gets the character spacing.
+	 * 
+	 * @return a value in float
+	 */
+	public float getCharacterSpacing() {
+		if (attributes != null && attributes.containsKey(CHAR_SPACING)) {
+			Float f = (Float) attributes.get(CHAR_SPACING);
+			return f.floatValue();
+		}
+		return 0.0f;
+	}
 }

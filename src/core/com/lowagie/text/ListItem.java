@@ -1,5 +1,5 @@
 /*
- * $Id: ListItem.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: ListItem.java 4052 2009-08-28 13:54:31Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -103,8 +103,11 @@ public class ListItem extends Paragraph {
 	
 	// member variables
 	
-	/** this is the symbol that will precede the listitem. */
-    private Chunk symbol;
+	/**
+	 * this is the symbol that will precede the listitem.
+	 * @since	5.0	used to be private
+	 */
+    protected Chunk symbol;
     
     // constructors
     

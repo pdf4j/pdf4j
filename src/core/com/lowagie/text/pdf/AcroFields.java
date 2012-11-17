@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import org.w3c.dom.Node;
 
@@ -374,7 +375,7 @@ public class AcroFields {
         if (exportValues == null && displayValues == null)
             return false;
         if (exportValues != null && displayValues != null && exportValues.length != displayValues.length)
-            throw new IllegalArgumentException("The export and the display array must have the same size.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.export.and.the.display.array.must.have.the.same.size"));
         int ftype = getFieldType(fieldName);
         if (ftype != FIELD_TYPE_COMBO && ftype != FIELD_TYPE_LIST)
             return false;
@@ -701,8 +702,10 @@ public class AcroFields {
         }
     }
 
-    PdfAppearance getAppearance(PdfDictionary merged, String text, String fieldName) throws IOException, DocumentException {
+    PdfAppearance getAppearance(PdfDictionary merged, String values[], String fieldName) throws IOException, DocumentException {
         topFirst = 0;
+        String text = (values.length > 0) ? values[0] : null;
+        
         TextField tx = null;
         if (fieldCache == null || !fieldCache.containsKey(fieldName)) {
             tx = new TextField(writer, null, null);
@@ -725,11 +728,13 @@ public class AcroFields {
         }
         PdfName fieldType = merged.getAsName(PdfName.FT);
         if (PdfName.TX.equals(fieldType)) {
-            tx.setText(text);
+            if (values.length > 0 && values[0] != null) {
+                tx.setText(values[0]);
+            }
             return tx.getAppearance();
         }
         if (!PdfName.CH.equals(fieldType))
-            throw new DocumentException("An appearance was requested without a variable text field.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("an.appearance.was.requested.without.a.variable.text.field"));
         PdfArray opt = merged.getAsArray(PdfName.OPT);
         int flags = 0;
         PdfNumber nfl = merged.getAsNumber(PdfName.FF);
@@ -763,20 +768,29 @@ public class AcroFields {
                 tx.setText(text);
                 return tx.getAppearance();
             }
-            int idx = 0;
+            ArrayList indexes = new ArrayList();
             for (int k = 0; k < choicesExp.length; ++k) {
-                if (text.equals(choicesExp[k])) {
-                    idx = k;
-                    break;
-                }
+            	for (int j = 0; j < values.length; ++j) {
+            		String val = values[j];
+            		if (val != null && val.equals(choicesExp[k])) {
+            			indexes.add( new Integer( k ) );
+            			break;
+            		}
+            	}
             }
             tx.setChoices(choices);
             tx.setChoiceExports(choicesExp);
-            tx.setChoiceSelection(idx);
+            tx.setChoiceSelections( indexes );
         }
         PdfAppearance app = tx.getListAppearance();
         topFirst = tx.getTopFirst();
         return app;
+    }
+
+    PdfAppearance getAppearance(PdfDictionary merged, String text, String fieldName) throws IOException, DocumentException {
+      String valueArr[] = new String[1];
+      valueArr[0] = text;
+      return getAppearance( merged, valueArr, fieldName );
     }
 
     Color getMKColor(PdfArray ar) {
@@ -926,7 +940,7 @@ public class AcroFields {
      */
     public boolean setFieldProperty(String field, String name, Object value, int inst[]) {
         if (writer == null)
-            throw new RuntimeException("This AcroFields instance is read-only.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
         try {
             Item item = (Item)fields.get(field);
             if (item == null)
@@ -1104,7 +1118,7 @@ public class AcroFields {
      */
     public boolean setFieldProperty(String field, String name, int value, int inst[]) {
         if (writer == null)
-            throw new RuntimeException("This AcroFields instance is read-only.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
         Item item = (Item)fields.get(field);
         if (item == null)
             return false;
@@ -1295,7 +1309,7 @@ public class AcroFields {
      */
     public boolean setField(String name, String value, String display) throws IOException, DocumentException {
         if (writer == null)
-            throw new DocumentException("This AcroFields instance is read-only.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("this.acrofields.instance.is.read.only"));
         if (xfa.isXfaPresent()) {
             name = xfa.findFieldName(name, this);
             if (name == null)
@@ -1389,11 +1403,9 @@ public class AcroFields {
                 }
             }
             int vidx = lopt.indexOf(value);
-            PdfName valt = null;
             PdfName vt;
-            if (vidx >= 0) {
-                vt = valt = new PdfName(String.valueOf(vidx));
-            }
+            if (vidx >= 0)
+                vt = new PdfName(String.valueOf(vidx));
             else
                 vt = v;
             for (int idx = 0; idx < item.size(); ++idx) {
@@ -1401,15 +1413,8 @@ public class AcroFields {
                 PdfDictionary widget = item.getWidget(idx);
                 PdfDictionary valDict = item.getValue(idx);
                 markUsed(item.getValue(idx));
-                if (valt != null) {
-                    PdfString ps = new PdfString(value, PdfObject.TEXT_UNICODE);
-                    valDict.put(PdfName.V, ps);
-                    merged.put(PdfName.V, ps);
-                }
-                else {
-                    valDict.put(PdfName.V, v);
-                    merged.put(PdfName.V, v);
-                }
+                valDict.put(PdfName.V, vt);
+                merged.put(PdfName.V, vt);
                 markUsed(widget);
                 if (isInAP(widget,  vt)) {
                     merged.put(PdfName.AS, vt);
@@ -1438,7 +1443,8 @@ public class AcroFields {
         Item item = getFieldItem(name);
         if (item == null)
             return false;
-        PdfName type = item.getMerged(0).getAsName(PdfName.FT);
+        PdfDictionary merged = item.getMerged( 0 );
+        PdfName type = merged.getAsName(PdfName.FT);
         if (!PdfName.CH.equals(type)) {
         	return false;
         }
@@ -1448,12 +1454,26 @@ public class AcroFields {
         	for (int j = 0; j < options.length; j++) {
         		if (options[j].equals(value[i])) {
         			array.add(new PdfNumber(j));
+        			break;
         		}
         	}
         }
         item.writeToAll(PdfName.I, array, Item.WRITE_MERGED | Item.WRITE_VALUE);
-        item.writeToAll(PdfName.V, null, Item.WRITE_MERGED | Item.WRITE_VALUE);
-        item.writeToAll(PdfName.AP, null, Item.WRITE_MERGED | Item.WRITE_WIDGET);
+        
+        PdfArray vals = new PdfArray();
+        for (int i = 0; i < value.length; ++i) {
+        	vals.add( new PdfString( value[i] ) );
+        }
+        item.writeToAll(PdfName.V, vals, Item.WRITE_MERGED | Item.WRITE_VALUE);
+        
+        PdfAppearance app = getAppearance( merged, value, name ); 
+        
+        PdfDictionary apDic = new PdfDictionary();
+        apDic.put( PdfName.N, app.getIndirectReference() );
+        item.writeToAll(PdfName.AP, apDic, Item.WRITE_MERGED | Item.WRITE_WIDGET);
+        
+        writer.releaseTemplate( app );
+        
         item.markUsed( this, Item.WRITE_VALUE | Item.WRITE_WIDGET );
         return true;
 	}

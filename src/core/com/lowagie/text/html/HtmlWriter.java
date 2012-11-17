@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlWriter.java 3583 2008-08-12 00:00:09Z xlv $
+ * $Id: HtmlWriter.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Stack;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
@@ -231,8 +232,7 @@ public class HtmlWriter extends DocWriter {
             return false;
         }
         if (open && !element.isContent()) {
-				throw new DocumentException(
-						"The document is open; you can only add Elements with content.");
+				throw new DocumentException(MessageLocalization.getComposedMessage("the.document.is.open.you.can.only.add.elements.with.content"));
         }
         try {
             switch(element.type()) {

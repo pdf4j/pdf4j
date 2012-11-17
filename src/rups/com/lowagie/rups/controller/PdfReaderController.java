@@ -1,5 +1,5 @@
 /*
- * $Id: PdfReaderController.java 3692 2009-02-13 00:51:21Z mstorer $
+ * $Id: PdfReaderController.java 4050 2009-08-22 17:31:27Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -23,13 +23,14 @@ package com.lowagie.rups.controller;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.TreeSelectionListener;
 
 import com.lowagie.rups.model.ObjectLoader;
 import com.lowagie.rups.model.PdfFile;
 import com.lowagie.rups.model.TreeNodeFactory;
-import com.lowagie.rups.view.PageNavigationListener;
+import com.lowagie.rups.view.PageSelectionListener;
 import com.lowagie.rups.view.RupsMenuBar;
 import com.lowagie.rups.view.itext.FormTree;
 import com.lowagie.rups.view.itext.OutlineTree;
@@ -75,14 +76,14 @@ public class PdfReaderController extends Observable implements Observer {
 	 * This is an Observable object to which all iText related GUI components
 	 * are added as Observers.
 	 * @param treeSelectionListener	when somebody selects a tree node, this listener listens to the event
-	 * @param pageNavigationListener	when somebody changes a page, this listener changes accordingly
+	 * @param pageSelectionListener	when somebody changes a page, this listener changes accordingly
 	 */
 	public PdfReaderController(TreeSelectionListener treeSelectionListener,
-			PageNavigationListener pageNavigationListener) {
+			PageSelectionListener pageSelectionListener) {
 		pdfTree = new PdfTree();
 		pdfTree.addTreeSelectionListener(treeSelectionListener);
 		addObserver(pdfTree);
-		pages = new PagesTable(this, pageNavigationListener);
+		pages = new PagesTable(this, pageSelectionListener);
 		addObserver(pages);
 		outlines = new OutlineTree(this);
 		addObserver(outlines);
@@ -91,11 +92,11 @@ public class PdfReaderController extends Observable implements Observer {
 		xref = new XRefTable(this);
 		addObserver(xref);
 		navigationTabs = new JTabbedPane();
-		navigationTabs.addTab("Pages", null, RupsController.getScrollPane(pages), "Pages");
-		navigationTabs.addTab("Outlines", null, RupsController.getScrollPane(outlines), "Outlines (Bookmarks)");
-		navigationTabs.addTab("Form", null, RupsController.getScrollPane(form), "Interactive Form");
+		navigationTabs.addTab("Pages", null, new JScrollPane(pages), "Pages");
+		navigationTabs.addTab("Outlines", null, new JScrollPane(outlines), "Outlines (Bookmarks)");
+		navigationTabs.addTab("Form", null, new JScrollPane(form), "Interactive Form");
 		navigationTabs.addTab("XFA", null, form.getXfaTree(), "Tree view of the XFA form");
-		navigationTabs.addTab("XRef", null, RupsController.getScrollPane(xref), "Cross-reference table");
+		navigationTabs.addTab("XRef", null, new JScrollPane(xref), "Cross-reference table");
 		objectPanel = new PdfObjectPanel();
 		addObserver(objectPanel);
 		streamArea = new StreamTextArea();

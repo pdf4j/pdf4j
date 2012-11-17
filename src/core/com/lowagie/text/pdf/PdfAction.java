@@ -1,5 +1,5 @@
 /*
- * $Id: PdfAction.java 3912 2009-04-26 08:38:15Z blowagie $
+ * $Id: PdfAction.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2000 by Bruno Lowagie.
  *
@@ -52,6 +52,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.collection.PdfTargetDictionary;
 
@@ -216,7 +217,7 @@ public class PdfAction extends PdfDictionary {
                 put(PdfName.JS, new PdfString("this.print(true);\r"));
                 break;
             default:
-                throw new RuntimeException("Invalid named action.");
+                throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.named.action"));
         }
     }
     
@@ -367,7 +368,7 @@ public class PdfAction extends PdfDictionary {
             else if (obj instanceof PdfAnnotation)
                 array.add(((PdfAnnotation)obj).getIndirectReference());
             else
-                throw new RuntimeException("The array must contain String or PdfAnnotation.");
+                throw new RuntimeException(MessageLocalization.getComposedMessage("the.array.must.contain.string.or.pdfannotation"));
         }
         return array;
     }
@@ -578,11 +579,11 @@ public class PdfAction extends PdfDictionary {
                 else if (s.equalsIgnoreCase("toggle"))
                     name = PdfName.TOGGLE;
                 else
-                    throw new IllegalArgumentException("A string '" + s + " was passed in state. Only 'ON', 'OFF' and 'Toggle' are allowed.");
+                    throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.string.1.was.passed.in.state.only.on.off.and.toggle.are.allowed", s));
                 a.add(name);
             }
             else
-                throw new IllegalArgumentException("Invalid type was passed in state: " + o.getClass().getName());
+                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.type.was.passed.in.state.1", o.getClass().getName()));
         }
         action.put(PdfName.STATE, a);
         if (!preserveRB)

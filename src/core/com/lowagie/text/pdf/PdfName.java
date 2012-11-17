@@ -1,5 +1,5 @@
 /*
- * $Id: PdfName.java 3934 2009-05-27 11:23:23Z blowagie $
+ * $Id: PdfName.java 4082 2009-10-25 14:18:28Z psoares33 $
  *
  * Copyright 1999-2006 Bruno Lowagie
  *
@@ -52,6 +52,7 @@ package com.lowagie.text.pdf;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * <CODE>PdfName</CODE> is an object that can be used as a name in a PDF-file.
@@ -294,6 +295,8 @@ public class PdfName extends PdfObject implements Comparable{
     /** A name */
     public static final PdfName CHARPROCS = new PdfName("CharProcs");
     /** A name */
+    public static final PdfName CHECKSUM = new PdfName("CheckSum");
+    /** A name */
     public static final PdfName CI = new PdfName("CI");
     /** A name */
     public static final PdfName CIDFONTTYPE0 = new PdfName("CIDFontType0");
@@ -460,6 +463,8 @@ public class PdfName extends PdfObject implements Comparable{
     public static final PdfName DISPLAYDOCTITLE = new PdfName("DisplayDocTitle");
     /** A name */
     public static final PdfName DIV = new PdfName("Div");
+    /** A name */
+    public static final PdfName DL = new PdfName("DL");
     /** A name */
     public static final PdfName DM = new PdfName("Dm");
     /** A name */
@@ -1774,7 +1779,7 @@ public class PdfName extends PdfObject implements Comparable{
         // The minimum number of characters in a name is 0, the maximum is 127 (the '/' not included)
         int length = name.length();
         if (lengthCheck && length > 127)
-            throw new IllegalArgumentException("The name '" + name + "' is too long (" + length + " characters).");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.name.1.is.too.long.2.characters", name, String.valueOf(length)));
         bytes = encodeName(name);
     }
 

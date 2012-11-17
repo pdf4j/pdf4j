@@ -1,5 +1,5 @@
 /*
- * $Id: RtfList.java 4006 2009-07-07 08:34:10Z blowagie $
+ * $Id: RtfList.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2008 Howard Shank (hgshank@yahoo.com)
  *
@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocWriter;
@@ -78,7 +79,7 @@ import com.lowagie.text.rtf.text.RtfParagraph;
  * The RtfList stores one List. It also provides the methods to write the
  * list declaration and the list data.
  *  
- * @version $Id: RtfList.java 4006 2009-07-07 08:34:10Z blowagie $
+ * @version $Id: RtfList.java 4065 2009-09-16 23:09:11Z psoares33 $
  * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  * @author Howard Shank (hgshank@yahoo.com)
  * @since 2.1.3
@@ -655,7 +656,7 @@ public class RtfList extends RtfElement implements RtfExtendedElement {
 			this.listType = listType;
 		}
 		else {
-			throw new InvalidParameterException("Invalid listType value.");
+			throw new InvalidParameterException(MessageLocalization.getComposedMessage("invalid.listtype.value"));
 		}
 	}
 

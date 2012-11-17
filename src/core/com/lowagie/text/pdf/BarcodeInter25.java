@@ -1,5 +1,5 @@
 /*
- * $Id: BarcodeInter25.java 3117 2008-01-31 05:53:22Z xlv $
+ * $Id: BarcodeInter25.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2002-2006 by Paulo Soares.
  *
@@ -52,6 +52,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.MemoryImageSource;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
@@ -146,7 +147,7 @@ public class BarcodeInter25 extends Barcode{
     public static byte[] getBarsInter25(String text) {
         text = keepNumbers(text);
         if ((text.length() & 1) != 0)
-            throw new IllegalArgumentException("The text length must be even.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.text.length.must.be.even"));
         byte bars[] = new byte[text.length() * 5 + 7];
         int pb = 0;
         bars[pb++] = 0;

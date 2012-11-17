@@ -1,5 +1,5 @@
 /*
- * $Id: PdfContentByte.java 3912 2009-04-26 08:38:15Z blowagie $
+ * $Id: PdfContentByte.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -54,6 +54,7 @@ import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Annotation;
 import com.lowagie.text.DocumentException;
@@ -261,7 +262,7 @@ public class PdfContentByte {
 
     public void add(PdfContentByte other) {
         if (other.writer != null && writer != other.writer)
-            throw new RuntimeException("Inconsistent writers. Are you mixing two documents?");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("inconsistent.writers.are.you.mixing.two.documents"));
         content.append(other.content);
     }
 
@@ -946,10 +947,11 @@ public class PdfContentByte {
         // the backgroundcolor is set
         Color background = rectangle.getBackgroundColor();
         if (background != null) {
+        	saveState();
             setColorFill(background);
             rectangle(x1, y1, x2 - x1, y2 - y1);
             fill();
-            resetRGBColorFill();
+            restoreState();
         }
 
         // if the element hasn't got any borders, nothing is added
@@ -1107,7 +1109,7 @@ public class PdfContentByte {
      */
     public void addImage(Image image, boolean inlineImage) throws DocumentException {
         if (!image.hasAbsoluteY())
-            throw new DocumentException("The image must have absolute positioning.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("the.image.must.have.absolute.positioning"));
         float matrix[] = image.matrix();
         matrix[Image.CX] = image.getAbsoluteX() - matrix[Image.CX];
         matrix[Image.CY] = image.getAbsoluteY() - matrix[Image.CY];
@@ -1288,7 +1290,7 @@ public class PdfContentByte {
      */
     public void beginText() {
     	if (inText) {
-    		throw new IllegalPdfSyntaxException("Unbalanced begin/end text operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
     	}
     	inText = true;
         state.xTLM = 0;
@@ -1301,7 +1303,7 @@ public class PdfContentByte {
      */
     public void endText() {
     	if (!inText) {
-    		throw new IllegalPdfSyntaxException("Unbalanced begin/end text operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
     	}
     	inText = false;
         content.append("ET").append_i(separator);
@@ -1324,7 +1326,7 @@ public class PdfContentByte {
         content.append("Q").append_i(separator);
         int idx = stateList.size() - 1;
         if (idx < 0)
-            throw new IllegalPdfSyntaxException("Unbalanced save/restore state operators.");
+            throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
         state = (GraphicState)stateList.get(idx);
         stateList.remove(idx);
     }
@@ -1381,7 +1383,7 @@ public class PdfContentByte {
     public void setFontAndSize(BaseFont bf, float size) {
         checkWriter();
         if (size < 0.0001f && size > -0.0001f)
-            throw new IllegalArgumentException("Font size too small: " + size);
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("font.size.too.small.1", String.valueOf(size)));
         state.size = size;
         state.fontDetails = writer.addSimple(bf);
         PageResources prs = getPageResources();
@@ -1418,7 +1420,7 @@ public class PdfContentByte {
      */
     private void showText2(String text) {
         if (state.fontDetails == null)
-            throw new NullPointerException("Font and size must be set before writing any text");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         byte b[] = state.fontDetails.convertToBytes(text);
         escapeString(b, content);
     }
@@ -1470,7 +1472,7 @@ public class PdfContentByte {
      */
     public void showTextKerned(String text) {
         if (state.fontDetails == null)
-            throw new NullPointerException("Font and size must be set before writing any text");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         BaseFont bf = state.fontDetails.getBaseFont();
         if (bf.hasKernPairs())
             showText(getKernArray(text, bf));
@@ -1706,7 +1708,7 @@ public class PdfContentByte {
 
     private void showTextAligned(int alignment, String text, float x, float y, float rotation, boolean kerned) {
         if (state.fontDetails == null)
-            throw new NullPointerException("Font and size must be set before writing any text");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         if (rotation == 0) {
             switch (alignment) {
                 case ALIGN_CENTER:
@@ -1909,7 +1911,7 @@ public class PdfContentByte {
     public PdfPatternPainter createPattern(float width, float height, float xstep, float ystep) {
         checkWriter();
         if ( xstep == 0.0f || ystep == 0.0f )
-            throw new RuntimeException("XStep or YStep can not be ZERO.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("xstep.or.ystep.can.not.be.zero"));
         PdfPatternPainter painter = new PdfPatternPainter(writer);
         painter.setWidth(width);
         painter.setHeight(height);
@@ -1945,7 +1947,7 @@ public class PdfContentByte {
     public PdfPatternPainter createPattern(float width, float height, float xstep, float ystep, Color color) {
         checkWriter();
         if ( xstep == 0.0f || ystep == 0.0f )
-            throw new RuntimeException("XStep or YStep can not be ZERO.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("xstep.or.ystep.can.not.be.zero"));
         PdfPatternPainter painter = new PdfPatternPainter(writer, color);
         painter.setWidth(width);
         painter.setHeight(height);
@@ -2323,7 +2325,7 @@ public class PdfContentByte {
                 content.append(tint);
                 break;
             default:
-                throw new RuntimeException("Invalid color type.");
+                throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.color.type"));
         }
     }
 
@@ -2346,7 +2348,7 @@ public class PdfContentByte {
     public void setPatternFill(PdfPatternPainter p, Color color, float tint) {
         checkWriter();
         if (!p.isStencil())
-            throw new RuntimeException("An uncolored pattern was expected.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("an.uncolored.pattern.was.expected"));
         PageResources prs = getPageResources();
         PdfName name = writer.addSimplePattern(p);
         name = prs.addPattern(name, p.getIndirectReference());
@@ -2376,7 +2378,7 @@ public class PdfContentByte {
     public void setPatternStroke(PdfPatternPainter p, Color color, float tint) {
         checkWriter();
         if (!p.isStencil())
-            throw new RuntimeException("An uncolored pattern was expected.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("an.uncolored.pattern.was.expected"));
         PageResources prs = getPageResources();
         PdfName name = writer.addSimplePattern(p);
         name = prs.addPattern(name, p.getIndirectReference());
@@ -2458,7 +2460,7 @@ public class PdfContentByte {
      */
     protected void checkWriter() {
         if (writer == null)
-            throw new NullPointerException("The writer in PdfContentByte is null.");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("the.writer.in.pdfcontentbyte.is.null"));
     }
 
     /**
@@ -2467,7 +2469,7 @@ public class PdfContentByte {
      */
     public void showText(PdfTextArray text) {
         if (state.fontDetails == null)
-            throw new NullPointerException("Font and size must be set before writing any text");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         content.append("[");
         ArrayList arrayList = text.getArrayList();
         boolean lastWasNumber = false;
@@ -2634,7 +2636,7 @@ public class PdfContentByte {
      */
     void checkNoPattern(PdfTemplate t) {
         if (t.getType() == PdfTemplate.TYPE_PATTERN)
-            throw new RuntimeException("Invalid use of a pattern. A template was expected.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.use.of.a.pattern.a.template.was.expected"));
     }
 
     /**
@@ -2939,7 +2941,7 @@ public class PdfContentByte {
      */
     public void beginLayer(PdfOCG layer) {
         if ((layer instanceof PdfLayer) && ((PdfLayer)layer).getTitle() != null)
-            throw new IllegalArgumentException("A title is not a layer");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("a.title.is.not.a.layer"));
         if (layerDepth == null)
             layerDepth = new ArrayList();
         if (layer instanceof PdfLayerMembership) {
@@ -2975,7 +2977,7 @@ public class PdfContentByte {
             n = ((Integer)layerDepth.get(layerDepth.size() - 1)).intValue();
             layerDepth.remove(layerDepth.size() - 1);
         } else {
-        	throw new IllegalPdfSyntaxException("Unbalanced layer operators." );
+        	throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));
         }
         while (n-- > 0)
             content.append("EMC").append_i(separator);
@@ -3026,10 +3028,10 @@ public class PdfContentByte {
             else if (obj.isArray()) {
                 ar = (PdfArray)obj;
                 if (!(ar.getPdfObject(0)).isNumber())
-                    throw new IllegalArgumentException("The structure has kids.");
+                    throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.structure.has.kids"));
             }
             else
-                throw new IllegalArgumentException("Unknown object at /K " + obj.getClass().toString());
+                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("unknown.object.at.k.1", obj.getClass().toString()));
             PdfDictionary dic = new PdfDictionary(PdfName.MCR);
             dic.put(PdfName.PG, writer.getCurrentPage());
             dic.put(PdfName.MCID, new PdfNumber(mark));
@@ -3050,7 +3052,7 @@ public class PdfContentByte {
      */
     public void endMarkedContentSequence() {
     	if (mcDepth == 0) {
-    		throw new IllegalPdfSyntaxException("Unbalanced begin/end marked content operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.marked.content.operators"));
     	}
     	--mcDepth;
         content.append("EMC").append_i(separator);
@@ -3113,16 +3115,16 @@ public class PdfContentByte {
      */
     public void sanityCheck() {
     	if (mcDepth != 0) {
-    		throw new IllegalPdfSyntaxException("Unbalanced marked content operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.marked.content.operators"));
     	}
     	if (inText) {
-    		throw new IllegalPdfSyntaxException("Unbalanced begin/end text operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.begin.end.text.operators"));
     	}
     	if (layerDepth != null && !layerDepth.isEmpty()) {
-    		throw new IllegalPdfSyntaxException("Unbalanced layer operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.layer.operators"));
     	}
     	if (!stateList.isEmpty()) {
-    		throw new IllegalPdfSyntaxException("Unbalanced save/restore state operators." );
+    		throw new IllegalPdfSyntaxException(MessageLocalization.getComposedMessage("unbalanced.save.restore.state.operators"));
     	}
     }
 }

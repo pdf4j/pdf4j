@@ -1,5 +1,6 @@
 /*
- * $Id: PdfBorderDictionary.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: PdfBorderDictionary.java 4065 2009-09-16 23:09:11Z psoares33 $
+ * $Name$
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -49,6 +50,8 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.error_messages.MessageLocalization;
+
 /**
  * A <CODE>PdfBorderDictionary</CODE> define the appearance of a Border (Annotations).
  *
@@ -89,7 +92,7 @@ public class PdfBorderDictionary extends PdfDictionary {
                 put(PdfName.S, PdfName.U);
                 break;
             default:
-                throw new IllegalArgumentException("Invalid border style.");
+                throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.border.style"));
         }
     }
     

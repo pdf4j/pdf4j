@@ -1,5 +1,5 @@
 /*
- * $Id: SAXiTextHandler.java 3427 2008-05-24 18:32:31Z xlv $
+ * $Id: SAXiTextHandler.java 4070 2009-09-19 18:21:12Z psoares33 $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *
@@ -787,6 +787,7 @@ public class SAXiTextHandler extends DefaultHandler {
                                     width.substring(0, width.length() - 1)
                                             + "f");
                             total += cellWidths[j];
+                            cellNulls[j] = false;
                         } catch (Exception e) {
                             // empty on purpose
                         }

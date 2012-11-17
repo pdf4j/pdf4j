@@ -1,5 +1,6 @@
 /*
- * $Id: PdfBoolean.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: PdfBoolean.java 4065 2009-09-16 23:09:11Z psoares33 $
+ * $Name$
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -48,6 +49,8 @@
  */
 
 package com.lowagie.text.pdf;
+
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * <CODE>PdfBoolean</CODE> is the boolean object represented by the keywords <VAR>true</VAR> or <VAR>false</VAR>.
@@ -111,7 +114,7 @@ public class PdfBoolean extends PdfObject {
             this.value = false;
         }
         else {
-            throw new BadPdfFormatException("The value has to be 'true' of 'false', instead of '" + value + "'.");
+            throw new BadPdfFormatException(MessageLocalization.getComposedMessage("the.value.has.to.be.true.of.false.instead.of.1", value));
         }
     }
     

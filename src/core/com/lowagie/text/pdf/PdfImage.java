@@ -1,5 +1,5 @@
 /*
- * $Id: PdfImage.java 3715 2009-02-23 15:02:23Z blowagie $
+ * $Id: PdfImage.java 4067 2009-09-19 12:56:50Z psoares33 $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -53,6 +53,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Image;
 
@@ -240,7 +241,7 @@ public class PdfImage extends PdfStream {
                     transferBytes(is, streamBytes, -1);
                 	break;
                 default:
-                    throw new BadPdfFormatException(errorID + " is an unknown Image format.");
+                    throw new BadPdfFormatException(MessageLocalization.getComposedMessage("1.is.an.unknown.image.format", errorID));
             }
             put(PdfName.LENGTH, new PdfNumber(streamBytes.size()));
         }
@@ -272,7 +273,7 @@ public class PdfImage extends PdfStream {
     static void transferBytes(InputStream in, OutputStream out, int len) throws IOException {
         byte buffer[] = new byte[TRANSFERSIZE];
         if (len < 0)
-            len = 0x7ffffff;
+            len = 0x7fff0000;
         int size;
         while (len != 0) {
             size = in.read(buffer, 0, Math.min(len, TRANSFERSIZE));

@@ -1,5 +1,5 @@
 /*
- * $Id: PdfWriter.java 3948 2009-06-03 15:17:22Z blowagie $
+ * $Id: PdfWriter.java 4095 2009-11-12 14:40:41Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -64,6 +64,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.security.cert.Certificate;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocListener;
 import com.lowagie.text.DocWriter;
@@ -684,7 +685,7 @@ public class PdfWriter extends DocWriter implements
      */
     public void setInitialLeading(float leading) throws DocumentException {
     	if (open)
-    		throw new DocumentException("You can't set the initial leading if the document is already open.");
+    		throw new DocumentException(MessageLocalization.getComposedMessage("you.can.t.set.the.initial.leading.if.the.document.is.already.open"));
     	pdf.setLeading(leading);
     }
     
@@ -714,7 +715,7 @@ public class PdfWriter extends DocWriter implements
 
     public PdfContentByte getDirectContent() {
         if (!open)
-            throw new RuntimeException("The document is not open.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("the.document.is.not.open"));
         return directContent;
     }
 
@@ -727,7 +728,7 @@ public class PdfWriter extends DocWriter implements
 
     public PdfContentByte getDirectContentUnder() {
         if (!open)
-            throw new RuntimeException("The document is not open.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("the.document.is.not.open"));
         return directContentUnder;
     }
 
@@ -981,7 +982,7 @@ public class PdfWriter extends DocWriter implements
     public PdfIndirectReference getPageReference(int page) {
         --page;
         if (page < 0)
-            throw new IndexOutOfBoundsException("The page numbers start at 1.");
+            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.page.number.must.be.gt.eq.1"));
         PdfIndirectReference ref;
         if (page < pageReferences.size()) {
             ref = (PdfIndirectReference)pageReferences.get(page);
@@ -1052,7 +1053,7 @@ public class PdfWriter extends DocWriter implements
 
     PdfIndirectReference add(PdfPage page, PdfContents contents) throws PdfException {
         if (!open) {
-            throw new PdfException("The document isn't open.");
+            throw new PdfException(MessageLocalization.getComposedMessage("the.document.is.not.open"));
         }
         PdfIndirectObject object;
         try {
@@ -1496,6 +1497,43 @@ public class PdfWriter extends DocWriter implements
 
 //  [C5] named objects: named destinations, javascript, embedded files
 
+    /**
+     * Adds named destinations in bulk.
+     * Valid keys and values of the map can be found in the map
+     * that is created by SimpleNamedDestination.
+     * @param	map	a map with strings as keys for the names,
+     * 			and structured strings as values for the destinations
+     * @param	page_offset	number of pages that has to be added to
+     * 			the page numbers in the destinations (useful if you
+     *          use this method in combination with PdfCopy).
+     * @since	iText 5.0
+     */
+    public void addNamedDestinations(Map map, int page_offset) {
+    	Map.Entry entry;
+    	int page;
+    	String dest;
+    	PdfDestination destination;
+    	for (Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
+    		entry = (Map.Entry)i.next();
+    		dest = (String)entry.getValue();
+    		page = Integer.parseInt(dest.substring(0, dest.indexOf(" ")));
+    		destination = new PdfDestination(dest.substring(dest.indexOf(" ") + 1));
+    		addNamedDestination((String)entry.getKey(), page + page_offset, destination);
+    	}
+    }
+    
+    /**
+     * Adds one named destination.
+     * @param	name	the name for the destination
+     * @param	page	the page number where you want to jump to
+     * @param	dest	an explicit destination
+     * @since	iText 5.0
+     */
+    public void addNamedDestination(String name, int page, PdfDestination dest) {
+    	dest.addPage(getPageReference(page));
+    	pdf.localDestination(name, dest);
+    }
+    
      /**
       * Use this method to add a JavaScript action at the document level.
       * When the document opens, all this JavaScript runs.
@@ -1619,7 +1657,7 @@ public class PdfWriter extends DocWriter implements
          actionType.equals(DID_SAVE) ||
          actionType.equals(WILL_PRINT) ||
          actionType.equals(DID_PRINT))) {
-             throw new DocumentException("Invalid additional action type: " + actionType.toString());
+             throw new DocumentException(MessageLocalization.getComposedMessage("invalid.additional.action.type.1", actionType.toString()));
          }
          pdf.addAdditionalAction(actionType, action);
      }
@@ -1730,9 +1768,9 @@ public class PdfWriter extends DocWriter implements
         if (pdfxConformance.getPDFXConformance() == pdfx)
             return;
         if (pdf.isOpen())
-            throw new PdfXConformanceException("PDFX conformance can only be set before opening the document.");
+            throw new PdfXConformanceException(MessageLocalization.getComposedMessage("pdfx.conformance.can.only.be.set.before.opening.the.document"));
         if (crypto != null)
-            throw new PdfXConformanceException("A PDFX conforming document cannot be encrypted.");
+            throw new PdfXConformanceException(MessageLocalization.getComposedMessage("a.pdfx.conforming.document.cannot.be.encrypted"));
         if (pdfx == PDFA1A || pdfx == PDFA1B)
             setPdfVersion(VERSION_1_4);
         else if (pdfx != PDFXNONE)
@@ -1956,7 +1994,7 @@ public class PdfWriter extends DocWriter implements
     /** @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(byte[], byte[], int, int) */
     public void setEncryption(byte userPassword[], byte ownerPassword[], int permissions, int encryptionType) throws DocumentException {
         if (pdf.isOpen())
-            throw new DocumentException("Encryption can only be added before opening the document.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("encryption.can.only.be.added.before.opening.the.document"));
         crypto = new PdfEncryption();
         crypto.setCryptoMode(encryptionType, 0);
         crypto.setupAllKeys(userPassword, ownerPassword, permissions);
@@ -1965,7 +2003,7 @@ public class PdfWriter extends DocWriter implements
     /** @see com.lowagie.text.pdf.interfaces.PdfEncryptionSettings#setEncryption(java.security.cert.Certificate[], int[], int) */
     public void setEncryption(Certificate[] certs, int[] permissions, int encryptionType) throws DocumentException {
         if (pdf.isOpen())
-            throw new DocumentException("Encryption can only be added before opening the document.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("encryption.can.only.be.added.before.opening.the.document"));
         crypto = new PdfEncryption();
         if (certs != null) {
             for (int i=0; i < certs.length; i++) {
@@ -2364,7 +2402,7 @@ public class PdfWriter extends DocWriter implements
      */
     public void setTagged() {
         if (open)
-            throw new IllegalArgumentException("Tagging must be set before opening the document.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("tagging.must.be.set.before.opening.the.document"));
         tagged = true;
     }
 
@@ -2554,7 +2592,7 @@ public class PdfWriter extends DocWriter implements
             }
         }
         else
-            throw new IllegalArgumentException("Only PdfLayer is accepted.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("only.pdflayer.is.accepted"));
     }
 
 //  User methods to change aspects of the page
@@ -2604,10 +2642,22 @@ public class PdfWriter extends DocWriter implements
      * Use this method to make sure a page is added,
      * even if it's empty. If you use setPageEmpty(false),
      * invoking newPage() after a blank page will add a newPage.
+     * setPageEmpty(true) won't have any effect.
      * @param pageEmpty the state
      */
     public void setPageEmpty(boolean pageEmpty) {
+        if (pageEmpty)
+            return;
         pdf.setPageEmpty(pageEmpty);
+    }
+
+    /**
+     * Checks if a newPage() will actually generate a new page.
+     * @return true if a new page will be generated, false otherwise
+     * @since 2.1.8
+     */
+    public boolean isPageEmpty() {
+        return pdf.isPageEmpty();
     }
 
 //  [U3] page actions (open and close)
@@ -2620,7 +2670,7 @@ public class PdfWriter extends DocWriter implements
     /** @see com.lowagie.text.pdf.interfaces.PdfPageActions#setPageAction(com.lowagie.text.pdf.PdfName, com.lowagie.text.pdf.PdfAction) */
     public void setPageAction(PdfName actionType, PdfAction action) throws DocumentException {
           if (!actionType.equals(PAGE_OPEN) && !actionType.equals(PAGE_CLOSE))
-              throw new DocumentException("Invalid page additional action type: " + actionType.toString());
+              throw new DocumentException(MessageLocalization.getComposedMessage("invalid.page.additional.action.type.1", actionType.toString()));
           pdf.setPageAction(actionType, action);
       }
 
@@ -2732,7 +2782,7 @@ public class PdfWriter extends DocWriter implements
      */
     public void setRunDirection(int runDirection) {
         if (runDirection < RUN_DIRECTION_NO_BIDI || runDirection > RUN_DIRECTION_RTL)
-            throw new RuntimeException("Invalid run direction: " + runDirection);
+            throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.run.direction.1", runDirection));
         this.runDirection = runDirection;
     }
 
@@ -2768,7 +2818,7 @@ public class PdfWriter extends DocWriter implements
      * @throws DocumentException on error
      */
      public void setUserunit(float userunit) throws DocumentException {
- 		if (userunit < 1f || userunit > 75000f) throw new DocumentException("UserUnit should be a value between 1 and 75000.");
+ 		if (userunit < 1f || userunit > 75000f) throw new DocumentException(MessageLocalization.getComposedMessage("userunit.should.be.a.value.between.1.and.75000"));
          this.userunit = userunit;
          setAtLeastPdfVersion(VERSION_1_6);
      }
@@ -2813,7 +2863,7 @@ public class PdfWriter extends DocWriter implements
     ColorDetails addSimplePatternColorspace(Color color) {
         int type = ExtendedColor.getType(color);
         if (type == ExtendedColor.TYPE_PATTERN || type == ExtendedColor.TYPE_SHADING)
-            throw new RuntimeException("An uncolored tile pattern can not have another pattern or shading as color.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("an.uncolored.tile.pattern.can.not.have.another.pattern.or.shading.as.color"));
         try {
             switch (type) {
                 case ExtendedColor.TYPE_RGB:
@@ -2853,7 +2903,7 @@ public class PdfWriter extends DocWriter implements
                     return patternDetails;
                 }
                 default:
-                    throw new RuntimeException("Invalid color type in PdfWriter.addSimplePatternColorspace().");
+                    throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.color.type"));
             }
         }
         catch (Exception e) {

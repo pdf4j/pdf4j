@@ -1,5 +1,5 @@
 /*
- * $Id: PdfDocument.java 3939 2009-05-27 13:09:45Z blowagie $
+ * $Id: PdfDocument.java 4098 2009-11-16 13:27:45Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
@@ -342,7 +343,7 @@ public class PdfDocument extends Document {
             annotationsImp = new PdfAnnotationsImp(writer);
             return;
         }
-        throw new DocumentException("You can only add a writer to a PdfDocument once.");
+        throw new DocumentException(MessageLocalization.getComposedMessage("you.can.only.add.a.writer.to.a.pdfdocument.once"));
     }
 
 // LISTENER METHODS START
@@ -483,7 +484,7 @@ public class PdfDocument extends Document {
                     Annotation annot = (Annotation) element;
                     Rectangle rect = new Rectangle(0, 0);
                     if (line != null)
-                    	rect = new Rectangle(annot.llx(indentRight() - line.widthLeft()), annot.lly(indentTop() - currentHeight), annot.urx(indentRight() - line.widthLeft() + 20), annot.ury(indentTop() - currentHeight - 20));
+                    	rect = new Rectangle(annot.llx(indentRight() - line.widthLeft()), annot.ury(indentTop() - currentHeight - 20), annot.urx(indentRight() - line.widthLeft() + 20), annot.lly(indentTop() - currentHeight));
                     PdfAnnotation an = PdfAnnotationsImp.convertAnnotation(writer, annot, rect);
                     annotationsImp.addPlainAnnotation(an);
                     pageEmpty = false;
@@ -812,7 +813,7 @@ public class PdfDocument extends Document {
             newPage();
             if (imageWait != null || wasImage) newPage();
             if (annotationsImp.hasUnusedAnnotations())
-                throw new RuntimeException("Not all annotations could be added to the document (the document doesn't have enough pages).");
+                throw new RuntimeException(MessageLocalization.getComposedMessage("not.all.annotations.could.be.added.to.the.document.the.document.doesn.t.have.enough.pages"));
             PdfPageEvent pageEvent = writer.getPageEvent();
             if (pageEvent != null)
                 pageEvent.onCloseDocument(writer, this);
@@ -850,12 +851,12 @@ public class PdfDocument extends Document {
      */
     public boolean newPage() {
         lastElementType = -1;
-        if (writer == null || (writer.getDirectContent().size() == 0 && writer.getDirectContentUnder().size() == 0 && (pageEmpty || writer.isPaused()))) {
+        if (isPageEmpty()) {
         	setNewPageSizeAndMargins();
             return false;
         }
     	if (!open || close) {
-    		throw new RuntimeException("The document isn't open.");
+    		throw new RuntimeException(MessageLocalization.getComposedMessage("the.document.is.not.open"));
     	}
         PdfPageEvent pageEvent = writer.getPageEvent();
         if (pageEvent != null)
@@ -880,7 +881,7 @@ public class PdfDocument extends Document {
         	// [C10]
         	if (writer.isPdfX()) {
         		if (thisBoxSize.containsKey("art") && thisBoxSize.containsKey("trim"))
-        			throw new PdfXConformanceException("Only one of ArtBox or TrimBox can exist in the page.");
+        			throw new PdfXConformanceException(MessageLocalization.getComposedMessage("only.one.of.artbox.or.trimbox.can.exist.in.the.page"));
         		if (!thisBoxSize.containsKey("art") && !thisBoxSize.containsKey("trim")) {
         			if (thisBoxSize.containsKey("crop"))
         				thisBoxSize.put("trim", thisBoxSize.get("crop"));
@@ -1581,6 +1582,10 @@ public class PdfDocument extends Document {
                             hScale = hs.floatValue();
                         text.setTextMatrix(hScale, b, c, 1, xMarker, yMarker);
                     }
+                    if (chunk.isAttribute(Chunk.CHAR_SPACING)) {
+                    	Float cs = (Float) chunk.getAttribute(Chunk.CHAR_SPACING);
+						text.setCharacterSpacing(cs.floatValue());
+					}
                     if (chunk.isImage()) {
                         Image image = chunk.getImage();
                         float matrix[] = image.matrix();
@@ -1644,7 +1649,7 @@ public class PdfDocument extends Document {
                 if (hScale != lastHScale) {
                     lastHScale = hScale;
                     text.setWordSpacing(baseWordSpacing / hScale);
-                    text.setCharacterSpacing(baseCharacterSpacing / hScale);
+                    text.setCharacterSpacing(baseCharacterSpacing / hScale + text.getCharacterSpacing());
                 }
                 String s = chunk.toString();
                 int idx = s.indexOf(' ');
@@ -1668,7 +1673,7 @@ public class PdfDocument extends Document {
                 if (isJustified && hScale != lastHScale) {
                     lastHScale = hScale;
                     text.setWordSpacing(baseWordSpacing / hScale);
-                    text.setCharacterSpacing(baseCharacterSpacing / hScale);
+                    text.setCharacterSpacing(baseCharacterSpacing / hScale + text.getCharacterSpacing());
                 }
                 text.showText(chunk.toString());
             }
@@ -1686,6 +1691,9 @@ public class PdfDocument extends Document {
             if (chunk.isAttribute(Chunk.SKEW) || chunk.isAttribute(Chunk.HSCALE)) {
                 adjustMatrix = true;
                 text.setTextMatrix(xMarker, yMarker);
+            }
+            if (chunk.isAttribute(Chunk.CHAR_SPACING)) {
+				text.setCharacterSpacing(baseCharacterSpacing);
             }
         }
         if (isJustified) {
@@ -2092,7 +2100,8 @@ public class PdfDocument extends Document {
             return false;
         obj[2] = destination;
         localDestinations.put(name, obj);
-        destination.addPage(writer.getCurrentPage());
+        if (!destination.hasPage())
+        	destination.addPage(writer.getCurrentPage());
         return true;
     }
 
@@ -2104,7 +2113,7 @@ public class PdfDocument extends Document {
     protected static final DecimalFormat SIXTEEN_DIGITS = new DecimalFormat("0000000000000000");
     void addJavaScript(PdfAction js) {
         if (js.get(PdfName.JS) == null)
-            throw new RuntimeException("Only JavaScript actions are allowed.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("only.javascript.actions.are.allowed"));
         try {
             documentLevelJS.put(SIXTEEN_DIGITS.format(jsCounter++), writer.addToBody(js).getIndirectReference());
         }
@@ -2114,7 +2123,7 @@ public class PdfDocument extends Document {
     }
     void addJavaScript(String name, PdfAction js) {
         if (js.get(PdfName.JS) == null)
-            throw new RuntimeException("Only JavaScript actions are allowed.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("only.javascript.actions.are.allowed"));
         try {
             documentLevelJS.put(name, writer.addToBody(js).getIndirectReference());
         }
@@ -2288,10 +2297,14 @@ public class PdfDocument extends Document {
 //	[U2] empty pages
 
     /** This checks if the page is empty. */
-    protected boolean pageEmpty = true;
+    private boolean pageEmpty = true;
 
     void setPageEmpty(boolean pageEmpty) {
         this.pageEmpty = pageEmpty;
+    }
+
+    boolean isPageEmpty() {
+        return writer == null || (writer.getDirectContent().size() == 0 && writer.getDirectContentUnder().size() == 0 && (pageEmpty || writer.isPaused()));
     }
 
 //	[U3] page actions

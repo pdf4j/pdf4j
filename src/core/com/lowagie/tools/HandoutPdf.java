@@ -1,5 +1,6 @@
 /*
- * $Id: HandoutPdf.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: HandoutPdf.java 4065 2009-09-16 23:09:11Z psoares33 $
+ * $Name$
  *
  * Copyright 2002 by Bruno Lowagie
  *
@@ -50,6 +51,7 @@
 package com.lowagie.tools;
 
 import java.io.FileOutputStream;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -78,7 +80,7 @@ public class HandoutPdf extends java.lang.Object {
 			try {
 				int pages = Integer.parseInt(args[2]);
 				if (pages < 2 || pages > 8) {
-					throw new DocumentException("You can't have " + pages + " pages on one page (minimum 2; maximum 8).");
+					throw new DocumentException(MessageLocalization.getComposedMessage("you.can.t.have.1.pages.on.one.page.minimum.2.maximum.8", pages));
 				}
                 
 				float x1 = 30f;

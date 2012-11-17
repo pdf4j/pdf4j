@@ -1,5 +1,5 @@
 /*
- * $Id: RomanAlphabetFactory.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: RomanAlphabetFactory.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2007 by Bruno Lowagie.
  *
@@ -49,6 +49,8 @@
 
 package com.lowagie.text.factories;
 
+import com.lowagie.text.error_messages.MessageLocalization;
+
 /**
  * This class can produce String combinations representing a number.
  * "a" to "z" represent 1 to 26, "AA" represents 27, "AB" represents 28,
@@ -62,8 +64,7 @@ public class RomanAlphabetFactory {
 	 * 1 = a, 2 = b, ..., 26 = z, 27 = aa, 28 = ab,...
 	 */
 	public static final String getString(int index) {
-    	if (index < 1) throw new NumberFormatException(
-    			"You can't translate a negative number into an alphabetical value.");
+    	if (index < 1) throw new NumberFormatException(MessageLocalization.getComposedMessage("you.can.t.translate.a.negative.number.into.an.alphabetical.value"));
     	
     	index--;
     	int bytes = 1;

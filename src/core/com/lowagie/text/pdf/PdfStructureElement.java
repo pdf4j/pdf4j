@@ -1,5 +1,5 @@
 /*
- * $Id: PdfStructureElement.java 3914 2009-04-26 09:16:47Z blowagie $
+ * $Id: PdfStructureElement.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2005 by Paulo Soares.
  *
@@ -49,6 +49,8 @@
 
 package com.lowagie.text.pdf;
 
+import com.lowagie.text.error_messages.MessageLocalization;
+
 /**
  * This is a node in a document logical structure. It may contain a mark point or it may contain
  * other nodes.
@@ -94,7 +96,7 @@ public class PdfStructureElement extends PdfDictionary {
         PdfObject kido = parent.get(PdfName.K);
         PdfArray kids = null;
         if (kido != null && !kido.isArray())
-            throw new IllegalArgumentException("The parent has already another function.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.parent.has.already.another.function"));
         if (kido == null) {
             kids = new PdfArray();
             parent.put(PdfName.K, kids);

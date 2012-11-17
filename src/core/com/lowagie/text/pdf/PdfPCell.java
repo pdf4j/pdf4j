@@ -1,5 +1,5 @@
 /*
- * $Id: PdfPCell.java 3992 2009-06-19 12:05:06Z blowagie $
+ * $Id: PdfPCell.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.util.List;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
@@ -926,7 +927,7 @@ public class PdfPCell extends Rectangle{
         if (rotation < 0)
             rotation += 360;
         if ((rotation % 90) != 0)
-            throw new IllegalArgumentException("Rotation must be a multiple of 90.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("rotation.must.be.a.multiple.of.90"));
         this.rotation = rotation;
     }
     

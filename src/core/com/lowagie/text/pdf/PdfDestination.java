@@ -1,5 +1,5 @@
 /*
- * $Id: PdfDestination.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: PdfDestination.java 4094 2009-11-12 14:29:35Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -48,6 +48,8 @@
  */
 
 package com.lowagie.text.pdf;
+
+import java.util.StringTokenizer;
 
 /**
  * A <CODE>PdfColor</CODE> defines a Color (it's a <CODE>PdfArray</CODE> containing 3 values).
@@ -191,8 +193,26 @@ public class PdfDestination extends PdfArray {
         add(new PdfNumber(top));
     }
     
-    // methods
+    /**
+     * Creates a PdfDestination based on a String.
+     * Valid Strings are for instance the values returned by SimpleNamedDestination:
+     * "Fit", "XYZ 36 806 0",...
+     * @param	dest	a String notation of a destination.
+     * @since	iText 5.0
+     */
+    public PdfDestination(String dest) {
+    	super();
+    	StringTokenizer tokens = new StringTokenizer(dest);
+    	if (tokens.hasMoreTokens()) {
+    		add(new PdfName(tokens.nextToken()));
+    	}
+    	while (tokens.hasMoreTokens()) {
+    		add(new PdfNumber(tokens.nextToken()));
+    	}
+    }
     
+    // methods
+
 /**
  * Checks if an indirect reference to a page has been added.
  *

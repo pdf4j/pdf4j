@@ -1,5 +1,5 @@
 /*
- * $Id: PdfEncryption.java 3707 2009-02-20 18:47:51Z xlv $
+ * $Id: PdfEncryption.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2001-2006 Paulo Soares
  *
@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import com.lowagie.text.pdf.crypto.ARCFOUREncryption;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -182,7 +183,7 @@ public class PdfEncryption {
 			revision = AES_128;
 			break;
 		default:
-			throw new IllegalArgumentException("No valid encryption mode");
+			throw new IllegalArgumentException(MessageLocalization.getComposedMessage("no.valid.encryption.mode"));
 		}
 	}
 

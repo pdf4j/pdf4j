@@ -1,5 +1,5 @@
 /*
- * $Id: ImgTemplate.java 3517 2008-06-29 10:37:16Z blowagie $
+ * $Id: ImgTemplate.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2000, 2001, 2002 by Paulo Soares.
  *
@@ -50,6 +50,7 @@
 package com.lowagie.text;
 
 import java.net.URL;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.PdfTemplate;
 
@@ -76,9 +77,9 @@ public class ImgTemplate extends Image {
     public ImgTemplate(PdfTemplate template) throws BadElementException{
         super((URL)null);
         if (template == null)
-            throw new BadElementException("The template can not be null.");
+            throw new BadElementException(MessageLocalization.getComposedMessage("the.template.can.not.be.null"));
         if (template.getType() == PdfTemplate.TYPE_PATTERN)
-            throw new BadElementException("A pattern can not be used as a template to create an image.");
+            throw new BadElementException(MessageLocalization.getComposedMessage("a.pattern.can.not.be.used.as.a.template.to.create.an.image"));
         type = IMGTEMPLATE;
         scaledHeight = template.getHeight();
         setTop(scaledHeight);

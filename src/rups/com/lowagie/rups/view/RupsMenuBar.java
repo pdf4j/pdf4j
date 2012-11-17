@@ -1,5 +1,5 @@
 /*
- * $Id: RupsMenuBar.java 3117 2008-01-31 05:53:22Z xlv $
+ * $Id: RupsMenuBar.java 4039 2009-07-24 10:29:47Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -46,8 +46,11 @@ public class RupsMenuBar extends JMenuBar implements Observer {
 	public static final String HELP_MENU = "Help";
 	/** Caption for "Help about". */
 	public static final String ABOUT = "About";
-	/** Caption for "Help versions". */
-	public static final String VERSIONS = "Versions";
+	/**
+	 * Caption for "Help versions".
+	 * @since iText 5.0.0 (renamed from VERSIONS)
+	 */
+	public static final String VERSION = "Version";
 	
 	/** The Observable object. */
 	protected Observable observable;
@@ -72,7 +75,7 @@ public class RupsMenuBar extends JMenuBar implements Observer {
         add(Box.createGlue());
         JMenu help = new JMenu(HELP_MENU);
         addItem(help, ABOUT, message);
-        addItem(help, VERSIONS, message);
+        addItem(help, VERSION, message);
         add(help);
 		enableItems(false);
 	}

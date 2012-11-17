@@ -1,5 +1,5 @@
 /*
- * $Id: SpotColor.java 3514 2008-06-27 09:26:36Z blowagie $
+ * $Id: SpotColor.java 4069 2009-09-19 14:50:32Z psoares33 $
  *
  * Copyright 2002 by Phillip Pan
  *
@@ -66,10 +66,6 @@ public class SpotColor extends ExtendedColor {
             (spot.getAlternativeCS().getBlue() / 255f - 1f) * tint + 1);
         this.spot = spot;
         this.tint = tint;
-    }
-    
-    public SpotColor(PdfSpotColor spot) {
-        this(spot, spot.getTint());
     }
     
     public PdfSpotColor getPdfSpotColor() {

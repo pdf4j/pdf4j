@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleCell.java 3752 2009-03-04 18:02:40Z blowagie $
+ * $Id: SimpleCell.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2005 by Bruno Lowagie.
  *
@@ -50,6 +50,7 @@ package com.lowagie.text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
@@ -133,13 +134,13 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
 		if (cellgroup) {
 			if (element instanceof SimpleCell) {
 				if(((SimpleCell)element).isCellgroup()) {
-					throw new BadElementException("You can't add one row to another row.");
+					throw new BadElementException(MessageLocalization.getComposedMessage("you.can.t.add.one.row.to.another.row"));
 				}
 				content.add(element);
 				return;
 			}
 			else {
-				throw new BadElementException("You can only add cells to rows, no objects of type " + element.getClass().getName());
+				throw new BadElementException(MessageLocalization.getComposedMessage("you.can.only.add.cells.to.rows.no.objects.of.type.1", element.getClass().getName()));
 			}
 		}
 		if (element.type() == Element.PARAGRAPH
@@ -156,7 +157,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
 			content.add(element);
 		}
 		else {
-			throw new BadElementException("You can't add an element of type " + element.getClass().getName() + " to a SimpleCell.");
+			throw new BadElementException(MessageLocalization.getComposedMessage("you.can.t.add.an.element.of.type.1.to.a.simplecell", element.getClass().getName()));
 		}
 	}
 	

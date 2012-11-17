@@ -1,5 +1,5 @@
 /*
- * $Id: PdfSpotColor.java 3514 2008-06-27 09:26:36Z blowagie $
+ * $Id: PdfSpotColor.java 4069 2009-09-19 14:50:32Z psoares33 $
  *
  * Copyright 2002 by Phillip Pan
  *
@@ -50,6 +50,7 @@
 package com.lowagie.text.pdf;
 
 import java.awt.Color;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * A <CODE>PdfSpotColor</CODE> defines a ColorSpace
@@ -58,9 +59,6 @@ import java.awt.Color;
  */
 
 public class PdfSpotColor{
-    
-/*	The tint value */
-    protected float tint;
     
 /**	The color name */
     public PdfName name;
@@ -73,22 +71,12 @@ public class PdfSpotColor{
      * Constructs a new <CODE>PdfSpotColor</CODE>.
      *
      * @param		name		a String value
-     * @param		tint		a tint value between 0 and 1
      * @param		altcs		an alternative colorspace value
      */
     
-    public PdfSpotColor(String name, float tint, Color altcs) {
+    public PdfSpotColor(String name, Color altcs) {
         this.name = new PdfName(name);
-        this.tint = tint;
         this.altcs = altcs;
-    }
-    
-    /**
-     * Gets the tint of the SpotColor.
-     * @return a float
-     */
-    public float getTint() {
-        return tint;
     }
     
     /**
@@ -117,7 +105,7 @@ public class PdfSpotColor{
                         new float[]{cmyk.getCyan(), cmyk.getMagenta(), cmyk.getYellow(), cmyk.getBlack()}, 1);
                     break;
                 default:
-                    throw new RuntimeException("Only RGB, Gray and CMYK are supported as alternative color spaces.");
+                    throw new RuntimeException(MessageLocalization.getComposedMessage("only.rgb.gray.and.cmyk.are.supported.as.alternative.color.spaces"));
             }
         }
         else {

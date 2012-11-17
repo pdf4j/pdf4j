@@ -1,5 +1,5 @@
 /*
- * $Id: FontDetails.java 3869 2009-04-17 18:03:45Z blowagie $
+ * $Id: FontDetails.java 4024 2009-07-12 00:33:57Z xlv $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *
@@ -49,7 +49,6 @@
 
 package com.lowagie.text.pdf;
 
-import java.awt.font.GlyphVector;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 

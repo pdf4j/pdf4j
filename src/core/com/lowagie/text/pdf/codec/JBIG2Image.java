@@ -1,5 +1,5 @@
 /*
- * $Id: JBIG2Image.java 3715 2009-02-23 15:02:23Z blowagie $
+ * $Id: JBIG2Image.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2009 by Nigel Kerr.
  *
@@ -53,6 +53,7 @@ import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.ImgJBIG2;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * Support for JBIG2 Images.
@@ -86,7 +87,7 @@ public class JBIG2Image {
 	 */
 	public static Image getJbig2Image(RandomAccessFileOrArray ra, int page) {
 		if (page < 1)
-            throw new IllegalArgumentException("The page number must be >= 1.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("the.page.number.must.be.gt.eq.1"));
 		
 		try {
 			JBIG2SegmentReader sr = new JBIG2SegmentReader(ra);

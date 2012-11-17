@@ -51,12 +51,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * A RtfByteArrayBuffer works much like {@link ByteArrayOutputStream} but is cheaper and faster in most cases
  * (exception: large writes when reusing buffers).
  * 
- * @version $Id: RtfByteArrayBuffer.java 3433 2008-05-24 19:32:11Z xlv $
+ * @version $Id: RtfByteArrayBuffer.java 4065 2009-09-16 23:09:11Z psoares33 $
  * @author Thomas Bickel (tmb99@inode.at)
  */
 public final class RtfByteArrayBuffer extends OutputStream
@@ -80,7 +81,7 @@ public final class RtfByteArrayBuffer extends OutputStream
 	 */
 	public RtfByteArrayBuffer(final int bufferSize)
 	{
-		if((bufferSize <= 0) || (bufferSize > 1<<30)) throw new IllegalArgumentException("bufferSize "+bufferSize);
+		if((bufferSize <= 0) || (bufferSize > 1<<30)) throw new IllegalArgumentException(MessageLocalization.getComposedMessage("buffersize.1", bufferSize));
 		
 		int n = 1<<5;
 		while(n < bufferSize) {

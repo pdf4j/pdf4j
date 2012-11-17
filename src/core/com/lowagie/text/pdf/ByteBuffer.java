@@ -1,5 +1,6 @@
 /*
- * $Id: ByteBuffer.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: ByteBuffer.java 4065 2009-09-16 23:09:11Z psoares33 $
+ * $Name$
  *
  * Copyright 2000, 2001, 2002 by Paulo Soares.
  *
@@ -54,6 +55,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
 
@@ -568,7 +570,7 @@ public class ByteBuffer extends OutputStream {
     
     public void setSize(int size) {
         if (size > count || size < 0)
-            throw new IndexOutOfBoundsException("The new size must be positive and <= of the current size");
+            throw new IndexOutOfBoundsException(MessageLocalization.getComposedMessage("the.new.size.must.be.positive.and.lt.eq.of.the.current.size"));
         count = size;
     }
     

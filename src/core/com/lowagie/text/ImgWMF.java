@@ -1,5 +1,6 @@
 /*
- * $Id: ImgWMF.java 3373 2008-05-12 16:21:24Z xlv $
+ * $Id: ImgWMF.java 4065 2009-09-16 23:09:11Z psoares33 $
+ * $Name$
  *
  * Copyright 1999, 2000, 2001, 2002 by Paulo Soares.
  *
@@ -53,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.codec.wmf.InputMeta;
@@ -137,7 +139,7 @@ public class ImgWMF extends Image {
             }
             InputMeta in = new InputMeta(is);
             if (in.readInt() != 0x9AC6CDD7)	{
-                throw new BadElementException(errorID + " is not a valid placeable windows metafile.");
+                throw new BadElementException(MessageLocalization.getComposedMessage("1.is.not.a.valid.placeable.windows.metafile", errorID));
             }
             in.readWord();
             int left = in.readShort();

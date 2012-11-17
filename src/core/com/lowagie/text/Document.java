@@ -1,5 +1,5 @@
 /*
- * $Id: Document.java 4007 2009-07-07 09:43:40Z blowagie $
+ * $Id: Document.java 4106 2009-11-27 12:59:39Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -53,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * A generic Document class.
@@ -108,7 +109,7 @@ public class Document implements DocListener {
      * This constant may only be changed by Paulo Soares and/or Bruno Lowagie.
      * @since	2.1.6
      */
-	private static final String RELEASE = "2.1.7";
+	private static final String RELEASE = "4.2.0";
 	/** This constant may only be changed by Paulo Soares and/or Bruno Lowagie. */
 	private static final String ITEXT_VERSION = ITEXT + " " + RELEASE + " by 1T3XT";
     
@@ -269,12 +270,10 @@ public class Document implements DocListener {
     
     public boolean add(Element element) throws DocumentException {
         if (close) {
-			throw new DocumentException(
-				"The document has been closed. You can't add any Elements.");
+			throw new DocumentException(MessageLocalization.getComposedMessage("the.document.has.been.closed.you.can.t.add.any.elements"));
         }
 		if (!open && element.isContent()) {
-			throw new DocumentException(
-				"The document is not open yet; you can only add Meta information.");
+			throw new DocumentException(MessageLocalization.getComposedMessage("the.document.is.not.open.yet.you.can.only.add.meta.information"));
         }
         boolean success = false;
         DocListener listener;

@@ -1,5 +1,5 @@
 /*
- * $Id: FontFactoryImp.java 3548 2008-07-12 11:15:35Z blowagie $
+ * $Id: FontFactoryImp.java 4063 2009-09-13 19:02:46Z psoares33 $
  *
  * Copyright 2002 by Bruno Lowagie.
  *
@@ -70,7 +70,7 @@ import com.lowagie.text.pdf.BaseFont;
  * @author  Bruno Lowagie
  */
 
-public class FontFactoryImp {
+public class FontFactoryImp implements FontProvider {
         
 /** This is a map of postscriptfontnames of True Type fonts and the path of their ttf- or ttc-file. */
     private Properties trueTypeFonts = new Properties();

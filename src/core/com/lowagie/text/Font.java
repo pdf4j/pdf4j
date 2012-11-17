@@ -1,5 +1,5 @@
 /*
- * $Id: Font.java 3678 2009-02-07 14:46:01Z blowagie $
+ * $Id: Font.java 4020 2009-07-10 05:13:14Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -495,7 +495,7 @@ public class Font implements Comparable {
 	}
 
 	/**
-	 * checks if this font is Bold.
+	 * checks if this font is italic.
 	 * 
 	 * @return a <CODE>boolean</CODE>
 	 */

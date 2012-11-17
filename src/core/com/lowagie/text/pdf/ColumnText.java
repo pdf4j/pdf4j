@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnText.java 3904 2009-04-24 10:09:01Z blowagie $
+ * $Id: ColumnText.java 4091 2009-11-10 15:15:28Z psoares33 $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *
@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
@@ -453,11 +454,11 @@ public class ColumnText {
         	try {
 				element = ((SimpleTable)element).createPdfPTable();
 			} catch (DocumentException e) {
-				throw new IllegalArgumentException("Element not allowed.");
+				throw new IllegalArgumentException(MessageLocalization.getComposedMessage("element.not.allowed"));
 			}
         }
         else if (element.type() != Element.PARAGRAPH && element.type() != Element.LIST && element.type() != Element.PTABLE && element.type() != Element.YMARK)
-            throw new IllegalArgumentException("Element not allowed.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("element.not.allowed"));
         if (!composite) {
             composite = true;
             compositeElements = new LinkedList();
@@ -479,7 +480,7 @@ public class ColumnText {
      */
     protected ArrayList convertColumn(float cLine[]) {
         if (cLine.length < 4)
-            throw new RuntimeException("No valid column line found.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("no.valid.column.line.found"));
         ArrayList cc = new ArrayList();
         for (int k = 0; k < cLine.length - 2; k += 2) {
             float x1 = cLine[k];
@@ -501,7 +502,7 @@ public class ColumnText {
             minY = Math.min(minY, r[0]);
         }
         if (cc.isEmpty())
-            throw new RuntimeException("No valid column line found.");
+            throw new RuntimeException(MessageLocalization.getComposedMessage("no.valid.column.line.found"));
         return cc;
     }
     
@@ -826,7 +827,7 @@ public class ColumnText {
             text = canvas.getDuplicate();
         }
         else if (!simulate)
-            throw new NullPointerException("ColumnText.go with simulate==false and text==null.");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("columntext.go.with.simulate.eq.eq.false.and.text.eq.eq.null"));
         if (!simulate) {
             if (ratio == GLOBAL_SPACE_CHAR_RATIO)
                 ratio = text.getPdfWriter().getSpaceCharRatio();
@@ -980,7 +981,7 @@ public class ColumnText {
      */    
     public void setRunDirection(int runDirection) {
         if (runDirection < PdfWriter.RUN_DIRECTION_DEFAULT || runDirection > PdfWriter.RUN_DIRECTION_RTL)
-            throw new RuntimeException("Invalid run direction: " + runDirection);
+            throw new RuntimeException(MessageLocalization.getComposedMessage("invalid.run.direction.1", runDirection));
         this.runDirection = runDirection;
     }
     
@@ -1144,7 +1145,7 @@ public class ColumnText {
 
     protected int goComposite(boolean simulate) throws DocumentException {
         if (!rectangularMode)
-            throw new DocumentException("Irregular columns are not supported in composite mode.");
+            throw new DocumentException(MessageLocalization.getComposedMessage("irregular.columns.are.not.supported.in.composite.mode"));
         linesWritten = 0;
         descender = 0;
         boolean firstPass = adjustFirstLine;
@@ -1434,11 +1435,8 @@ public class ColumnText {
                     ArrayList sub = nt.getRows();
                     
                     // first we add the real header rows (if necessary)
-                    if (!skipHeader) {
-                        for (int j = 0; j < realHeaderRows; ++j) {
-                        	PdfPRow headerRow = table.getRow(j);
-                            sub.add(headerRow);
-                        }
+                    if (!skipHeader && realHeaderRows > 0) {
+                        sub.addAll(table.getRows(0, realHeaderRows));
                     }
                     else
                         nt.setHeaderRows(footerRows);
@@ -1447,9 +1445,11 @@ public class ColumnText {
                     // if k < table.size(), we must indicate that the new table is complete;
                     // otherwise no footers will be added (because iText thinks the table continues on the same page)
                     boolean showFooter = !table.isSkipLastFooter();
+                    boolean newPageFollows = false;
                     if (k < table.size()) {
                     	nt.setComplete(true);
                     	showFooter = true;
+                    	newPageFollows = true;
                     }
                     // we add the footer rows if necessary (not for incomplete tables)
                     for (int j = 0; j < footerRows && nt.isComplete() && showFooter; ++j)
@@ -1457,8 +1457,10 @@ public class ColumnText {
 
                     // we need a correction if the last row needs to be extended
                     float rowHeight = 0;
-                    PdfPRow last = (PdfPRow)sub.get(sub.size() - 1 - footerRows);
-                    if (table.isExtendLastRow()) {
+                    int index = sub.size() - 1;
+                    if (showFooter) index -= footerRows;
+                    PdfPRow last = (PdfPRow)sub.get(index);
+                    if (table.isExtendLastRow(newPageFollows)) {
                         rowHeight = last.getMaxHeights();
                         last.setMaxHeights(yTemp - minY + rowHeight);
                         yTemp = minY;
@@ -1469,7 +1471,7 @@ public class ColumnText {
                         nt.writeSelectedRows(0, -1, x1, yLineWrite, canvases);
                     else
                         nt.writeSelectedRows(0, -1, x1, yLineWrite, canvas);
-                    if (table.isExtendLastRow()) {
+                    if (table.isExtendLastRow(newPageFollows)) {
                         last.setMaxHeights(rowHeight);
                     }
                 }

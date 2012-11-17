@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -110,6 +111,11 @@ public abstract class BaseField {
      * This flag is only meaningful with combo fields.
      */    
     public static final int EDIT = PdfFormField.FF_EDIT;
+    
+    /** whether or not a list may have multiple selections.  Only applies to /CH LIST
+     * fields, not combo boxes.
+     */
+    public static final int MULTISELECT = PdfFormField.FF_MULTISELECT;
 
     /**
      * combo box flag.
@@ -560,7 +566,7 @@ public abstract class BaseField {
      */
     public void setRotation(int rotation) {
         if (rotation % 90 != 0)
-            throw new IllegalArgumentException("Rotation must be a multiple of 90.");
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("rotation.must.be.a.multiple.of.90"));
         rotation %= 360;
         if (rotation < 0)
             rotation += 360;

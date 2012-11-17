@@ -1,5 +1,5 @@
 /*
- * $Id: PdfImportedPage.java 3929 2009-05-22 13:26:41Z blowagie $
+ * $Id: PdfImportedPage.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf;
 import java.io.IOException;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
@@ -157,7 +158,7 @@ public class PdfImportedPage extends com.lowagie.text.pdf.PdfTemplate {
 	}
 
 	void throwError() {
-        throw new RuntimeException("Content can not be added to a PdfImportedPage.");
+        throw new RuntimeException(MessageLocalization.getComposedMessage("content.can.not.be.added.to.a.pdfimportedpage"));
     }
     
     PdfReaderInstance getPdfReaderInstance() {

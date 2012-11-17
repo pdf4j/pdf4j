@@ -1,5 +1,5 @@
 /*
- * $Id: Phrase.java 3942 2009-05-28 18:14:10Z blowagie $
+ * $Id: Phrase.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -52,6 +52,7 @@ package com.lowagie.text;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.pdf.HyphenationEvent;
 
@@ -296,7 +297,7 @@ public class Phrase extends ArrayList implements TextElementArray {
             }
         }
         catch(ClassCastException cce) {
-            throw new ClassCastException("Insertion of illegal Element: " + cce.getMessage());
+            throw new ClassCastException(MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
         }
     }
     
@@ -350,7 +351,7 @@ public class Phrase extends ArrayList implements TextElementArray {
             }
         }
         catch(ClassCastException cce) {
-            throw new ClassCastException("Insertion of illegal Element: " + cce.getMessage());
+            throw new ClassCastException(MessageLocalization.getComposedMessage("insertion.of.illegal.element.1", cce.getMessage()));
         }
     }
     

@@ -1,5 +1,5 @@
 /*
- * $Id: PagesTable.java 3117 2008-01-31 05:53:22Z xlv $
+ * $Id: PagesTable.java 4033 2009-07-23 13:08:02Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -31,7 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import com.lowagie.rups.controller.PdfReaderController;
 import com.lowagie.rups.model.ObjectLoader;
 import com.lowagie.rups.model.TreeNodeFactory;
-import com.lowagie.rups.view.PageNavigationListener;
+import com.lowagie.rups.view.PageSelectionListener;
 import com.lowagie.rups.view.itext.treenodes.PdfObjectTreeNode;
 import com.lowagie.rups.view.itext.treenodes.PdfPageTreeNode;
 import com.lowagie.rups.view.itext.treenodes.PdfPagesTreeNode;
@@ -52,13 +52,13 @@ public class PagesTable extends JTable implements JTableAutoModelInterface, Obse
 	/** Nodes in the FormTree correspond with nodes in the main PdfTree. */
 	protected PdfReaderController controller;
 	/***/
-	protected PageNavigationListener listener;
+	protected PageSelectionListener listener;
 
 	/**
 	 * Constructs a PagesTable.
 	 * @param	listener	the page navigation listener.
 	 */
-	public PagesTable(PdfReaderController controller, PageNavigationListener listener) {
+	public PagesTable(PdfReaderController controller, PageSelectionListener listener) {
 		this.controller = controller;
 		this.listener = listener;
 	}

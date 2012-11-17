@@ -1,5 +1,5 @@
 /*
- * $Id: ElementFactory.java 3528 2008-07-07 14:46:09Z Howard_s $
+ * $Id: ElementFactory.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2007 by Bruno Lowagie.
  *
@@ -57,6 +57,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Annotation;
@@ -524,7 +525,7 @@ public class ElementFactory {
 
 		value = attributes.getProperty(ElementTags.URL);
 		if (value == null)
-			throw new MalformedURLException("The URL of the image is missing.");
+			throw new MalformedURLException(MessageLocalization.getComposedMessage("the.url.of.the.image.is.missing"));
 		Image image = Image.getInstance(value);
 
 		value = attributes.getProperty(ElementTags.ALIGN);

@@ -1,5 +1,5 @@
 /*
- * $Id: PRTokeniser.java 3947 2009-06-02 17:51:05Z trumpetinc $
+ * $Id: PRTokeniser.java 4083 2009-10-30 21:25:10Z trumpetinc $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *
@@ -50,6 +50,8 @@
 package com.lowagie.text.pdf;
 
 import java.io.IOException;
+import com.lowagie.text.exceptions.InvalidPdfException;
+import com.lowagie.text.error_messages.MessageLocalization;
 /**
  *
  * @author  Paulo Soares (psoares@consiste.pt)
@@ -66,6 +68,7 @@ public class PRTokeniser {
     public static final int TK_END_DIC = 8;
     public static final int TK_REF = 9;
     public static final int TK_OTHER = 10;
+    public static final int TK_ENDOFFILE = 11;
     public static final boolean delims[] = {
         true,  true,  false, false, false, false, false, false, false, false,
         true,  true,  false, true,  true,  false, false, false, false, false,
@@ -190,7 +193,7 @@ public class PRTokeniser {
     }
     
     public void throwError(String error) throws IOException {
-        throw new IOException(error + " at file pointer " + file.getFilePointer());
+        throw new InvalidPdfException(MessageLocalization.getComposedMessage("1.at.file.pointer.2", error, String.valueOf(file.getFilePointer())));
     }
     
     public char checkPdfHeader() throws IOException {
@@ -198,7 +201,7 @@ public class PRTokeniser {
         String str = readString(1024);
         int idx = str.indexOf("%PDF-");
         if (idx < 0)
-            throw new IOException("PDF header signature not found.");
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("pdf.header.not.found"));
         file.setStartOffset(idx);
         return str.charAt(idx + 7);
     }
@@ -208,7 +211,7 @@ public class PRTokeniser {
         String str = readString(1024);
         int idx = str.indexOf("%FDF-1.2");
         if (idx < 0)
-            throw new IOException("FDF header signature not found.");
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("fdf.header.not.found"));
         file.setStartOffset(idx);
     }
 
@@ -219,7 +222,7 @@ public class PRTokeniser {
         String str = readString(1024);
         int idx = str.lastIndexOf("startxref");
         if (idx < 0)
-            throw new IOException("PDF startxref not found.");
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("pdf.startxref.not.found"));
         return pos + idx;
     }
 
@@ -288,8 +291,10 @@ public class PRTokeniser {
         do {
             ch = file.read();
         } while (ch != -1 && isWhitespace(ch));
-        if (ch == -1)
+        if (ch == -1){
+            type = TK_ENDOFFILE;
             return false;
+        }
 
         // Note:  We have to initialize stringValue here, after we've looked for the end of the stream,
         // to ensure that we don't lose the value of a token that might end exactly at the end
@@ -323,7 +328,7 @@ public class PRTokeniser {
             case '>':
                 ch = file.read();
                 if (ch != '>')
-                    throwError("'>' not expected");
+                    throwError(MessageLocalization.getComposedMessage("greaterthan.not.expected"));
                 type = TK_END_DIC;
                 break;
             case '<':
@@ -361,7 +366,7 @@ public class PRTokeniser {
                     v1 = file.read();
                 }
                 if (v1 < 0 || v2 < 0)
-                    throwError("Error reading string");
+                    throwError(MessageLocalization.getComposedMessage("error.reading.string"));
                 break;
             }
             case '%':
@@ -461,7 +466,7 @@ public class PRTokeniser {
                     outBuf.append((char)ch);
                 }
                 if (ch == -1)
-                    throwError("Error reading string");
+                    throwError(MessageLocalization.getComposedMessage("error.reading.string"));
                 break;
             }
             default:

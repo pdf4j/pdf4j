@@ -1,5 +1,5 @@
 /*
- * $Id: RectangleReadOnly.java 3746 2009-03-04 10:13:52Z blowagie $
+ * $Id: RectangleReadOnly.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -50,6 +50,7 @@
 package com.lowagie.text;
 
 import java.awt.Color;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 /**
  * A <CODE>RectangleReadOnly</CODE> is the representation of a geometric figure.
@@ -108,7 +109,7 @@ public class RectangleReadOnly extends Rectangle {
 	 * Throws an error because of the read only nature of this object. 
 	 */
     private void throwReadOnlyError() {
-        throw new UnsupportedOperationException("RectangleReadOnly: this Rectangle is read only.");
+        throw new UnsupportedOperationException(MessageLocalization.getComposedMessage("rectanglereadonly.this.rectangle.is.read.only"));
     }
     
 	// OVERWRITE METHODS SETTING THE DIMENSIONS:

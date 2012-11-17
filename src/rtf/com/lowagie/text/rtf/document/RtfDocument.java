@@ -1,5 +1,5 @@
 /*
- * $Id: RtfDocument.java 3580 2008-08-06 15:52:00Z howard_s $
+ * $Id: RtfDocument.java 4065 2009-09-16 23:09:11Z psoares33 $
  *
  * Copyright 2003, 2004, 2005 by Mark Hall
  *
@@ -52,6 +52,7 @@ package com.lowagie.text.rtf.document;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import com.lowagie.text.error_messages.MessageLocalization;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.rtf.RtfBasicElement;
@@ -67,7 +68,7 @@ import com.lowagie.text.rtf.graphic.RtfImage;
  * The RtfDocument stores all document related data and also the main data stream.
  * INTERNAL CLASS - NOT TO BE USED DIRECTLY
  *
- * @version $Id: RtfDocument.java 3580 2008-08-06 15:52:00Z howard_s $
+ * @version $Id: RtfDocument.java 4065 2009-09-16 23:09:11Z psoares33 $
  * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  * @author Todd Bush [Tab support]
  * @author Thomas Bickel (tmb99@inode.at)
@@ -172,7 +173,7 @@ public class RtfDocument extends RtfElement {
                 	this.data = new RtfDiskCache();
                 	break;
                 default:
-                	throw new RuntimeException("unknown");
+                	throw new RuntimeException(MessageLocalization.getComposedMessage("unknown"));
             }
     		
         } catch(IOException ioe) {
@@ -250,7 +251,7 @@ public class RtfDocument extends RtfElement {
     public void filterSpecialChar(final OutputStream out, final String str, final boolean useHex, final boolean softLineBreaks) throws IOException
     {
         if(out == null) {
-            throw new NullPointerException("null OutpuStream");
+            throw new NullPointerException(MessageLocalization.getComposedMessage("null.outpustream"));
         }
 
         final boolean alwaysUseUniCode = this.documentSettings.isAlwaysUseUnicode();
