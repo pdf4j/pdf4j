@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- iText, a JAVA - PDF library                                      -->
+<!-- $Id: compile.xml 3091 2008-01-09 17:33:58Z blowagie $         -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<project name="iText.compile" default="help">
+	<property file="local.properties" />
+	<property file="${user.home}/.ant.properties" />
+	<property file=".ant.properties" />
+	
+	<path id="itext.classpath">
+	    <pathelement location="${itext.bin}"/>
+	    <pathelement path="${itext.lib}/bcmail-${bc.jdk}-${bc.version}.jar"/>
+	    <pathelement path="${itext.lib}/bcprov-${bc.jdk}-${bc.version}.jar"/>
+	</path>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Help                                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="help" description="--> shows the help screen">
+        <echo>COMPILING AND JARRING THE CODE (compile.xml)</echo>
+        <echo>ant compile: compiles iText</echo>
+        <echo>ant compile.debug: compiles iText and allows you to debug the code</echo>
+        <echo>ant delete: deletes all generated data</echo>
+        <echo>ant jar: compiles and jars iText</echo>
+        <echo>ant jar.debug: compiles for debugging and jars iText</echo>
+        <echo>ant sign.jar: compiles and jars iText, then signs the jar</echo>
+        <echo />
+	</target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Compiling the code                                               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="compile" description="--> compiles the iText code">
+        <mkdir dir="${itext.bin}" />
+        <javac source="${itext.jdk.core}" target="${itext.jdk.core}" srcdir="${itext.src}/core" destdir="${itext.bin}">
+    	<classpath refid="itext.classpath"/>
+    	</javac>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Compiling the code for debugging                                 -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="compile.debug" description="--> compiles the iText code for debugging">
+        <mkdir dir="${itext.bin}" />
+        <javac source="${itext.jdk.core}" target="${itext.jdk.core}" srcdir="${itext.src}/core" destdir="${itext.bin}" listfiles="yes" debug="true" debuglevel="lines,vars,source">
+        	<classpath refid="itext.classpath"/>
+       	</javac>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Compiling the rtf code                                           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="compile.rtf" depends="compile" description="--> compiles the iText code">
+        <mkdir dir="${itext.rtf.bin}" />
+        <javac source="${itext.jdk.core}" target="${itext.jdk.core}" srcdir="${itext.rtf.src}" destdir="${itext.rtf.bin}">
+            <classpath refid="itext.classpath"/>
+        </javac>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Jarring the code                                                 -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="make.jar" description="--> makes a jarfile from the iText code">
+        <mkdir dir="${itext.bin}/com/lowagie/text/pdf/fonts" />
+        <copy todir="${itext.bin}/com/lowagie/text/pdf/fonts" overwrite="yes">
+            <fileset dir="${itext.src}/core/com/lowagie/text/pdf/fonts">
+                <include name="**/*.afm"/>
+                <include name="**/*.html"/>
+            </fileset>
+        </copy>
+        <copy todir="${itext.bin}/com/lowagie/text/" overwrite="yes">
+            <fileset dir="${itext.src}/core/com/lowagie/text/">
+                <include name="**/*.txt"/>
+            </fileset>
+        </copy>
+        <jar jarfile="${itext.jar}" basedir="${itext.bin}" excludes="com/lowagie/rups/**,com/lowagie/examples/**,**/*.cmap,**/*.properties,com/lowagie/text/pdf/fonts/cmaps/**">
+            <manifest>
+                <attribute name="Main-Class" value="com.lowagie.tools.ToolboxAvailable"/>
+                <attribute name="Class-Path" value="toolbox.jar bcmail-${bc.jdk}-${bc.version}.jar bcprov-${bc.jdk}-${bc.version}.jar"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Compiling and Jarring the code                                   -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+    <target name="jar"  depends="compile, make.jar" description="--> makes a jarfile from the iText code" />
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Jarring the code (debug)                                         -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+    <target name="jar.debug"  depends="compile.debug, make.jar" description="--> makes a jarfile from the iText code" />
+    
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Jarring the rtf code                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="jar.rtf"  depends="compile.rtf, make.jar" description="--> makes a jarfile from the iText rtf code">
+        <jar jarfile="${itext.rtf.jar}" basedir="${itext.rtf.bin}"/>
+    </target>
+    
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Signing the jar                                                  -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+    <target name="check-keystore" >
+        <condition property="keystore-exists">
+            <available file="${itext.keystore.filename}" type="file"/>
+        </condition>
+    </target>
+ 
+    <target name="keystore" depends="check-keystore" unless="keystore-exists">
+        <genkey
+            keystore="${itext.keystore.filename}"
+            storepass="${itext.keystore.password}"
+            alias="${itext.keystore.alias}"
+            storetype="${itext.keystore.storetype}"
+            dname="${itext.keystore.dname}"
+        />
+    </target>
+ 
+    <target name="sign.jar" depends="keystore, jar">
+        <signjar
+            jar="${itext.jar}"
+            keystore="${itext.keystore.filename}"
+            storepass="${itext.keystore.password}"
+            alias="${itext.keystore.alias}"
+            storetype="${itext.keystore.storetype}"
+        />
+    </target>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Deleting all generated data                                      -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <target name="delete" description="--> deletes all generated data">
+        <delete dir="${itext.build}" />
+    </target>
+
+</project>
