@@ -1,5 +1,5 @@
 /*
- * $Id: MappedRandomAccessFile.java 3085 2007-12-24 18:14:33Z xlv $
+ * $Id: MappedRandomAccessFile.java 3314 2008-05-01 23:48:39Z xlv $
  *
  * Copyright 2006 Joakim Sandstroem
  *
@@ -204,11 +204,11 @@ public class MappedRandomAccessFile {
             public Object run() {
                 Boolean success = Boolean.FALSE;
                 try {
-                    Method getCleanerMethod = buffer.getClass().getMethod("cleaner", null);
+                    Method getCleanerMethod = buffer.getClass().getMethod("cleaner", (Class[])null);
                     getCleanerMethod.setAccessible(true);
-                    Object cleaner = getCleanerMethod.invoke(buffer, null);
-                    Method clean = cleaner.getClass().getMethod("clean", null);
-                    clean.invoke(cleaner, null);
+                    Object cleaner = getCleanerMethod.invoke(buffer, (Object[])null);
+                    Method clean = cleaner.getClass().getMethod("clean", (Class[])null);
+                    clean.invoke(cleaner, (Object[])null);
                     success = Boolean.TRUE;
                 } catch (Exception e) {
                     // This really is a show stopper on windows

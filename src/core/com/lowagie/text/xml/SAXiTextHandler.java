@@ -1,6 +1,5 @@
 /*
- * $Id: SAXiTextHandler.java 2917 2007-09-08 20:55:00Z psoares33 $
- * $Name:  $
+ * $Id: SAXiTextHandler.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *
@@ -87,6 +86,7 @@ import com.lowagie.text.TextElementArray;
 import com.lowagie.text.factories.ElementFactory;
 import com.lowagie.text.html.HtmlTagMap;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.draw.LineSeparator;
 import com.lowagie.text.xml.simpleparser.EntitiesToSymbol;
 
 /**
@@ -141,6 +141,7 @@ public class SAXiTextHandler extends DefaultHandler {
         stack = new Stack();
     }
 
+    /** This hashmap contains all the custom keys and peers. */
     protected HashMap myTags;
 
     /**
@@ -177,7 +178,7 @@ public class SAXiTextHandler extends DefaultHandler {
      * Document.open() and Document.close() method.
      * <P>
      * If you set this parameter to true (= default), the parser will open the
-     * Document object when the start-root-tag is encounterd and close it when
+     * Document object when the start-root-tag is encountered and close it when
      * the end-root-tag is met. If you set it to false, you have to open and
      * close the Document object yourself.
      * 
@@ -314,7 +315,7 @@ public class SAXiTextHandler extends DefaultHandler {
             float widths[] = table.getProportionalWidths();
             for (int i = 0; i < widths.length; i++) {
                 if (widths[i] == 0) {
-                    widths[i] = 100.0f / (float) widths.length;
+                    widths[i] = 100.0f / widths.length;
                 }
             }
             try {
@@ -430,6 +431,23 @@ public class SAXiTextHandler extends DefaultHandler {
             return;
         }
 
+        if (ElementTags.HORIZONTALRULE.equals(name)) {
+            TextElementArray current;
+            LineSeparator hr = new LineSeparator(1.0f, 100.0f, null, Element.ALIGN_CENTER, 0);
+            try {
+                current = (TextElementArray) stack.pop();
+                current.add(hr);
+                stack.push(current);
+            } catch (EmptyStackException ese) {
+                try {
+                    document.add(hr);
+                } catch (DocumentException de) {
+                    throw new ExceptionConverter(de);
+                }
+            }
+            return;
+        }
+        
         // documentroot
         if (isDocumentRoot(name)) {
             String key;

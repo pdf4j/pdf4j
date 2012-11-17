@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPageEvent.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: PdfPageEvent.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -178,7 +177,7 @@ public interface PdfPageEvent {
 /**
  * Called when a <CODE>Chunk</CODE> with a generic tag is written.
  * <P>
- * It is usefull to pinpoint the <CODE>Chunk</CODE> location to generate
+ * It is useful to pinpoint the <CODE>Chunk</CODE> location to generate
  * bookmarks, for example.
  *
  * @param writer the <CODE>PdfWriter</CODE> for this document

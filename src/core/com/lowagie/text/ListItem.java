@@ -1,6 +1,5 @@
 /*
- * $Id: ListItem.java 3004 2007-11-21 15:24:27Z blowagie $
- * $Name$
+ * $Id: ListItem.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -104,7 +103,7 @@ public class ListItem extends Paragraph {
 	
 	// member variables
 	
-	/** this is the symbol that wil precede the listitem. */
+	/** this is the symbol that will precede the listitem. */
     private Chunk symbol;
     
     // constructors
@@ -248,29 +247,5 @@ public class ListItem extends Paragraph {
     public Chunk getListSymbol() {
         return symbol;
     }
-        
-    // deprecated stuff
-        
-    /**
-     * Returns a <CODE>ListItem</CODE> that has been constructed taking in account
-     * the value of some <VAR>attributes</VAR>.
-     *
-     * @param	attributes		Some attributes
-     * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getListItem(Properties)},
-	 * scheduled for removal at 2.1.0
-     */
-    public ListItem(java.util.Properties attributes) {
-    	this(com.lowagie.text.factories.ElementFactory.getParagraph(attributes));
-    }
-    
-    /**
-	 * Returns the listsymbol.
-	 *
-	 * @return	a <CODE>Chunk</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getListSymbol()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public Chunk listSymbol() {
-		return getListSymbol();
-	}
+
 }

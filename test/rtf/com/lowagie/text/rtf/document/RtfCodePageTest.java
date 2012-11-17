@@ -1,6 +1,5 @@
 /*
- * $Id: RtfAddableElement.java 2996 2007-11-20 22:40:36Z hallm $
- * $Name$
+ * $Id: RtfCodePageTest.java 3664 2009-01-26 22:11:53Z xlv $
  *
  * Copyright 2007 by Mark Hall
  *
@@ -55,14 +54,17 @@ package com.lowagie.text.rtf.document;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.junit.Test;
+
 import com.lowagie.text.rtf.RtfTestBase;
 
 /**
  * The <code>RtfCodePageTest</code> is a very simple junit test, that checks
  * that the <code>RtfCodePage</code> is producing the correct result.
  * 
- * @version $Id:$
+ * @version $Id: RtfCodePageTest.java 3664 2009-01-26 22:11:53Z xlv $
  * @author Mark Hall (Mark.Hall@mail.room3b.eu)
+ * @author Howard Shank (hgshank@yahoo.com)
  * @see com.lowagie.text.rtf.document.RtfCodePage
  * @since 2.0.8
  */
@@ -74,9 +76,10 @@ public class RtfCodePageTest extends RtfTestBase {
      * 
      * @throws IOException On I/O errors
      */
+    @Test
     public void testCodePage() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         (new RtfCodePage(this.rtfDoc)).writeDefinition(out);
-        assertEquals("\\ansi\\ansicpg1252\n", out);
+        assertEquals("\\ansi\\ansicpg1252", out);
     }
 }

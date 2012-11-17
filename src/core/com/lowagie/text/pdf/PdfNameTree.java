@@ -47,7 +47,6 @@
 package com.lowagie.text.pdf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -60,7 +59,7 @@ public class PdfNameTree {
     private static final int leafSize = 64;
     
     /**
-     * Creates a name tree.
+     * Writes a name tree to a PdfWriter.
      * @param items the item of the name tree. The key is a <CODE>String</CODE>
      * and the value is a <CODE>PdfObject</CODE>. Note that although the
      * keys are strings only the lower byte is used and no check is made for chars
@@ -139,16 +138,14 @@ public class PdfNameTree {
     private static void iterateItems(PdfDictionary dic, HashMap items) {
         PdfArray nn = (PdfArray)PdfReader.getPdfObjectRelease(dic.get(PdfName.NAMES));
         if (nn != null) {
-            ArrayList arr = nn.getArrayList();
-            for (int k = 0; k < arr.size(); ++k) {
-                PdfString s = (PdfString)PdfReader.getPdfObjectRelease((PdfObject)arr.get(k++));
-                items.put(PdfEncodings.convertToString(s.getBytes(), null), arr.get(k));
+            for (int k = 0; k < nn.size(); ++k) {
+                PdfString s = (PdfString)PdfReader.getPdfObjectRelease(nn.getPdfObject(k++));
+                items.put(PdfEncodings.convertToString(s.getBytes(), null), nn.getPdfObject(k));
             }
         }
         else if ((nn = (PdfArray)PdfReader.getPdfObjectRelease(dic.get(PdfName.KIDS))) != null) {
-            ArrayList arr = nn.getArrayList();
-            for (int k = 0; k < arr.size(); ++k) {
-                PdfDictionary kid = (PdfDictionary)PdfReader.getPdfObjectRelease((PdfObject)arr.get(k));
+            for (int k = 0; k < nn.size(); ++k) {
+                PdfDictionary kid = (PdfDictionary)PdfReader.getPdfObjectRelease(nn.getPdfObject(k));
                 iterateItems(kid, items);
             }
         }

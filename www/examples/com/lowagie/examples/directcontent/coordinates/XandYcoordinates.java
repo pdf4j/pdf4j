@@ -1,6 +1,5 @@
 /*
- * $Id: XandYcoordinates.java 2365 2006-09-14 22:52:48Z xlv $
- * $Name$
+ * $Id: XandYcoordinates.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -60,6 +59,7 @@ public class XandYcoordinates {
             template.moveTo(0, 13);
             template.lineTo(50, 13);
             template.stroke();
+            template.sanityCheck();
             
             // we add the template on different positions
             cb.addTemplate(template, 216 - 13, 720 - 13);
@@ -84,6 +84,8 @@ public class XandYcoordinates {
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "(1\", 2\")", 72 + 25, 144 + 5, 0);
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, "(2\", 4\")", 144 + 25, 288 + 5, 0);
             cb.endText(); 
+            
+            cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

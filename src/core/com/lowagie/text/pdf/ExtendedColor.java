@@ -1,6 +1,5 @@
 /*
- * $Id: ExtendedColor.java 2983 2007-11-15 18:13:24Z xlv $
- * $Name$
+ * $Id: ExtendedColor.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *

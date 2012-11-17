@@ -1,6 +1,5 @@
 /*
- * $Id: EntitiesToSymbol.java 2748 2007-05-12 15:11:48Z blowagie $
- * $Name$
+ * $Id: EntitiesToSymbol.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie.
  *

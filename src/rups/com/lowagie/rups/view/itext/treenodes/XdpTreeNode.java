@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: XdpTreeNode.java 3242 2008-04-13 23:00:20Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -99,7 +99,7 @@ public class XdpTreeNode extends IconTreeNode {
 			buf.append(a.getName());
 			buf.append("=\"");
 			buf.append(a.getValue());
-			buf.append("\"");
+			buf.append('"');
 			return buf.toString();
 		}
 		if (node instanceof Text) {
@@ -110,7 +110,7 @@ public class XdpTreeNode extends IconTreeNode {
 			ProcessingInstruction pi = (ProcessingInstruction)node;
 			StringBuffer buf = new StringBuffer("<?");
 			buf.append(pi.getName());
-			buf.append(" ");
+			buf.append(' ');
 			buf.append(pi.getText());
 			buf.append("?>");
 			return buf.toString();

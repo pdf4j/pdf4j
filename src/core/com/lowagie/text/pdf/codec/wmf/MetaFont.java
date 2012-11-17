@@ -1,6 +1,5 @@
 /*
- * $Id: MetaFont.java 2939 2007-09-20 14:52:05Z psoares33 $
- * $Name$
+ * $Id: MetaFont.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *

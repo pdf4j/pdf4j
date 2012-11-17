@@ -1,6 +1,5 @@
 /*
- * $Id: Section.java 3100 2008-01-22 12:04:04Z blowagie $
- * $Name$
+ * $Id: Section.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -451,7 +450,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
     }
 
 	/**
-     * Returns the title, preceeded by a certain number of sectionnumbers.
+     * Returns the title, preceded by a certain number of sectionnumbers.
      *
      * @return	a <CODE>Paragraph</CODE>
      */
@@ -684,7 +683,7 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
 	}
 
 	/**
-	 * Sets the indicaction if the section was already added to
+	 * Sets the indication if the section was already added to
 	 * the document.
 	 * @since	iText2.0.8
 	 * @param notAddedYet
@@ -746,84 +745,12 @@ public class Section extends ArrayList implements TextElementArray, LargeElement
 	public void setComplete(boolean complete) {
 		this.complete = complete;
 	}
-    
-    // deprecated stuff
 
 	/**
-	 * Returns the title, preceeded by a certain number of sectionnumbers.
-	 *
-	 * @return	a <CODE>Paragraph</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getTitle()},
-	 * scheduled for removal at 2.1.0
+	 * Adds a new page to the section.
+	 * @since	2.1.1
 	 */
-	public Paragraph title() {
-		return getTitle();
+	public void newPage() {
+		this.add(Chunk.NEXTPAGE);
 	}
-    
-    /**
-	 * Returns the numberdepth of this <CODE>Section</CODE>.
-	 *
-	 * @return	the numberdepth
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getNumberDepth()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int numberDepth() {
-		return getNumberDepth();
-	}
-    
-    /**
-	 * Returns the indentation of this <CODE>Section</CODE> on the left side.
-	 *
-	 * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationLeft()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentationLeft() {
-		return getIndentationLeft();
-	}
-    
-    /**
-	 * Returns the indentation of this <CODE>Section</CODE> on the right side.
-	 *
-	 * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationRight()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentationRight() {
-		return getIndentationRight();
-	}
-    
-    /**
-	 * Returns the indentation of the content of this <CODE>Section</CODE>.
-	 *
-	 * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentation()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentation() {
-		return getIndentation();
-	}
-    
-    /**
-	 * Returns the depth of this section.
-	 *
-	 * @return	the depth
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getDepth()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int depth() {
-		return getDepth();
-	}
-    
-    /**
-     * Creates a given <CODE>Section</CODE> following a set of attributes and adds it to this one.
-     *
-     * @param	attributes	the attributes
-     * @return      a Section
-     * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getSection(Section, Properties)},
-	 * scheduled for removal at 2.1.0
-     */
-    public Section addSection(java.util.Properties attributes) {
-    	return com.lowagie.text.factories.ElementFactory.getSection(this, attributes);
-    }
 }

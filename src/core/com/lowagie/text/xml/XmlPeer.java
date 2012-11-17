@@ -1,6 +1,5 @@
 /*
- * $Id: XmlPeer.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: XmlPeer.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *
@@ -80,7 +79,7 @@ public class XmlPeer {
 /**
  * Creates a XmlPeer.
  * @param name the iText name of a tag
- * @param alias the userdefined name of a tag
+ * @param alias the user defined name of a tag
  */
     
     public XmlPeer(String name, String alias) {
@@ -99,7 +98,7 @@ public class XmlPeer {
     
 /**
  * Gets the tagname of the peer.
- * @return the userdefined tagname
+ * @return the user defined tagname
  */
     
     public String getAlias() {
@@ -107,7 +106,7 @@ public class XmlPeer {
     }
     
 /** Gets the list of attributes of the peer. 
- * @param attrs the userdefined set of attributes
+ * @param attrs the user defined set of attributes
  * @return the set of attributes translated to iText attributes
  */
     public Properties getAttributes(Attributes attrs) {
@@ -174,7 +173,7 @@ public class XmlPeer {
     
 /**
  * Returns the default values.
- * @return A set of default (userdefined) values
+ * @return A set of default (user defined) values
  */
     
     public Properties getDefaultValues() {

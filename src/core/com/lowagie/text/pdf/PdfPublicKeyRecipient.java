@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPublicKeyRecipient.java 2600 2007-02-15 15:38:25Z blowagie $
- * $Name$
+ * $Id: PdfPublicKeyRecipient.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2006 Paulo Soares
  *

@@ -1,6 +1,5 @@
 /*
- * $Id: ExtendingStylesheets.java 2658 2007-03-16 23:51:33Z hallm $
- * $Name$
+ * $Id: ExtendingStylesheets.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -35,8 +34,8 @@ import com.lowagie.text.rtf.style.RtfParagraphStyle;
  * The ExtendingStylesheets example shows how to create new paragraph stylesheets
  * that (if desired) inherit from existing stylesheets.
  * 
- * @version $Revision: 2658 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class ExtendingStylesheets {
     /**

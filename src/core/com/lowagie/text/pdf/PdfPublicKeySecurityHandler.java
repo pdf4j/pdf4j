@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPublicKeySecurityHandler.java 2655 2007-03-15 19:26:36Z xlv $
- * $Name$
+ * $Id: PdfPublicKeySecurityHandler.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2006 Paulo Soares
  *

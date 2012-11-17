@@ -1,6 +1,5 @@
 /*
- * $Id: MetaState.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: MetaState.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -164,7 +163,7 @@ public class MetaState {
                 if (style != MetaPen.PS_NULL) {
                     Color color = currentPen.getColor();
                     cb.setColorStroke(color);
-                    cb.setLineWidth(Math.abs((float)currentPen.getPenWidth() * scalingX / extentWx));
+                    cb.setLineWidth(Math.abs(currentPen.getPenWidth() * scalingX / extentWx));
                     switch (style) {
                         case MetaPen.PS_DASH:
                             cb.setLineDash(18, 6, 0);

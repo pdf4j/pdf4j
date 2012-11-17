@@ -1,6 +1,5 @@
 /*
- * $Id: ToolboxAvailable.java 2967 2007-10-23 21:50:27Z xlv $
- * $Name$
+ * $Id: ToolboxAvailable.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2007 by Bruno Lowagie.
  *
@@ -68,12 +67,12 @@ public class ToolboxAvailable {
 	        System.out.println(Document.getVersion() + " Toolbox error: headless display");
 	    } else
 		try {
-			Class c = Class.forName("com.lowagie.tools.Toolbox");
+			Class c = Class.forName("com.lowagie.toolbox.Toolbox");
 			Method toolboxMain = c.getMethod("main", new Class[] {args.getClass()});
 			toolboxMain.invoke(null, new Object[] {args} );
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,
-					"You need the toolbox.jar with class com.lowagie.tools.Toolbox to use the iText Toolbox.",
+					"You need the iText-toolbox.jar with class com.lowagie.toolbox.Toolbox to use the iText Toolbox.",
 					Document.getVersion() + " Toolbox error",
 					JOptionPane.ERROR_MESSAGE);
 		}

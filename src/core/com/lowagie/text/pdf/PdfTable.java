@@ -1,6 +1,5 @@
 /*
- * $Id: PdfTable.java 3057 2007-12-02 15:36:06Z blowagie $
- * $Name$
+ * $Id: PdfTable.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -100,7 +99,7 @@ public class PdfTable extends Rectangle {
 	 */
     
 	PdfTable(Table table, float left, float right, float top) {
-		// constructs a Rectangle (the bottomvalue will be changed afterwards)
+		// constructs a Rectangle (the bottom value will be changed afterwards)
 		super(left, top, right, top);
 		this.table = table;
         table.complete();
@@ -111,7 +110,7 @@ public class PdfTable extends Rectangle {
 		this.columns = table.getColumns();
 		positions = table.getWidths(left, right - left);
         
-		// initialisation of some parameters
+		// initialization of some parameters
 		setLeft(positions[0]);
 		setRight(positions[positions.length - 1]);
 		

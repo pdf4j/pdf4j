@@ -1,6 +1,5 @@
 /*
- * $Id: Row.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: Row.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *

@@ -1,6 +1,5 @@
 /*
- * $Id: JTable2Pdf.java 3016 2007-11-26 03:54:13Z xlv $
- * $Name$
+ * $Id: JTable2Pdf.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

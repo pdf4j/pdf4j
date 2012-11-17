@@ -1,6 +1,5 @@
 /*
- * $Id: SplitChar.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: SplitChar.java 3374 2008-05-12 18:42:56Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -89,7 +88,7 @@ public class SplitChar implements SplitCharacter {
         if (ck == null)
             c = cc[current];
         else
-            c = ck[Math.min(current, ck.length - 1)].getUnicodeEquivalent(cc[current]);
+            c = (char) ck[Math.min(current, ck.length - 1)].getUnicodeEquivalent(cc[current]);
         return (c == '.');
 	}
 }

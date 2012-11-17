@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPTableEventForwarder.java 2014 2005-10-27 15:57:53Z blowagie $
- * $Name$
+ * $Id: PdfPTableEventForwarder.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2005 Bruno Lowagie
  *

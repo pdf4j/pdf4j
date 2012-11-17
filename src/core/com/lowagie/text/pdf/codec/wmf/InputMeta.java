@@ -1,6 +1,5 @@
 /*
- * $Id: InputMeta.java 2742 2007-05-08 13:04:56Z blowagie $
- * $Name$
+ * $Id: InputMeta.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *

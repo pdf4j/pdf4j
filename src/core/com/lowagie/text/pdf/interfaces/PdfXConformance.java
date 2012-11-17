@@ -1,5 +1,5 @@
 /*
- * $Id: PdfXConformance.java 2832 2007-06-05 14:40:21Z psoares33 $
+ * $Id: PdfXConformance.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2006 Bruno Lowagie
  *

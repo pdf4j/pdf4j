@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: PdfFile.java 3662 2009-01-26 20:54:49Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BadPasswordException;
+import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;

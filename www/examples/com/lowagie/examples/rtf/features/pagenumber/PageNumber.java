@@ -1,6 +1,5 @@
 /*
- * $Id: PageNumber.java 2668 2007-03-27 22:21:09Z hallm $
- * $Name$
+ * $Id: PageNumber.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -35,8 +34,8 @@ import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
  * The PageNumber example demonstrates creating a footer with the
  * current page number.
  * 
- * @version $Revision: 2668 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class PageNumber {
     /**

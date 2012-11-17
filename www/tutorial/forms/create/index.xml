@@ -11,10 +11,10 @@
 			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
 			<site:keyword>PDF</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2006-09-17 06:13:59 -0400 (Sun, 17 Sep 2006) $</site:updated>
+		<site:updated>$Date: 2009-06-16 10:09:47 -0400 (Tue, 16 Jun 2009) $</site:updated>
 		<site:author>Bruno Lowagie</site:author>
 	</site:metadata>
-	
+
 	<site:examples>
 		<site:example>
 			<site:java src="StudentCard" standalone="yes" />

@@ -1,6 +1,5 @@
 /*
- * $Id: Concatenate.java 2441 2006-10-27 17:24:01Z xlv $
- * $Name$
+ * $Id: Concatenate.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:

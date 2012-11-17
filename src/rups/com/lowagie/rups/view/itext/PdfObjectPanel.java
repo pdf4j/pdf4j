@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: PdfObjectPanel.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -66,7 +66,7 @@ public class PdfObjectPanel extends JPanel implements Observer {
 	}
 	
 	/**
-	 * Clear ths object panel.
+	 * Clear the object panel.
 	 */
 	public void clear() {
 		text.setText(null);

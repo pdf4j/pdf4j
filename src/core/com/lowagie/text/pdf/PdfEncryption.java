@@ -1,5 +1,5 @@
 /*
- * $Id: PdfEncryption.java 2840 2007-06-14 20:01:11Z psoares33 $
+ * $Id: PdfEncryption.java 3707 2009-02-20 18:47:51Z xlv $
  *
  * Copyright 2001-2006 Paulo Soares
  *
@@ -124,6 +124,12 @@ public class PdfEncryption {
 	private int keyLength;
 
 	private boolean encryptMetadata;
+	
+	/**
+	 * Indicates if the encryption is only necessary for embedded files.
+	 * @since 2.1.3
+	 */
+	private boolean embeddedFilesOnly;
 
 	private int cryptoMode;
 
@@ -147,20 +153,24 @@ public class PdfEncryption {
 		revision = enc.revision;
 		keyLength = enc.keyLength;
 		encryptMetadata = enc.encryptMetadata;
+		embeddedFilesOnly = enc.embeddedFilesOnly;
 		publicKeyHandler = enc.publicKeyHandler;
 	}
 
 	public void setCryptoMode(int mode, int kl) {
 		cryptoMode = mode;
 		encryptMetadata = (mode & PdfWriter.DO_NOT_ENCRYPT_METADATA) == 0;
+		embeddedFilesOnly = (mode & PdfWriter.EMBEDDED_FILES_ONLY) != 0;
 		mode &= PdfWriter.ENCRYPTION_MASK;
 		switch (mode) {
 		case PdfWriter.STANDARD_ENCRYPTION_40:
 			encryptMetadata = true;
+			embeddedFilesOnly = false;
 			keyLength = 40;
 			revision = STANDARD_ENCRYPTION_40;
 			break;
 		case PdfWriter.STANDARD_ENCRYPTION_128:
+			embeddedFilesOnly = false;
 			if (kl > 0)
 				keyLength = kl;
 			else
@@ -182,6 +192,15 @@ public class PdfEncryption {
 
 	public boolean isMetadataEncrypted() {
 		return encryptMetadata;
+	}
+
+	/**
+	 * Indicates if only the embedded files have to be encrypted.
+	 * @return	if true only the embedded files will be encrypted
+	 * @since	2.1.3
+	 */
+	public boolean isEmbeddedFilesOnly() {
+		return embeddedFilesOnly;
 	}
 
 	/**
@@ -229,7 +248,7 @@ public class PdfEncryption {
 
 	/**
 	 * 
-	 * ownerKey, documentID must be setuped
+	 * ownerKey, documentID must be setup
 	 */
 	private void setupGlobalEncryptionKey(byte[] documentID, byte userPad[],
 			byte ownerKey[], int permissions) {
@@ -239,7 +258,7 @@ public class PdfEncryption {
 		// use variable keylength
 		mkey = new byte[keyLength / 8];
 
-		// fixed by ujihara in order to follow PDF refrence
+		// fixed by ujihara in order to follow PDF reference
 		md5.reset();
 		md5.update(userPad);
 		md5.update(ownerKey);
@@ -269,7 +288,7 @@ public class PdfEncryption {
 
 	/**
 	 * 
-	 * mkey must be setuped
+	 * mkey must be setup
 	 */
 	// use the revision to choose the setup method
 	private void setupUserKey() {
@@ -291,7 +310,7 @@ public class PdfEncryption {
 		}
 	}
 
-	// gets keylength and revision and uses revison to choose the initial values
+	// gets keylength and revision and uses revision to choose the initial values
 	// for permissions
 	public void setupAllKeys(byte userPassword[], byte ownerPassword[],
 			int permissions) {
@@ -300,7 +319,7 @@ public class PdfEncryption {
 		permissions |= (revision == STANDARD_ENCRYPTION_128 || revision == AES_128) ? 0xfffff0c0
 				: 0xffffffc0;
 		permissions &= 0xfffffffc;
-		// PDF refrence 3.5.2 Standard Security Handler, Algorithum 3.3-1
+		// PDF reference 3.5.2 Standard Security Handler, Algorithm 3.3-1
 		// If there is no owner password, use the user password instead.
 		byte userPad[] = padPassword(userPassword);
 		byte ownerPad[] = padPassword(ownerPassword);
@@ -431,10 +450,16 @@ public class PdfEncryption {
 				else
 					stdcf.put(PdfName.CFM, PdfName.V2);
 				PdfDictionary cf = new PdfDictionary();
-				cf.put(PdfName.DEFAULTCRYPTFILER, stdcf);
-				dic.put(PdfName.CF, cf);
-				dic.put(PdfName.STRF, PdfName.DEFAULTCRYPTFILER);
-				dic.put(PdfName.STMF, PdfName.DEFAULTCRYPTFILER);
+				cf.put(PdfName.DEFAULTCRYPTFILTER, stdcf);
+				dic.put(PdfName.CF, cf);if (embeddedFilesOnly) {
+					dic.put(PdfName.EFF, PdfName.DEFAULTCRYPTFILTER);
+					dic.put(PdfName.STRF, PdfName.IDENTITY);
+					dic.put(PdfName.STMF, PdfName.IDENTITY);
+				}
+				else {
+					dic.put(PdfName.STRF, PdfName.DEFAULTCRYPTFILTER);
+					dic.put(PdfName.STMF, PdfName.DEFAULTCRYPTFILTER);
+				}
 			}
 
 			MessageDigest md = null;
@@ -480,7 +505,17 @@ public class PdfEncryption {
 				dic.put(PdfName.LENGTH, new PdfNumber(128));
 				PdfDictionary stdcf = new PdfDictionary();
 				stdcf.put(PdfName.LENGTH, new PdfNumber(16));
-				stdcf.put(PdfName.AUTHEVENT, PdfName.DOCOPEN);
+				if (embeddedFilesOnly) {
+					stdcf.put(PdfName.AUTHEVENT, PdfName.EFOPEN);
+					dic.put(PdfName.EFF, PdfName.STDCF);
+					dic.put(PdfName.STRF, PdfName.IDENTITY);
+					dic.put(PdfName.STMF, PdfName.IDENTITY);
+				}
+				else {
+					stdcf.put(PdfName.AUTHEVENT, PdfName.DOCOPEN);
+					dic.put(PdfName.STRF, PdfName.STDCF);
+					dic.put(PdfName.STMF, PdfName.STDCF);
+				}
 				if (revision == AES_128)
 					stdcf.put(PdfName.CFM, PdfName.AESV2);
 				else
@@ -488,8 +523,6 @@ public class PdfEncryption {
 				PdfDictionary cf = new PdfDictionary();
 				cf.put(PdfName.STDCF, stdcf);
 				dic.put(PdfName.CF, cf);
-				dic.put(PdfName.STRF, PdfName.STDCF);
-				dic.put(PdfName.STMF, PdfName.STDCF);
 			}
 		}
 

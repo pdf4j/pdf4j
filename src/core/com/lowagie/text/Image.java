@@ -1,6 +1,5 @@
 /*
- * $Id: Image.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: Image.java 3941 2009-05-28 14:52:26Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -58,7 +57,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
@@ -70,12 +68,14 @@ import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfOCG;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
 import com.lowagie.text.pdf.codec.BmpImage;
 import com.lowagie.text.pdf.codec.CCITTG4Encoder;
 import com.lowagie.text.pdf.codec.GifImage;
+import com.lowagie.text.pdf.codec.JBIG2Image;
 import com.lowagie.text.pdf.codec.PngImage;
 import com.lowagie.text.pdf.codec.TiffImage;
 
@@ -160,9 +160,15 @@ public abstract class Image extends Rectangle {
 	/** type of image */
 	public static final int ORIGINAL_JPEG2000 = 8;
 
+	/**
+	 * type of image
+	 * @since	2.1.5
+	 */
+	public static final int ORIGINAL_JBIG2 = 9;
+	
     // member variables
 
-	/** The imagetype. */
+	/** The image type. */
 	protected int type;
 
 	/** The URL of the image. */
@@ -200,6 +206,12 @@ public abstract class Image extends Rectangle {
 
 	/** This is the original height of the image taking rotation into account. */
 	protected float scaledHeight;
+	
+    /**
+     * The compression level of the content streams.
+     * @since	2.1.3
+     */
+    protected int compressionLevel = PdfStream.DEFAULT_COMPRESSION;
 
 	/** an iText attributed unique id for this image. */
 	protected Long mySerialId = getSerialId();
@@ -238,6 +250,11 @@ public abstract class Image extends Rectangle {
 			int c2 = is.read();
 			int c3 = is.read();
 			int c4 = is.read();
+			// jbig2
+			int c5 = is.read();
+			int c6 = is.read();
+			int c7 = is.read();
+			int c8 = is.read();
 			is.close();
 
 			is = null;
@@ -283,6 +300,24 @@ public abstract class Image extends Rectangle {
 						ra.close();
 				}
 
+			}
+			if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' &&
+					c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n' ) {
+				RandomAccessFileOrArray ra = null;
+				try {
+					if (url.getProtocol().equals("file")) {
+						String file = url.getFile();
+						file = Utilities.unEscapeURL(file);
+			            ra = new RandomAccessFileOrArray(file);
+					} else
+						ra = new RandomAccessFileOrArray(url);
+					Image img = JBIG2Image.getJbig2Image(ra, 1);
+					img.url = url;
+					return img;
+				} finally {
+						if (ra != null)
+							ra.close();
+				}
 			}
 			throw new IOException(url.toString()
 					+ " is not a recognized imageformat.");
@@ -369,6 +404,36 @@ public abstract class Image extends Rectangle {
 				}
 
 			}
+			if ( c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2' ) {
+				is = new java.io.ByteArrayInputStream(imgb);
+				is.skip(4);
+				int c5 = is.read();
+				int c6 = is.read();
+				int c7 = is.read();
+				int c8 = is.read();
+				if ( c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n' ) {
+					int file_header_flags = is.read();
+					int number_of_pages = -1;
+					if ( (file_header_flags & 0x2) == 0x2 ) {
+						number_of_pages = (is.read() << 24) | (is.read() << 16) | (is.read() << 8) | is.read();
+					}
+					is.close();
+					// a jbig2 file with a file header.  the header is the only way we know here.                                                           
+					// embedded jbig2s don't have a header, have to create them by explicit use of Jbig2Image?
+					// nkerr, 2008-12-05  see also the getInstance(URL)
+					RandomAccessFileOrArray ra = null;
+					try {
+						ra = new RandomAccessFileOrArray(imgb);
+						Image img = JBIG2Image.getJbig2Image(ra, 1);
+						if (img.getOriginalData() == null)
+							img.setOriginalData(imgb);
+						return img;
+					} finally {
+						if (ra != null)
+							ra.close();
+					}
+				}
+			}
 			throw new IOException(
 					"The byte array is not a recognized imageformat.");
 		} finally {
@@ -400,6 +465,19 @@ public abstract class Image extends Rectangle {
 		return Image.getInstance(width, height, components, bpc, data, null);
 	}
 
+	/**
+	 * Creates a JBIG2 Image.
+	 * @param	width	the width of the image
+	 * @param	height	the height of the image
+	 * @param	data	the raw image data
+	 * @param	globals	JBIG2 globals
+	 * @since	2.1.5
+	 */
+	public static Image getInstance(int width, int height, byte[] data, byte[] globals) {
+		Image img = new ImgJBIG2(width, height, data, globals);
+		return img;
+	}
+	
 	/**
 	 * Creates an Image with CCITT G3 or G4 compression. It assumes that the
 	 * data bytes are already compressed.
@@ -604,8 +682,8 @@ public abstract class Image extends Rectangle {
 						int alpha = (pixels[j] >> 24) & 0xff;
 						if (alpha == 0) {
 							transparency = new int[2];
-							transparency[0] = transparency[1] = ((pixels[j] & 0x888) != 0) ? 1
-									: 0;
+							/* bugfix by M.P. Liston, ASC, was: ... ? 1: 0; */
+							transparency[0] = transparency[1] = ((pixels[j] & 0x888) != 0) ? 0xff : 0;
 						}
 					}
 					if ((pixels[j] & 0x888) != 0)
@@ -716,7 +794,7 @@ public abstract class Image extends Rectangle {
 	
 	/**
 	 * Gets an instance of a Image from a java.awt.Image.
-	 * The image is added as a JPEG with a userdefined quality.
+	 * The image is added as a JPEG with a user defined quality.
 	 * 
 	 * @param writer
 	 *            the <CODE>PdfWriter</CODE> object to which the image will be added
@@ -735,7 +813,7 @@ public abstract class Image extends Rectangle {
 	
     /**
      * Gets an instance of a Image from a java.awt.Image.
-     * The image is added as a JPEG with a userdefined quality.
+     * The image is added as a JPEG with a user defined quality.
      *
      * @param cb
      *            the <CODE>PdfContentByte</CODE> object to which the image will be added
@@ -1165,6 +1243,7 @@ public abstract class Image extends Rectangle {
 		float[] matrix = matrix();
 		scaledWidth = matrix[DX] - matrix[CX];
 		scaledHeight = matrix[DY] - matrix[CY];
+		setWidthPercentage(0);
 	}
 
 	/**
@@ -1178,6 +1257,7 @@ public abstract class Image extends Rectangle {
 		float[] matrix = matrix();
 		scaledWidth = matrix[DX] - matrix[CX];
 		scaledHeight = matrix[DY] - matrix[CY];
+		setWidthPercentage(0);
 	}
 
 	/**
@@ -1191,6 +1271,7 @@ public abstract class Image extends Rectangle {
 		float[] matrix = matrix();
 		scaledWidth = matrix[DX] - matrix[CX];
 		scaledHeight = matrix[DY] - matrix[CY];
+		setWidthPercentage(0);
 	}
 
 	/**
@@ -1217,6 +1298,7 @@ public abstract class Image extends Rectangle {
 		float[] matrix = matrix();
 		scaledWidth = matrix[DX] - matrix[CX];
 		scaledHeight = matrix[DY] - matrix[CY];
+		setWidthPercentage(0);
 	}
 
 	/**
@@ -1232,6 +1314,7 @@ public abstract class Image extends Rectangle {
 		float percentX = (fitWidth * 100) / getScaledWidth();
 		float percentY = (fitHeight * 100) / getScaledHeight();
 		scalePercent(percentX < percentY ? percentX : percentY);
+		setWidthPercentage(0);
 	}
 
 	/**
@@ -1784,31 +1867,35 @@ public abstract class Image extends Rectangle {
     public void simplifyColorspace() {
         if (additional == null)
             return;
-        PdfObject value = additional.get(PdfName.COLORSPACE);
-        if (value == null || !value.isArray())
+        PdfArray value = additional.getAsArray(PdfName.COLORSPACE);
+        if (value == null)
             return;
         PdfObject cs = simplifyColorspace(value);
+        PdfObject newValue;
         if (cs.isName())
-            value = cs;
+            newValue = cs;
         else {
-            PdfObject first = (PdfObject)(((PdfArray)value).getArrayList().get(0));
+            newValue = value;
+            PdfName first = value.getAsName(0);
             if (PdfName.INDEXED.equals(first)) {
-                ArrayList array = ((PdfArray)value).getArrayList();
-                if (array.size() >= 2 && ((PdfObject)array.get(1)).isArray()) {
-                     array.set(1, simplifyColorspace((PdfObject)array.get(1)));
+                if (value.size() >= 2) {
+                    PdfArray second = value.getAsArray(1);
+                    if (second != null) {
+                        value.set(1, simplifyColorspace(second));
+                    }
                 }
             }
         }
-        additional.put(PdfName.COLORSPACE, value);
+        additional.put(PdfName.COLORSPACE, newValue);
     }
 	
 	/**
 	 * Gets a PDF Name from an array or returns the object that was passed.
 	 */
-    private PdfObject simplifyColorspace(PdfObject obj) {
-        if (obj == null || !obj.isArray())
+    private PdfObject simplifyColorspace(PdfArray obj) {
+        if (obj == null)
             return obj;
-        PdfObject first = (PdfObject)(((PdfArray)obj).getArrayList().get(0));
+        PdfName first = obj.getAsName(0);
         if (PdfName.CALGRAY.equals(first))
             return PdfName.DEVICEGRAY;
         else if (PdfName.CALRGB.equals(first))
@@ -1931,272 +2018,26 @@ public abstract class Image extends Rectangle {
 	public void setTransparency(int transparency[]) {
 		this.transparency = transparency;
 	}
-	
-	// deprecated stuff
+
 
 	/**
-	 * Gets the <CODE>String</CODE> -representation of the reference to the
-	 * image.
-	 * 
-	 * @return a <CODE>String</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getUrl()},
-	 * scheduled for removal at 2.1.0
+	 * Returns the compression level used for images written as a compressed stream.
+	 * @return the compression level (0 = best speed, 9 = best compression, -1 is default)
+     * @since	2.1.3
 	 */
-	
-	public URL url() {
-		return getUrl();
+	public int getCompressionLevel() {
+		return compressionLevel;
 	}
 
 	/**
-	 * Gets the template to be used as an image.
-	 * <P>
-	 * Remark: this only makes sense for Images of the type <CODE>ImgTemplate
-	 * </CODE>.
-	 * 
-	 * @return the template
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getTemplateData()},
-	 * scheduled for removal at 2.1.0
+	 * Sets the compression level to be used if the image is written as a compressed stream.
+	 * @param compressionLevel a value between 0 (best speed) and 9 (best compression)
+     * @since	2.1.3
 	 */
-	public PdfTemplate templateData() {
-		return getTemplateData();
-	}
-
-	/**
-	 * Returns an <CODE>Image</CODE> that has been constructed taking in
-	 * account the value of some <VAR>attributes </VAR>.
-	 * 
-	 * @param attributes
-	 *            Some attributes
-	 * @return an <CODE>Image</CODE>
-	 * @throws BadElementException
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getImage(Properties)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public static Image getInstance(java.util.Properties attributes)
-			throws BadElementException, MalformedURLException, IOException {
-		return com.lowagie.text.factories.ElementFactory.getImage(attributes);
-	}
-	
-	/**
-	 * Gets the left indentation.
-	 * 
-	 * @return the left indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationLeft()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentationLeft() {
-		return getIndentationLeft();
-	}
-
-	/**
-	 * Gets the right indentation.
-	 * 
-	 * @return the right indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationRight()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentationRight() {
-		return getIndentationRight();
-	}
-
-	/**
-	 * Gets the spacing before this image.
-	 * 
-	 * @return the spacing
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getSpacingBefore()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float spacingBefore() {
-		return getSpacingBefore();
-	}
-
-	/**
-	 * Gets the spacing before this image.
-	 * 
-	 * @return the spacing
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getSpacingAfter()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float spacingAfter() {
-		return getSpacingAfter();
-	}
-
-	/**
-	 * Gets the raw data for the image.
-	 * <P>
-	 * Remark: this only makes sense for Images of the type <CODE>RawImage
-	 * </CODE>.
-	 * 
-	 * @return the raw data
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getRawData()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public byte[] rawData() {
-		return getRawData();
-	}
-	
-	/**
-	 * Gets the bpc for the image.
-	 * <P>
-	 * Remark: this only makes sense for Images of the type <CODE>RawImage
-	 * </CODE>.
-	 * 
-	 * @return a bpc value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getBpc()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int bpc() {
-		return getBpc();
-	}
-
-	/**
-	 * Gets the annotation.
-	 * 
-	 * @return the annotation that is linked to this image
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getAnnotation()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public Annotation annotation() {
-		return getAnnotation();
-	}
-
-	/**
-	 * Checks if the <CODE>Images</CODE> has to be added at an absolute
-	 * position.
-	 * 
-	 * @return a boolean
-	 * @deprecated As of iText 2.0.3, replaced by {@link #hasAbsoluteY()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public boolean hasAbsolutePosition() {
-		return hasAbsoluteY();
-	}
-
-	/**
-	 * Returns the absolute X position.
-	 * 
-	 * @return a position
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getAbsoluteX()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float absoluteX() {
-		return getAbsoluteX();
-	}
-
-	/**
-	 * Returns the absolute Y position.
-	 * 
-	 * @return a position
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getAbsoluteY()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float absoluteY() {
-		return getAbsoluteY();
-	}
-
-	/**
-	 * Gets the plain width of the image.
-	 * 
-	 * @return a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getPlainWidth()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float plainWidth() {
-		return getPlainWidth();
-	}
-
-	/**
-	 * Gets the plain height of the image.
-	 * 
-	 * @return a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getPlainHeight()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float plainHeight() {
-		return getPlainHeight();
-	}
-
-	/**
-	 * Gets the scaled height of the image.
-	 * 
-	 * @return a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getScaledWidth()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float scaledWidth() {
-		return getScaledWidth();
-	}
-
-	/**
-	 * Gets the scaled height of the image.
-	 * 
-	 * @return a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getScaledHeight()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float scaledHeight() {
-		return getScaledHeight();
-	}
-
-	/**
-	 * Gets the alignment for the image.
-	 * 
-	 * @return a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getAlignment()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int alignment() {
-		return getAlignment();
-	}
-
-	/**
-	 * Gets the alternative text for the image.
-	 * 
-	 * @return a <CODE>String</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getAlt()},
-	 * scheduled for removal at 2.1.0
-	 */
-	
-	public String alt() {
-		return getAlt();
-	}
-	
-	/**
-	 * Gets the colorspace for the image.
-	 * <P>
-	 * Remark: this only makes sense for Images of the type <CODE>Jpeg</CODE>.
-	 * 
-	 * @return a colorspace value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getColorspace()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int colorspace() {
-		return getColorspace();
-	}
-
-	/**
-	 * Inverts the meaning of the bits of a mask.
-	 * 
-	 * @param invert
-	 *            <CODE>true</CODE> to invert the meaning of the bits of a
-	 *            mask
-	 * @deprecated As of iText 2.0.3, replaced by {@link #setInverted(boolean)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public void setInvertMask(boolean invert) {
-		setInverted(invert);
-	}
-
-	/**
-	 * Returns <CODE>true</CODE> if the bits are to be inverted in the mask.
-	 * 
-	 * @return <CODE>true</CODE> if the bits are to be inverted in the mask
-	 * @deprecated As of iText 2.0.3, replaced by {@link #isInverted()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public boolean isInvertMask() {
-		return isInverted();
+	public void setCompressionLevel(int compressionLevel) {
+		if (compressionLevel < PdfStream.NO_COMPRESSION || compressionLevel > PdfStream.BEST_COMPRESSION)
+			this.compressionLevel = PdfStream.DEFAULT_COMPRESSION;
+		else
+			this.compressionLevel = compressionLevel;
 	}
 }

@@ -1,8 +1,7 @@
 /*
- * $Id: PdfCopy.java 2907 2007-08-31 11:24:47Z blowagie $
- * $Name$
+ * $Id: PdfCopy.java 3912 2009-04-26 08:38:15Z blowagie $
  *
- * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
+ * Copyright (C) 2002 Mark Thompson
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -19,8 +18,6 @@
  * All Rights Reserved.
  * Co-Developer of the code is Paulo Soares. Portions created by the Co-Developer
  * are Copyright (C) 2000, 2001, 2002 by Paulo Soares. All Rights Reserved.
- *
- * This module by Mark Thompson. Copyright (C) 2002 Mark Thompson
  *
  * Contributor(s): all the names of the contributors are added in the source code
  * where applicable.
@@ -263,7 +260,7 @@ public class PdfCopy extends PdfWriter {
     protected PdfArray copyArray(PdfArray in) throws IOException, BadPdfFormatException {
         PdfArray out = new PdfArray();
         
-        for (Iterator i = in.getArrayList().iterator(); i.hasNext();) {
+        for (Iterator i = in.listIterator(); i.hasNext();) {
             PdfObject value = (PdfObject)i.next();
             out.add(copyObject(value));
         }
@@ -308,7 +305,7 @@ public class PdfCopy extends PdfWriter {
     }
     
     /**
-     * convenience method. Given an importedpage, set our "globals"
+     * convenience method. Given an imported page, set our "globals"
      */
     protected int setFromIPage(PdfImportedPage iPage) {
         int pageNum = iPage.getPageNumber();
@@ -367,6 +364,21 @@ public class PdfCopy extends PdfWriter {
     }
     
     /**
+     * Adds a blank page.
+     * @param	rect The page dimension
+     * @param	rotation The rotation angle in degrees
+     * @since	2.1.5
+     */
+    public void addPage(Rectangle rect, int rotation) {
+    	PdfRectangle mediabox = new PdfRectangle(rect, rotation);
+    	PageResources resources = new PageResources();
+    	PdfPage page = new PdfPage(mediabox, new HashMap(), resources.getResources(), 0);
+    	page.put(PdfName.TABS, getTabs());
+    	root.addPage(page);
+    	++currentPageNumber;
+    }
+    
+    /**
      * Copy the acroform for an input document. Note that you can only have one,
      * we make no effort to merge them.
      * @param reader The reader of the input file that is being copied
@@ -411,7 +423,6 @@ public class PdfCopy extends PdfWriter {
             }
             else
                 addFieldResources(theCat);
-            writeOutlines(theCat, false);
             return theCat;
         }
         catch (IOException e) {
@@ -434,9 +445,8 @@ public class PdfCopy extends PdfWriter {
             PdfTemplate template = (PdfTemplate)it.next();
             PdfFormField.mergeResources(dr, (PdfDictionary)template.getResources());
         }
-        if (dr.get(PdfName.ENCODING) == null)
-            dr.put(PdfName.ENCODING, PdfName.WIN_ANSI_ENCODING);
-        PdfDictionary fonts = (PdfDictionary)PdfReader.getPdfObject(dr.get(PdfName.FONT));
+        // if (dr.get(PdfName.ENCODING) == null) dr.put(PdfName.ENCODING, PdfName.WIN_ANSI_ENCODING);
+        PdfDictionary fonts = dr.getAsDict(PdfName.FONT);
         if (fonts == null) {
             fonts = new PdfDictionary();
             dr.put(PdfName.FONT, fonts);
@@ -464,7 +474,7 @@ public class PdfCopy extends PdfWriter {
      * <P>
      * The pages-tree is built and written to the outputstream.
      * A Catalog is constructed, as well as an Info-object,
-     * the referencetable is composed and everything is written
+     * the reference table is composed and everything is written
      * to the outputstream embedded in a Trailer.
      */
     
@@ -553,7 +563,7 @@ public class PdfCopy extends PdfWriter {
             if (under == null) {
                 if (pageResources == null) {
                     pageResources = new PageResources();
-                    PdfDictionary resources = (PdfDictionary)PdfReader.getPdfObject(pageN.get(PdfName.RESOURCES));
+                    PdfDictionary resources = pageN.getAsDict(PdfName.RESOURCES);
                     pageResources.setOriginalResources(resources, cstp.namePtr);
                 }
                 under = new PdfCopy.StampContent(cstp, pageResources);
@@ -565,7 +575,7 @@ public class PdfCopy extends PdfWriter {
             if (over == null) {
                 if (pageResources == null) {
                     pageResources = new PageResources();
-                    PdfDictionary resources = (PdfDictionary)PdfReader.getPdfObject(pageN.get(PdfName.RESOURCES));
+                    PdfDictionary resources = pageN.getAsDict(PdfName.RESOURCES);
                     pageResources.setOriginalResources(resources, cstp.namePtr);
                 }
                 over = new PdfCopy.StampContent(cstp, pageResources);
@@ -601,7 +611,7 @@ public class PdfCopy extends PdfWriter {
             if (over != null)
                 out.append(PdfContents.SAVESTATE);
             PdfStream stream = new PdfStream(out.toByteArray());
-            stream.flateCompress();
+            stream.flateCompress(cstp.getCompressionLevel());
             PdfIndirectReference ref1 = cstp.addToBody(stream).getIndirectReference();
             ar.addFirst(ref1);
             out.reset();
@@ -613,7 +623,7 @@ public class PdfCopy extends PdfWriter {
                 out.append(over.getInternalBuffer());
                 out.append(PdfContents.RESTORESTATE);
                 stream = new PdfStream(out.toByteArray());
-                stream.flateCompress();
+                stream.flateCompress(cstp.getCompressionLevel());
                 ar.add(cstp.addToBody(stream).getIndirectReference());
             }
             pageN.put(PdfName.RESOURCES, pageResources.getResources());

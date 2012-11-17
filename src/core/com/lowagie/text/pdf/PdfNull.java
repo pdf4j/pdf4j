@@ -1,6 +1,5 @@
 /*
- * $Id: PdfNull.java 2739 2007-05-04 11:24:51Z blowagie $
- * $Name$
+ * $Id: PdfNull.java 3759 2009-03-06 16:05:00Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -61,25 +60,26 @@ package com.lowagie.text.pdf;
 
 public class PdfNull extends PdfObject {
     
-    // static membervariables
+    // CLASS CONSTANTS
     
-/** This is an instance of the <CODE>PdfNull</CODE>-object. */
+    /** An instance of the <CODE>PdfNull</CODE>-object. */
     public static final PdfNull	PDFNULL = new PdfNull();
     
-/** This is the content of a <CODE>PdfNull</CODE>-object. */
+    /** The content of the <CODE>PdfNull</CODE>-object. */
     private static final String CONTENT = "null";
     
-    // constructors
+    // CONSTRUCTOR
     
-/**
- * Constructs a <CODE>PdfNull</CODE>-object.
- * <P>
- * You never need to do this yourself, you can always use the static final object <VAR>PDFNULL</VAR>.
- */
-    
+    /**
+     * Constructs a <CODE>PdfNull</CODE>-object.
+     * <P>
+     * You never need to do this yourself, you can always use the static final object <VAR>PDFNULL</VAR>.
+     */
     public PdfNull() {
         super(NULL, CONTENT);
     }
+    
+    // CLASS METHOD
     
     public String toString() {
     	return "null";

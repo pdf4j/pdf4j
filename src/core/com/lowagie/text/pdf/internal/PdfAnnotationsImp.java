@@ -1,5 +1,5 @@
 /*
- * $Id: PdfAnnotationsImp.java 2742 2007-05-08 13:04:56Z blowagie $
+ * $Id: PdfAnnotationsImp.java 3912 2009-04-26 08:38:15Z blowagie $
  *
  * Copyright 2006 Bruno Lowagie
  *
@@ -83,7 +83,7 @@ public class PdfAnnotationsImp {
     protected ArrayList annotations;
     
     /**
-     * This is an array containg references to some delayed annotations
+     * This is an array containing references to some delayed annotations
      * (that were added for a page that doesn't exist yet).
      */
     protected ArrayList delayedAnnotations = new ArrayList();

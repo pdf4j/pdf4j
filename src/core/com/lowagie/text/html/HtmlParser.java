@@ -1,6 +1,5 @@
 /*
- * $Id: HtmlParser.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: HtmlParser.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *

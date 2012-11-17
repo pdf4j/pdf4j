@@ -1,6 +1,5 @@
 /*
- * $Id: ElementTags.java 2748 2007-05-12 15:11:48Z blowagie $
- * $Name$
+ * $Id: ElementTags.java 3533 2008-07-07 21:27:13Z Howard_s $
  *
  * Copyright (c) 2001, 2002 Bruno Lowagie.
  *
@@ -42,7 +41,10 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Library general Public License for more
  * details.
- *
+ * 
+ * Contributions by:
+ * Lubos Strapko
+ * 
  * If you didn't download this code from the following link, you should check if
  * you aren't using an obsolete version:
  * http://www.lowagie.com/iText/
@@ -436,7 +438,18 @@ public class ElementTags {
 	
 	/** a possible list attribute */
 	public static final String LOWERCASE = "lowercase";
-    
+   /**
+    * a possible list attribute
+    * @since 2.1.3
+    */
+   public static final String FACE = "face";
+
+   /** attribute of the image or iframe tag
+    * @since 2.1.3
+    */
+   public static final String SRC = "src";
+   
+   
     // methods
     
 	/**

@@ -1,6 +1,5 @@
 /*
- * $Id: Destinations.java 2570 2007-02-06 13:29:11Z blowagie $
- * $Name$
+ * $Id: Destinations.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

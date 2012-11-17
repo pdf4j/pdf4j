@@ -1,5 +1,5 @@
 /*
- * $Id: PdfXConformanceImp.java 2832 2007-06-05 14:40:21Z psoares33 $
+ * $Id: PdfXConformanceImp.java 3829 2009-04-01 15:50:47Z blowagie $
  *
  * Copyright 2006 Bruno Lowagie (based on code by Paulo Soares)
  *
@@ -227,7 +227,7 @@ public class PdfXConformanceImp implements PdfXConformance {
                 break;
             case PDFXKEY_FONT:
                 if (!((BaseFont)obj1).isEmbedded())
-                    throw new PdfXConformanceException("All the fonts must be embedded.");
+                    throw new PdfXConformanceException("All the fonts must be embedded. This one isn't: " + ((BaseFont)obj1).getPostscriptFontName());
                 break;
             case PDFXKEY_IMAGE:
                 PdfImage image = (PdfImage)obj1;
@@ -243,7 +243,7 @@ public class PdfXConformanceImp implements PdfXConformance {
                                 throw new PdfXConformanceException("Colorspace RGB is not allowed.");
                         }
                         else if (cs.isArray()) {
-                            if (PdfName.CALRGB.equals(((PdfArray)cs).getArrayList().get(0)))
+                            if (PdfName.CALRGB.equals(((PdfArray)cs).getPdfObject(0)))
                                 throw new PdfXConformanceException("Colorspace CalRGB is not allowed.");
                         }
                         break;

@@ -1,6 +1,5 @@
 /*
- * $Id: Groups.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: Groups.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -99,6 +98,7 @@ public class Groups {
             group.setIsolated(true);
             group.setKnockout(true);
             tp.setGroup(group);
+            tp.sanityCheck();
             cb.addTemplate(tp, gap, 500);
 
             
@@ -108,6 +108,7 @@ public class Groups {
             group.setIsolated(true);
             group.setKnockout(false);
             tp.setGroup(group);
+            tp.sanityCheck();
             cb.addTemplate(tp, 200 + 2 * gap, 500);
 
             
@@ -117,6 +118,7 @@ public class Groups {
             group.setIsolated(false);
             group.setKnockout(true);
             tp.setGroup(group);
+            tp.sanityCheck();
             cb.addTemplate(tp, gap, 500 - 200 - gap);
 
             
@@ -126,8 +128,10 @@ public class Groups {
             group.setIsolated(false);
             group.setKnockout(false);
             tp.setGroup(group);
+            tp.sanityCheck();
             cb.addTemplate(tp, 200 + 2 * gap, 500 - 200 - gap);
 
+            cb.sanityCheck();
         }
         catch (Exception de) {
             de.printStackTrace();

@@ -1,6 +1,5 @@
 /*
- * $Id: Header.java 3004 2007-11-21 15:24:27Z blowagie $
- * $Name$
+ * $Id: Header.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -52,7 +51,7 @@ package com.lowagie.text;
 
 /**
  * This is an <CODE>Element</CODE> that contains
- * some userdefined meta information about the document.
+ * some user defined meta information about the document.
  * <P>
  * <B>Example:</B>
  * <BLOCKQUOTE><PRE>
@@ -94,17 +93,5 @@ public class Header extends Meta {
     public String getName() {
         return name.toString();
     }
-    
-    // deprecated
-    
-    /**
-	 * Returns the name of the meta information.
-	 *
-	 * @return	a <CODE>String</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getName()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public String name() {
-		return getName();
-	}
+
 }

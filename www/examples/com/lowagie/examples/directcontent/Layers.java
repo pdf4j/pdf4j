@@ -1,6 +1,5 @@
 /*
- * $Id: Layers.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Layers.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -65,9 +64,12 @@ public class Layers {
             cb.setRGBColorFill(0xFF, 0xFF, 0xFF);
             cb.circle(250.0f, 500.0f, 50.0f);
             cb.fill();
+            cb.sanityCheck();
+            
             cbu.setRGBColorFill(0xFF, 0x00, 0x00);
             cbu.circle(250.0f, 500.0f, 100.0f);
             cbu.fill();
+            cbu.sanityCheck();
             
         }
         catch(DocumentException de) {

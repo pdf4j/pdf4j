@@ -1,6 +1,5 @@
 /*
- * $Id: PageNumbersWatermark.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: PageNumbersWatermark.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -163,6 +162,7 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
             }
             cb.restoreState();
         }
+        cb.sanityCheck();
     }
     
     /**
@@ -188,7 +188,8 @@ public class PageNumbersWatermark extends PdfPageEventHelper {
        tpl.beginText();
        tpl.setFontAndSize(helv, 12);
        tpl.setTextMatrix(0, 0);
-       tpl.showText("" + (writer.getPageNumber() - 1));
+       tpl.showText(Integer.toString(writer.getPageNumber() - 1));
        tpl.endText();
+       tpl.sanityCheck();
     }
 }

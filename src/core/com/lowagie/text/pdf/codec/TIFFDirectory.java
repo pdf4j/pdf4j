@@ -108,7 +108,7 @@ public class TIFFDirectory extends Object implements Serializable {
      * The directory parameter specifies which directory to read from
      * the linked list present in the stream; directory 0 is normally
      * read but it is possible to store multiple images in a single
-     * TIFF file by maintaing multiple directories.
+     * TIFF file by maintaining multiple directories.
      *
      * @param stream a SeekableStream to read from.
      * @param directory the index of the directory to read.
@@ -445,7 +445,7 @@ public class TIFFDirectory extends Object implements Serializable {
      */
     public byte getFieldAsByte(int tag, int index) {
         Integer i = (Integer)fieldIndex.get(new Integer(tag));
-        byte [] b = (fields[i.intValue()]).getAsBytes();
+        byte [] b = fields[i.intValue()].getAsBytes();
         return b[index];
     }
     

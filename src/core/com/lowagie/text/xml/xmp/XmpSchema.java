@@ -1,6 +1,5 @@
 /*
- * $Id: XmpSchema.java 2904 2007-08-30 17:18:07Z psoares33 $
- * $Name:  $
+ * $Id: XmpSchema.java 3543 2008-07-10 17:37:37Z xlv $
  *
  * Copyright 2005 by Bruno Lowagie.
  *
@@ -57,7 +56,9 @@ import java.util.Properties;
  * Abstract superclass of the XmpSchemas supported by iText.
  */
 public abstract class XmpSchema extends Properties {
-	
+
+	private static final long serialVersionUID = -176374295948945272L;
+
 	/** the namesspace */
 	protected String xmlns;
 	

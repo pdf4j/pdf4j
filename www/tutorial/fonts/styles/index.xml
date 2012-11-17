@@ -11,7 +11,7 @@
 			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
 			<site:keyword>Fonts</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2006-09-17 06:13:59 -0400 (Sun, 17 Sep 2006) $</site:updated>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
 		<site:author>Bruno Lowagie</site:author>
 	</site:metadata>
 	
@@ -36,6 +36,7 @@
 			<site:result>ExtraStyles.pdf</site:result>
 			<site:result>ExtraStyles.rtf</site:result>
 			<site:result>ExtraStyles.html</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
 			<site:description>Demonstrates how to underline or strike through text</site:description>
 		</site:example>
 		<site:example>

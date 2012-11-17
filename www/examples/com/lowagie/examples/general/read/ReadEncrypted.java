@@ -1,6 +1,5 @@
 /*
- * $Id: ReadEncrypted.java 2992 2007-11-19 08:12:53Z blowagie $
- * $Name$
+ * $Id: ReadEncrypted.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

@@ -1,6 +1,5 @@
 /*
- * $Id: PdfContents.java 2742 2007-05-08 13:04:56Z blowagie $
- * $Name$
+ * $Id: PdfContents.java 3634 2008-12-23 18:44:04Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -52,6 +51,7 @@ package com.lowagie.text.pdf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import com.lowagie.text.DocWriter;
@@ -86,11 +86,14 @@ class PdfContents extends PdfStream {
         super();
         try {
             OutputStream out = null;
+            Deflater deflater = null;
             streamBytes = new ByteArrayOutputStream();
             if (Document.compress)
             {
                 compressed = true;
-                out = new DeflaterOutputStream(streamBytes);
+                compressionLevel = text.getPdfWriter().getCompressionLevel();
+                deflater = new Deflater(compressionLevel);
+                out = new DeflaterOutputStream(streamBytes, deflater);
             }
             else
                 out = streamBytes;
@@ -137,6 +140,9 @@ class PdfContents extends PdfStream {
                 secondContent.getInternalBuffer().writeTo(out);
             }
             out.close();
+            if (deflater != null) {
+                deflater.end();
+            }
         }
         catch (Exception e) {
             throw new BadPdfFormatException(e.getMessage());

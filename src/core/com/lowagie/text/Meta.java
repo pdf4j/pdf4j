@@ -1,6 +1,5 @@
 /*
- * $Id: Meta.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: Meta.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -57,7 +56,7 @@ import java.util.ArrayList;
  * some meta information about the document.
  * <P>
  * An object of type <CODE>Meta</CODE> can not be constructed by the user.
- * Userdefined meta information should be placed in a <CODE>Header</CODE>-object.
+ * User defined meta information should be placed in a <CODE>Header</CODE>-object.
  * <CODE>Meta</CODE> is reserved for: Subject, Keywords, Author, Title, Producer
  * and Creationdate information.
  *
@@ -226,28 +225,5 @@ public class Meta implements Element {
         }
         return Element.HEADER;
     }
-    
-    // deprecated
-    
-    /**
-	 * Returns the name of the meta information.
-	 *
-	 * @return	a <CODE>String</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getName()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public String name() {
-		return getName();
-	}
-    
-    /**
-	 * Returns the content of the meta information.
-	 *
-	 * @return	a <CODE>String</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getContent()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public String content() {
-		return getContent();
-	}
+
 }

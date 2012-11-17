@@ -1,5 +1,5 @@
 /*
- * $Id: Barcode.java 2505 2006-12-20 10:12:33Z blowagie $
+ * $Id: Barcode.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2002-2006 by Paulo Soares.
  *
@@ -53,7 +53,7 @@ import java.awt.Color;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
-/** Base class containing properties and methods commom to all
+/** Base class containing properties and methods common to all
  * barcode types.
  *
  * @author Paulo Soares (psoares@consiste.pt)
@@ -359,7 +359,7 @@ public abstract class Barcode {
     public abstract Rectangle getBarcodeSize();
     
     /** Places the barcode in a <CODE>PdfContentByte</CODE>. The
-     * barcode is always placed at coodinates (0, 0). Use the
+     * barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.<p>
      * The bars and text are written in the following colors:<p>
      * <P><TABLE BORDER=1>

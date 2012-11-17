@@ -1,6 +1,5 @@
 /*
- * $Id: XmpBasicSchema.java 2655 2007-03-15 19:26:36Z xlv $
- * $Name$
+ * $Id: XmpBasicSchema.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2005 by Bruno Lowagie.
  *

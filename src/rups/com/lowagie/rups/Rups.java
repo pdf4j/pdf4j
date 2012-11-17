@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: Rups.java 3242 2008-04-13 23:00:20Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -35,7 +35,7 @@ import com.lowagie.rups.controller.RupsController;
 public class Rups {
 
 	/** The version String; this String may only be changed by Bruno Lowagie. */
-	public static String VERSION = "RUPS 0.0.1 (by lowagie.com)";
+	public static final String VERSION = "RUPS 0.0.1 (by lowagie.com)";
 	
 	// main method
 	/**

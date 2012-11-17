@@ -1,6 +1,5 @@
 /*
- * $Id: XmpArray.java 2382 2006-09-15 23:37:38Z xlv $
- * $Name$
+ * $Id: XmpArray.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2005 by Bruno Lowagie.
  *

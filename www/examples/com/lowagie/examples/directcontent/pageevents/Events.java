@@ -1,6 +1,5 @@
 /*
- * $Id: Events.java 2698 2007-04-19 12:03:08Z blowagie $
- * $Name$
+ * $Id: Events.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -155,7 +154,7 @@ public class Events {
 
 		/**
 		 * Getting the list of speakers.
-		 * @return	a list of speakers and the number of occurances.
+		 * @return	a list of speakers and the number of occurrences.
 		 */
 		public TreeSet getSpeakers() {
 			return speakers;
@@ -216,7 +215,7 @@ public class Events {
 			for (Iterator i = events.getSpeakers().iterator(); i.hasNext();) {
 				speaker = (Speaker) i.next();
 				document.add(new Paragraph(speaker.getName() + ": "
-						+ speaker.getOccurrance() + " speech blocks"));
+						+ speaker.getOccurrence() + " speech blocks"));
 			}
 			document.close();
 
@@ -227,7 +226,7 @@ public class Events {
 	}
 
 	/**
-	 * Special implementation of het XML handler.
+	 * Special implementation of the XML handler.
 	 * It adds a paragraph after each SPEAKER block and
 	 * avoids closing the document after the final closing tag.
 	 */
@@ -301,7 +300,7 @@ public class Events {
 	}
 
 	/**
-	 * This object contains a speaker and a number of occurrances in the play
+	 * This object contains a speaker and a number of occurrences in the play
 	 */
 
 	class Speaker implements Comparable {
@@ -309,8 +308,8 @@ public class Events {
 		// name of the speaker
 		private String name;
 
-		// number of occurrances
-		private int occurrance = 1;
+		// number of occurrences
+		private int occurrence = 1;
 
 		/**
 		 * One of the speakers in the play.
@@ -329,11 +328,11 @@ public class Events {
 		}
 
 		/**
-		 * Gets the number of occurances of the speaker.
+		 * Gets the number of occurrences of the speaker.
 		 * @return a number of textblocks
 		 */
-		public int getOccurrance() {
-			return occurrance;
+		public int getOccurrence() {
+			return occurrence;
 		}
 
 		/**
@@ -345,8 +344,8 @@ public class Events {
 		public int compareTo(Object o) {
 			Speaker otherSpeaker = (Speaker) o;
 			if (otherSpeaker.getName().equals(name)) {
-				this.occurrance += otherSpeaker.getOccurrance();
-				otherSpeaker.occurrance = this.occurrance;
+				this.occurrence += otherSpeaker.getOccurrence();
+				otherSpeaker.occurrence = this.occurrence;
 				return 0;
 			}
 			return name.compareTo(otherSpeaker.getName());

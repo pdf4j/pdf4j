@@ -100,7 +100,7 @@ import java.util.Stack;
  * </ul>
  * <p>
  */
-public class SimpleXMLParser {
+public final class SimpleXMLParser {
     /** possible states */
 	private final static int UNKNOWN = 0;
 	private final static int TEXT = 1;
@@ -119,37 +119,44 @@ public class SimpleXMLParser {
 	private final static int ATTRIBUTE_VALUE = 14;
     
 	/** the state stack */
-	protected Stack stack;
+	Stack stack;
 	/** The current character. */
-	protected int character = 0;
+	int character = 0;
 	/** The previous character. */
-	protected int previousCharacter = -1;
+	int previousCharacter = -1;
 	/** the line we are currently reading */
-	protected int lines = 1;
+	int lines = 1;
 	/** the column where the current character occurs */
-	protected int columns = 0;
+	int columns = 0;
 	/** was the last character equivalent to a newline? */
-	protected boolean eol = false;
+	boolean eol = false;
+	/**
+	 * A boolean indicating if the next character should be taken into account
+	 * if it's a space character. When nospace is false, the previous character
+	 * wasn't whitespace.
+	 * @since 2.1.5
+	 */
+	boolean nowhite = false;
 	/** the current state */
-	protected int state;
+	int state;
 	/** Are we parsing HTML? */
-	protected boolean html;
+	boolean html;
 	/** current text (whatever is encountered between tags) */
-	protected StringBuffer text = new StringBuffer();
+	StringBuffer text = new StringBuffer();
 	/** current entity (whatever is encountered between & and ;) */
-	protected StringBuffer entity = new StringBuffer();
+	StringBuffer entity = new StringBuffer();
 	/** current tagname */
-	protected String tag = null;
+	String tag = null;
 	/** current attributes */
-	protected HashMap attributes = null;
+	HashMap attributes = null;
 	/** The handler to which we are going to forward document content */
-	protected SimpleXMLDocHandler doc;
+	SimpleXMLDocHandler doc;
 	/** The handler to which we are going to forward comments. */
-	protected SimpleXMLDocHandlerComment comment;
+	SimpleXMLDocHandlerComment comment;
 	/** Keeps track of the number of tags that are open. */
 	int nested = 0;
 	/** the quote character that was used to open the quote. */
-	protected int quoteCharacter = '"';
+	int quoteCharacter = '"';
 	/** the attribute key. */
 	String attributekey = null;
 	/** the attribute value. */
@@ -183,7 +190,7 @@ public class SimpleXMLParser {
 			if (previousCharacter == -1) {
 				character = reader.read();
 			}
-			// or re-examin the previous character
+			// or re-examine the previous character
 			else {
 				character = previousCharacter;
 				previousCharacter = -1;
@@ -237,8 +244,14 @@ public class SimpleXMLParser {
                     saveState(state);
                     entity.setLength(0);
                     state = ENTITY;
-                } else
+                } else if (Character.isWhitespace((char)character)) {
+                	if (nowhite)
+                		text.append((char)character);
+                	nowhite = false;
+                } else {
                     text.append((char)character);
+                    nowhite = true;
+                }
                 break;
             // we have just seen a < and are wondering what we are looking at
             // <foo>, </foo>, <!-- ... --->, etc.
@@ -663,10 +676,15 @@ public class SimpleXMLParser {
                     sb.append("&apos;");
                     break;
                 default:
-                    if (onlyASCII && c > 127)
-                        sb.append("&#").append(c).append(';');
-                    else
-                        sb.append((char)c);
+                	if ((c == 0x9) || (c == 0xA) || (c == 0xD)
+                		|| ((c >= 0x20) && (c <= 0xD7FF))
+                		|| ((c >= 0xE000) && (c <= 0xFFFD))
+                		|| ((c >= 0x10000) && (c <= 0x10FFFF))) { 
+                		if (onlyASCII && c > 127)
+                			sb.append("&#").append(c).append(';');
+                		else 
+                			sb.append((char)c);
+                	}
             }
         }
         return sb.toString();
@@ -674,7 +692,7 @@ public class SimpleXMLParser {
     /**
      * Returns the IANA encoding name that is auto-detected from
      * the bytes specified, with the endian-ness of that encoding where appropriate.
-     * (method found in org.apache.xerces.impl.XMLEntityManager, originaly published
+     * (method found in org.apache.xerces.impl.XMLEntityManager, originally published
      * by the Apache Software Foundation under the Apache Software License; now being
      * used in iText under the MPL)
      * @param b4    The first four bytes of the input.
@@ -716,7 +734,7 @@ public class SimpleXMLParser {
             return "ISO-10646-UCS-4";
         }
         if (b0 == 0x00 && b1 == 0x3C && b2 == 0x00 && b3 == 0x00) {
-            // UCS-4, unusual octect order (3412)
+            // UCS-4, unusual octet order (3412)
             // REVISIT: What should this be?
             return "ISO-10646-UCS-4";
         }

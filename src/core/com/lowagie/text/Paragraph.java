@@ -1,6 +1,5 @@
 /*
- * $Id: Paragraph.java 3004 2007-11-21 15:24:27Z blowagie $
- * $Name$
+ * $Id: Paragraph.java 3668 2009-02-01 09:08:50Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -238,7 +237,14 @@ public class Paragraph extends Phrase {
         }
         else if (o instanceof Paragraph) {
             super.add(o);
-            super.add(Chunk.NEWLINE);
+            java.util.List chunks = getChunks();
+            if (!chunks.isEmpty()) {
+            	Chunk tmp = ((Chunk) chunks.get(chunks.size() - 1));
+            	super.add(new Chunk("\n", tmp.getFont()));
+            }
+            else {
+            	super.add(Chunk.NEWLINE);
+            }
             return true;
         }
         return super.add(o);
@@ -291,7 +297,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the variable leading. The resultant leading will be
      * multipliedLeading*maxFontSize where maxFontSize is the
-     * size of the bigest font in the line.
+     * size of the biggest font in the line.
      * @param multipliedLeading the variable leading
      */
     public void setMultipliedLeading(float multipliedLeading) {
@@ -302,7 +308,7 @@ public class Paragraph extends Phrase {
     /**
      * Sets the leading fixed and variable. The resultant leading will be
      * fixedLeading+multipliedLeading*maxFontSize where maxFontSize is the
-     * size of the bigest font in the line.
+     * size of the biggest font in the line.
      * @param fixedLeading the fixed leading
      * @param multipliedLeading the variable leading
      */
@@ -437,21 +443,21 @@ public class Paragraph extends Phrase {
     
     /**
      * Gets the spacing before this paragraph.
-     *
      * @return	the spacing
+     * @since	2.1.5
      */
-    public float spacingBefore() {
-        return spacingBefore;
-    }
-
+    public float getSpacingBefore() {
+    	return spacingBefore;
+    }    
+    
     /**
      * Gets the spacing after this paragraph.
-     *
      * @return	the spacing
+     * @since	2.1.5
      */
-    public float spacingAfter() {
-        return spacingAfter;
-    }
+    public float getSpacingAfter() {
+    	return spacingAfter;
+    }  
     
     /**
      * Getter for property extraParagraphSpace.
@@ -468,51 +474,29 @@ public class Paragraph extends Phrase {
     public void setExtraParagraphSpace(float extraParagraphSpace) {
         this.extraParagraphSpace = extraParagraphSpace;
     }
-
-    // deprecated stuff
+    
+    // scheduled for removal
     
     /**
-     * Returns a <CODE>Paragraph</CODE> that has been constructed taking in account
-     * the value of some <VAR>attributes</VAR>.
+     * Gets the spacing before this paragraph.
      *
-     * @param	attributes		Some attributes
-	 * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getParagraph(Properties)},
-	 * scheduled for removal at 2.1.0
+     * @return	the spacing
+     * @deprecated As of iText 2.1.5, replaced by {@link #getSpacingBefore()},
+     * scheduled for removal at 2.3.0
      */
-    public Paragraph(java.util.Properties attributes) {
-        this(com.lowagie.text.factories.ElementFactory.getParagraph(attributes));
+    public float spacingBefore() {
+        return getSpacingBefore();
     }
-    
+
     /**
-	 * Gets the alignment of this paragraph.
-	 *
-	 * @return	alignment
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getAlignment()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int alignment() {
-		return getAlignment();
-	}
-    
-    /**
-	 * Gets the indentation of this paragraph on the left side.
-	 *
-	 * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationLeft()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentationLeft() {
-		return getIndentationLeft();
-	}
-    
-	/**
-	 * Gets the indentation of this paragraph on the right side.
-	 *
-	 * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationRight()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float indentationRight() {
-		return getIndentationRight();
-	}
+     * Gets the spacing after this paragraph.
+     *
+     * @return	the spacing
+     * @deprecated As of iText 2.1.5, replaced by {@link #getSpacingAfter()},
+     * scheduled for removal at 2.3.0
+     */
+    public float spacingAfter() {
+        return spacingAfter;
+    }
+
 }

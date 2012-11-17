@@ -1,6 +1,5 @@
 /*
- * $Id: LangAlt.java 2807 2007-05-28 18:39:52Z xlv $
- * $Name$
+ * $Id: LangAlt.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2007 by Armin Haberling
  *

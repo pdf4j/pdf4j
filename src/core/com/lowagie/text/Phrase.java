@@ -1,6 +1,5 @@
 /*
- * $Id: Phrase.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name:  $
+ * $Id: Phrase.java 3942 2009-05-28 18:14:10Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -53,7 +52,8 @@ package com.lowagie.text;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Properties;
+
+import com.lowagie.text.pdf.HyphenationEvent;
 
 /**
  * A <CODE>Phrase</CODE> is a series of <CODE>Chunk</CODE>s.
@@ -70,7 +70,7 @@ import java.util.Properties;
  * <STRONG>Phrase phrase1 = new Phrase("this is a phrase");</STRONG>
  * // In this example the leading is passed as a parameter
  * <STRONG>Phrase phrase2 = new Phrase(16, "this is a phrase with leading 16");</STRONG>
- * // When a Font is passed (explicitely or embedded in a chunk), the default leading = 1.5 * size of the font
+ * // When a Font is passed (explicitly or embedded in a chunk), the default leading = 1.5 * size of the font
  * <STRONG>Phrase phrase3 = new Phrase("this is a phrase with a red, normal font Courier, size 12", FontFactory.getFont(FontFactory.COURIER, 12, Font.NORMAL, new Color(255, 0, 0)));</STRONG>
  * <STRONG>Phrase phrase4 = new Phrase(new Chunk("this is a phrase"));</STRONG>
  * <STRONG>Phrase phrase5 = new Phrase(18, new Chunk("this is a phrase", FontFactory.getFont(FontFactory.HELVETICA, 16, Font.BOLD, new Color(255, 0, 0)));</STRONG>
@@ -94,6 +94,11 @@ public class Phrase extends ArrayList implements TextElementArray {
     /** This is the font of this phrase. */
     protected Font font;
     
+    /** Null, unless the Phrase has to be hyphenated.
+     * @since	2.1.2
+     */
+    protected HyphenationEvent hyphenation = null;
+    
     // constructors
     
     /**
@@ -111,9 +116,10 @@ public class Phrase extends ArrayList implements TextElementArray {
         this.addAll(phrase);
         leading = phrase.getLeading();
         font = phrase.getFont();
+        setHyphenation(phrase.getHyphenation());
     }
-    
-    /**
+
+	/**
      * Constructs a <CODE>Phrase</CODE> with a certain leading.
      *
      * @param	leading		the leading
@@ -131,9 +137,10 @@ public class Phrase extends ArrayList implements TextElementArray {
     public Phrase(Chunk chunk) {
         super.add(chunk);
         font = chunk.getFont();
+        setHyphenation(chunk.getHyphenation());
     }
-    
-    /**
+
+	/**
      * Constructs a <CODE>Phrase</CODE> with a certain <CODE>Chunk</CODE>
      * and a certain leading.
      *
@@ -144,6 +151,7 @@ public class Phrase extends ArrayList implements TextElementArray {
         this.leading = leading;
         super.add(chunk);
         font = chunk.getFont();
+        setHyphenation(chunk.getHyphenation());
     }
     
     /**
@@ -270,12 +278,16 @@ public class Phrase extends ArrayList implements TextElementArray {
                 if (!font.isStandardFont()) {
                     chunk.setFont(font.difference(chunk.getFont()));
                 }
+                if (hyphenation != null && chunk.getHyphenation() == null && !chunk.isEmpty()) {
+                	chunk.setHyphenation(hyphenation);
+                }
                 super.add(index, chunk);
             }
             else if (element.type() == Element.PHRASE ||
             element.type() == Element.ANCHOR ||
             element.type() == Element.ANNOTATION ||
             element.type() == Element.TABLE || // line added by David Freels
+            element.type() == Element.YMARK || 
             element.type() == Element.MARKED) {
                 super.add(index, element);
             }
@@ -301,7 +313,7 @@ public class Phrase extends ArrayList implements TextElementArray {
         if (o instanceof String) {
             return super.add(new Chunk((String) o, font));
         }
-        if (o instanceof com.lowagie.text.rtf.RtfBasicElement) {
+        if (o instanceof RtfElementInterface) {
         	return super.add(o);
         }
         try {
@@ -331,6 +343,7 @@ public class Phrase extends ArrayList implements TextElementArray {
                 case Element.PTABLE: // case added by mr. Karen Vardanyan
                 	// This will only work for PDF!!! Not for RTF/HTML
                 case Element.LIST:
+                case Element.YMARK:
                 	return super.add(o);
                     default:
                         throw new ClassCastException(String.valueOf(element.type()));
@@ -387,6 +400,9 @@ public class Phrase extends ArrayList implements TextElementArray {
         }
         Chunk newChunk = new Chunk(c, f);
         newChunk.setAttributes(chunk.getAttributes());
+        if (hyphenation != null && newChunk.getHyphenation() == null && !newChunk.isEmpty()) {
+        	newChunk.setHyphenation(hyphenation);
+        }
         return super.add(newChunk);
     }
     
@@ -487,6 +503,24 @@ public class Phrase extends ArrayList implements TextElementArray {
         }
     }
     
+    /**
+     * Getter for the hyphenation settings.
+     * @return	a HyphenationEvent
+     * @since	2.1.2
+     */
+    public HyphenationEvent getHyphenation() {
+		return hyphenation;
+	}
+
+    /**
+     * Setter for the hyphenation.
+     * @param	hyphenation	a HyphenationEvent instance
+     * @since	2.1.2
+     */
+	public void setHyphenation(HyphenationEvent hyphenation) {
+		this.hyphenation = hyphenation;
+	}
+	
     // kept for historical reasons; people should use FontSelector
     // eligible for deprecation, but the methods are mentioned in the book p277.
     
@@ -551,58 +585,5 @@ public class Phrase extends ArrayList implements TextElementArray {
         }
     	return p;
     }
-    
-    // deprecated constructor and methods
-    
-    /**
-     * Returns a <CODE>Phrase</CODE> that has been constructed taking in account
-     * the value of some <VAR>attributes</VAR>.
-     *
-     * @param	attributes		Some attributes
-     * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getPhrase(Properties)},
-	 * scheduled for removal at 2.1.0
-     */
-    public Phrase(Properties attributes) {
-        this(com.lowagie.text.factories.ElementFactory.getPhrase(attributes));
-    }
-    /**
-     * Gets the font of the first <CODE>Chunk</CODE> that appears in this <CODE>Phrase</CODE>.
-     *
-     * @return	a <CODE>Font</CODE>
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getFont()},
-	 * scheduled for removal at 2.1.0
-     */  
-    public Font font() {
-    	return getFont();
-    }    
-    /**
-     * Gets the leading of this phrase.
-     *
-     * @return	the linespacing
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getLeading()},
-	 * scheduled for removal at 2.1.0
-     */
-    public float leading() {
-    	return getLeading();
-    }
-    /**
-     * Checks you if the leading of this phrase is defined.
-     *
-     * @return	true if the leading is defined
-	 * @deprecated As of iText 2.0.3, replaced by {@link #hasLeading()},
-	 * scheduled for removal at 2.1.0
-     */
-    public boolean leadingDefined() {
-    	return hasLeading();
-    }
-    
-    /**
-	 * Returns the content as a String object.
-	 * This method differs from toString because toString will return an ArrayList with the toString value of the Chunks in this Phrase.
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getContent()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public String content() {
-		return getContent();
-	}
+
 }

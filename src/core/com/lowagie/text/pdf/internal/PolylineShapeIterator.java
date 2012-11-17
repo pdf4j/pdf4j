@@ -1,5 +1,5 @@
 /*
- * $Id: PolylineShapeIterator.java 2772 2007-05-21 14:06:08Z blowagie $
+ * $Id: PolylineShapeIterator.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2007 Bruno Lowagie and Wil
  *
@@ -94,8 +94,8 @@ public class PolylineShapeIterator implements PathIterator {
 			throw new NoSuchElementException("line iterator out of bounds");
 		}
 		int type = (index==0)?SEG_MOVETO:SEG_LINETO;
-		coords[0] = (double) poly.x[index];
-		coords[1] = (double) poly.y[index];
+		coords[0] = poly.x[index];
+		coords[1] = poly.y[index];
 		if (affine != null) {
 			affine.transform(coords, 0, coords, 0, 1);
 		}
@@ -125,8 +125,8 @@ public class PolylineShapeIterator implements PathIterator {
 			throw new NoSuchElementException("line iterator out of bounds");
 		}
 		int type = (index==0)?SEG_MOVETO:SEG_LINETO;
-		coords[0] = (float) poly.x[index];
-		coords[1] = (float) poly.y[index];
+		coords[0] = poly.x[index];
+		coords[1] = poly.y[index];
 		if (affine != null) {
 			affine.transform(coords, 0, coords, 0, 1);
 		}

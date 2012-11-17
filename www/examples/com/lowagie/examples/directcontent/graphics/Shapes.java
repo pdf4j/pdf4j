@@ -1,6 +1,5 @@
 /*
- * $Id: Shapes.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Shapes.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -81,6 +80,8 @@ public class Shapes {
             // the color of the triangle will be red instead of green
             cb.setRGBColorFillF(255f, 0f, 0f);
             cb.closePathFillStroke();
+            
+            cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

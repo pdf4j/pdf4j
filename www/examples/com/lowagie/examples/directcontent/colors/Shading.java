@@ -1,6 +1,5 @@
 /*
- * $Id: Shading.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Shading.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -59,6 +58,8 @@ public class Shading {
             cb.concatCTM(27.7843f, 0, 0, -27.7843f, 310.2461f, 121.1521f);
             cb.paintShading(shading);
             cb.restoreState();
+            
+            cb.sanityCheck();
             
             document.close();
         }

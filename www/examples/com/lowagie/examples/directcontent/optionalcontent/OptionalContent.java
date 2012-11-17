@@ -1,6 +1,5 @@
 /*
- * $Id: OptionalContent.java 2570 2007-02-06 13:29:11Z blowagie $
- * $Name$
+ * $Id: OptionalContent.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -106,6 +105,8 @@ public class OptionalContent {
             PdfAction action = PdfAction.setOCGstate(state, true);
             Chunk ck = new Chunk("Click here to toggle the layers", new Font(Font.HELVETICA, 18, Font.NORMAL, Color.yellow)).setBackground(Color.blue).setAction(action);
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER, new Phrase(ck), 250, 400, 0);
+            cb.sanityCheck();
+            
             // step 5: closing the document
             document.close();
         }

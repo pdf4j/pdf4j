@@ -1,6 +1,5 @@
 /*
- * $Id: GrayColor.java 2367 2006-09-14 23:39:21Z xlv $
- * $Name$
+ * $Id: GrayColor.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *
@@ -64,7 +63,7 @@ public class GrayColor extends ExtendedColor {
     public static final GrayColor GRAYWHITE = new GrayColor(1f);
 
     public GrayColor(int intGray) {
-        this((float)intGray / 255f);
+        this(intGray / 255f);
     }
 
     public GrayColor(float floatGray) {

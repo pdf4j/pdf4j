@@ -1,6 +1,5 @@
 /*
- * $Id: PdfStream.java 2879 2007-08-06 09:10:46Z blowagie $
- * $Name$
+ * $Id: PdfStream.java 3735 2009-02-26 01:44:03Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -60,7 +59,6 @@ import java.util.zip.DeflaterOutputStream;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.ExceptionConverter;
-import java.util.ArrayList;
 
 /**
  * <CODE>PdfStream</CODE> is the Pdf stream object.
@@ -86,9 +84,36 @@ import java.util.ArrayList;
 public class PdfStream extends PdfDictionary {
     
     // membervariables
-    
+
+	/**
+	 * A possible compression level.
+	 * @since	2.1.3
+	 */
+	public static final int DEFAULT_COMPRESSION = -1;
+	/**
+	 * A possible compression level.
+	 * @since	2.1.3
+	 */
+	public static final int NO_COMPRESSION = 0;
+	/**
+	 * A possible compression level.
+	 * @since	2.1.3
+	 */
+	public static final int BEST_SPEED = 1;
+	/**
+	 * A possible compression level.
+	 * @since	2.1.3
+	 */
+	public static final int BEST_COMPRESSION = 9;
+	
+	
 /** is the stream compressed? */
     protected boolean compressed = false;
+    /**
+     * The level of compression.
+     * @since	2.1.3
+     */
+    protected int compressionLevel = NO_COMPRESSION;
     
     protected ByteArrayOutputStream streamBytes = null;
     protected InputStream inputStream;
@@ -153,7 +178,7 @@ public class PdfStream extends PdfDictionary {
     /**
      * Writes the stream length to the <CODE>PdfWriter</CODE>.
      * <p>
-     * This method must be called and can only be called if the contructor {@link #PdfStream(InputStream,PdfWriter)}
+     * This method must be called and can only be called if the constructor {@link #PdfStream(InputStream,PdfWriter)}
      * is used to create the stream.
      * @throws IOException on error
      * @see #PdfStream(InputStream,PdfWriter)
@@ -177,14 +202,23 @@ public class PdfStream extends PdfDictionary {
     /**
      * Compresses the stream.
      */
-    
     public void flateCompress() {
+    	flateCompress(DEFAULT_COMPRESSION);
+    }
+    
+    /**
+     * Compresses the stream.
+	 * @param compressionLevel the compression level (0 = best speed, 9 = best compression, -1 is default)
+	 * @since	2.1.3
+     */
+    public void flateCompress(int compressionLevel) {
         if (!Document.compress)
             return;
         // check if the flateCompress-method has already been
         if (compressed) {
             return;
         }
+    	this.compressionLevel = compressionLevel;
         if (inputStream != null) {
             compressed = true;
             return;
@@ -207,12 +241,14 @@ public class PdfStream extends PdfDictionary {
         try {
             // compress
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            DeflaterOutputStream zip = new DeflaterOutputStream(stream);
+            Deflater deflater = new Deflater(compressionLevel);
+            DeflaterOutputStream zip = new DeflaterOutputStream(stream, deflater);
             if (streamBytes != null)
                 streamBytes.writeTo(zip);
             else
                 zip.write(bytes);
             zip.close();
+            deflater.end();
             // update the object
             streamBytes = stream;
             bytes = null;
@@ -260,8 +296,8 @@ public class PdfStream extends PdfDictionary {
                 if (PdfName.CRYPT.equals(filter))
                     crypto = null;
                 else if (filter.isArray()) {
-                    ArrayList af = ((PdfArray)filter).getArrayList();
-                    if (!af.isEmpty() && PdfName.CRYPT.equals(af.get(0)))
+                    PdfArray a = (PdfArray)filter;
+                    if (!a.isEmpty() && PdfName.CRYPT.equals(a.getPdfObject(0)))
                         crypto = null;
                 }
             }
@@ -282,10 +318,13 @@ public class PdfStream extends PdfDictionary {
             OutputStreamCounter osc = new OutputStreamCounter(os);
             OutputStreamEncryption ose = null;
             OutputStream fout = osc;
-            if (crypto != null)
+            if (crypto != null && !crypto.isEmbeddedFilesOnly())
                 fout = ose = crypto.getEncryptionStream(fout);
-            if (compressed)    
-                fout = def = new DeflaterOutputStream(fout, new Deflater(Deflater.BEST_COMPRESSION), 0x8000);
+            Deflater deflater = null;
+            if (compressed) {
+                deflater = new Deflater(compressionLevel);
+                fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
+            }
             
             byte buf[] = new byte[4192];
             while (true) {
@@ -295,20 +334,16 @@ public class PdfStream extends PdfDictionary {
                 fout.write(buf, 0, n);
                 rawLength += n;
             }
-            if (def != null)
+            if (def != null) {
                 def.finish();
+                deflater.end();
+            }
             if (ose != null)
                 ose.finish();
             inputStreamLength = osc.getCounter();
         }
         else {
-            if (crypto == null) {
-                if (streamBytes != null)
-                    streamBytes.writeTo(os);
-                else
-                    os.write(bytes);
-            }
-            else {
+            if (crypto != null && !crypto.isEmbeddedFilesOnly()) {
                 byte b[];
                 if (streamBytes != null) {
                     b = crypto.encryptByteArray(streamBytes.toByteArray());
@@ -317,6 +352,12 @@ public class PdfStream extends PdfDictionary {
                     b = crypto.encryptByteArray(bytes);
                 }
                 os.write(b);
+            }
+            else {
+                if (streamBytes != null)
+                    streamBytes.writeTo(os);
+                else
+                    os.write(bytes);
             }
         }
         os.write(ENDSTREAM);

@@ -1,5 +1,5 @@
 /*
- * $Id: PdfViewerPreferencesImp.java 2908 2007-09-03 09:18:23Z blowagie $
+ * $Id: PdfViewerPreferencesImp.java 3867 2009-04-17 17:49:57Z blowagie $
  *
  * Copyright 2006 Bruno Lowagie
  *
@@ -338,6 +338,8 @@ public class PdfViewerPreferencesImp implements PdfViewerPreferences {
 				prefs |= PdfWriter.PageModeUseOutlines;
 			else if (name.equals(PdfName.USETHUMBS))
 				prefs |= PdfWriter.PageModeUseThumbs;
+			else if (name.equals(PdfName.FULLSCREEN))
+				prefs |= PdfWriter.PageModeFullScreen;
 			else if (name.equals(PdfName.USEOC))
 				prefs |= PdfWriter.PageModeUseOC;
 			else if (name.equals(PdfName.USEATTACHMENTS))

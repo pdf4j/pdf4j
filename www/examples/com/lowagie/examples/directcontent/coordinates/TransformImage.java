@@ -1,6 +1,5 @@
 /*
- * $Id: TransformImage.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: TransformImage.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -50,6 +49,7 @@ public class TransformImage {
             PdfContentByte cb = writer.getDirectContent();
             Image img = Image.getInstance("hitchcock.png");
             cb.addImage(img, 271, -50, -30, 550, 100, 100);
+            cb.sanityCheck();
    
         }
         catch(DocumentException de) {

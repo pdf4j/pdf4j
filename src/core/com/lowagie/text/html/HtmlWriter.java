@@ -1,6 +1,5 @@
 /*
- * $Id: HtmlWriter.java 3070 2007-12-07 14:58:44Z psoares33 $
- * $Name$
+ * $Id: HtmlWriter.java 3583 2008-08-12 00:00:09Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -201,7 +200,6 @@ public class HtmlWriter extends DocWriter {
  * Signals that an new page has to be started.
  *
  * @return  <CODE>true</CODE> if this action succeeded, <CODE>false</CODE> if not.
- * @throws  DocumentException when a document isn't open yet, or has been closed
  */
     
     public boolean newPage() {
@@ -592,7 +590,6 @@ public class HtmlWriter extends DocWriter {
  * 
  * @param string a String to add to the HTML
  * @return  <CODE>true</CODE> if the string was added, <CODE>false</CODE> if not.
- * @throws  DocumentException when a document isn't open yet, or has been closed
  */
     
     public boolean add(String string) {
@@ -859,7 +856,7 @@ public class HtmlWriter extends DocWriter {
                     write(HtmlTags.ROWSPAN, String.valueOf(cell.getRowspan()));
                 }
                 if (cell.getMaxLines() == 1) {
-                    write(HtmlTags.NOWRAP, String.valueOf(true));
+                	write(HtmlTags.STYLE, "white-space: nowrap;");
                 }
                 os.write(GT);
                 // contents

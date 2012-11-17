@@ -10,7 +10,7 @@
 			<site:book asin="1932394796">iText in Action</site:book>
 			<site:keyword>JAVA</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2006-09-17 06:13:59 -0400 (Sun, 17 Sep 2006) $</site:updated>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
 		<site:author>Bruno Lowagie</site:author>
 	</site:metadata>
 	
@@ -34,6 +34,7 @@
 			<site:java src="TablePdfPTable" standalone="yes" />
 			<site:result>tableattributes.pdf</site:result>
 			<site:result>tableattributes.rtf</site:result>
+			<site:extrajar>iText-rtf.jar</site:extrajar>
 			<site:description>Generates a table with the TableAttributes object</site:description>
 		</site:example>
 		<site:example>

@@ -1,6 +1,5 @@
 /*
- * $Id: EncodingFont.java 3011 2007-11-22 01:25:32Z xlv $
- * $Name$
+ * $Id: EncodingFont.java 3428 2008-05-24 18:33:09Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -93,7 +92,7 @@ public class EncodingFont {
 	static String cst(char c) {
         if (c == 0)
             return "\u00a0";
-        String s = Integer.toHexString((int)c);
+        String s = Integer.toHexString(c);
         s = s.toUpperCase();
         s = "0000" + s;
         return s.substring(s.length() - 4);

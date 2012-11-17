@@ -1,6 +1,5 @@
 /*
- * $Id: Anchor.java 3004 2007-11-21 15:24:27Z blowagie $
- * $Name$
+ * $Id: Anchor.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -303,51 +302,5 @@ public class Anchor extends Phrase {
             return null;
         }
     }
-    
-    // deprecated stuff
-    
-    /**
-     * Returns an <CODE>Anchor</CODE> that has been constructed taking in account
-     * the value of some <VAR>attributes</VAR>.
-     *
-     * @param	attributes		Some attributes
-     * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getAnchor(Properties)},
-     * scheduled for removel at 2.1.0
-     */
-    public Anchor(java.util.Properties attributes) {
-        this(com.lowagie.text.factories.ElementFactory.getAnchor(attributes));
-    }
-    
-    /**
-	 * Returns the name of this <CODE>Anchor</CODE>.
-	 *
-	 * @return	a name
-	 * @deprecated As of iText 2.0.3, use {@link #getName()} instead,
-	 * scheduled for removal at 2.1.0
-	 */   
-	public String name() {
-		return getName();
-	}
-    
-    /**
-	 * Gets the reference of this <CODE>Anchor</CODE>.
-	 *
-	 * @return	a reference
-	 * @deprecated As of iText 2.0.3, use {@link #getReference()} instead,
-	 * scheduled for removal at 2.1.0
-	 */
-	public String reference() {
-		return getReference();
-	}
-    
-    /**
-	 * Gets the reference of this <CODE>Anchor</CODE>.
-	 *
-	 * @return	an <CODE>URL</CODE>
-	 * @deprecated As of iText 2.0.3, use {@link #getUrl()} instead,
-	 * scheduled for removal at 2.1.0
-	 */
-	public URL url() {
-		return getUrl();
-	}
+
 }

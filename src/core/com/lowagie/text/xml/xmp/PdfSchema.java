@@ -1,6 +1,5 @@
 /*
- * $Id: PdfSchema.java 2364 2006-09-14 22:41:26Z xlv $
- * $Name$
+ * $Id: PdfSchema.java 3676 2009-02-04 09:50:07Z blowagie $
  *
  * Copyright 2005 by Bruno Lowagie.
  *
@@ -64,7 +63,7 @@ public class PdfSchema extends XmpSchema {
 	public static final String DEFAULT_XPATH_URI = "http://ns.adobe.com/pdf/1.3/";
 	
 	/** Keywords. */
-	public static final String KEYWORDS = "pdf:Keywords";
+	public static final String KEYWORDS = "pdf:keywords";
 	/** The PDF file version (for example: 1.0, 1.3, and so on). */
 	public static final String VERSION = "pdf:PDFVersion";
 	/** The Producer. */

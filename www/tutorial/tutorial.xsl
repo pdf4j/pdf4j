@@ -52,11 +52,6 @@
 		
 		<div align="Center"><a href="http://www.prchecker.info/" target="_blank" title="iText, the #1 Java-PDF library">
 		<img src="http://www.prchecker.info/PR1_img.gif" alt="iText, the #1 Java-PDF library" border="0" /></a></div><br />
-		
-<script type="text/javascript"><![CDATA[<!--
-var uri = 'http://imp.tradedoubler.com/imp?type(js)pool(238100)a(1457679)' + new String (Math.random()).substring (2, 11);
-document.write('<sc'+'ript type="text/javascript" src="'+uri+'" charset="ISO-8859-1"></sc'+'ript>');
-//-->]]></script>
 <br />
 <script type="text/javascript"><![CDATA[<!--
 google_ad_client = "pub-0340380473790570";
@@ -119,12 +114,12 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 				<h2><xsl:value-of select="site:metadata/site:title" /></h2>
 				<div id="content">
 					<div class="title">Introduction:</div>
-					<a href="http://itext.ugent.be/itext-in-action/"><img align="right" border="0" src="http://itext.ugent.be/img/lowagie_3d.jpg" /></a>
+					<a href="http://www.1t3xt.com/docs/book.php"><img align="right" border="0" src="http://www.1t3xt.com/img/book/lowagie_3d.jpg" /></a>
 					<blockquote>
 					<p><xsl:value-of select="site:intro" /></p>
 					<p>This tutorial is far from complete; for a more comprehensive
 					overview of iText's functionality, please buy the book
-					<a href="http://itext.ugent.be/itext-in-action/">iText in Action</a>.
+					<a href="http://www.1t3xt.com/docs/book.php">iText in Action</a>.
 					You can also download the first and third chapter for free from
 					<a href="http://www.manning.com/affiliate/idevaffiliate.php?id=223_53">http://manning.com/lowagie/</a>.</p>
 					</blockquote>
@@ -178,17 +173,9 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 
 <!-- links outside -->
 
-	<xsl:template match="site:src">
-		<xsl:param name="class" select="@class" />
-		<xsl:element name="a">
-			<xsl:attribute name="href">http://itext.ugent.be/library/src/<xsl:value-of select="translate($class, '.', '/')" />.java</xsl:attribute>
-			<xsl:value-of select="$class" />
-		</xsl:element>
-	</xsl:template>
-
 	<xsl:template match="site:doc">
 		<xsl:element name="a">
-			<xsl:attribute name="href">http://itext.ugent.be/library/api/<xsl:value-of select="translate(@class, '.', '/')" />.html<xsl:if test="@target">#<xsl:value-of select="@target" /></xsl:if></xsl:attribute>
+			<xsl:attribute name="href">http://www.1t3xt.info/api/<xsl:value-of select="translate(@class, '.', '/')" />.html<xsl:if test="@target">#<xsl:value-of select="@target" /></xsl:if></xsl:attribute>
 			<xsl:value-of select="." />
 		</xsl:element>
 	</xsl:template>
@@ -197,7 +184,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 		<xsl:element name="li">
 			<xsl:element name="a">
 				<xsl:attribute name="class">subtitle</xsl:attribute>
-				<xsl:attribute name="href">http://itext.ugent.be/itext-in-action/chapter.php?chapter=<xsl:value-of select="@chapter" /></xsl:attribute>
+				<xsl:attribute name="href">http://1t3xt.info/examples/browse/?page=toc&amp;id=<xsl:value-of select="@chapter + 5" /></xsl:attribute>
 				Chapter <xsl:value-of select="@chapter" />:
 			</xsl:element>
 			<xsl:variable name="book_toc">./chapters.xml</xsl:variable>
@@ -213,9 +200,9 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 	<xsl:template match="site:book">
 		<xsl:element name="p">
 			<xsl:element name="a">
-				<xsl:attribute name="href">http://itext.ugent.be/itext-in-action/</xsl:attribute>
+				<xsl:attribute name="href">http://www.1t3xt.com/docs/book.php</xsl:attribute>
 				<xsl:element name="img">
-					<xsl:attribute name="src">http://itext.ugent.be/img/lowagie_3d.jpg</xsl:attribute>
+					<xsl:attribute name="src">http://www.1t3xt.com/img/book/lowagie_3d.jpg</xsl:attribute>
 					<xsl:attribute name="border">0</xsl:attribute>
 					<xsl:attribute name="align">right</xsl:attribute>
 				</xsl:element>
@@ -227,7 +214,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 			If you want more recent examples or if you want to know more
 			about the theoretical background of	PDF and iText, please consult the book
 			<xsl:element name="a">
-				<xsl:attribute name="href">http://itext.ugent.be/itext-in-action/</xsl:attribute>
+				<xsl:attribute name="href">http://www.1t3xt.com/docs/book.php</xsl:attribute>
 				"iText in Action".
 			</xsl:element>
 			Note that the first and the third chapter of the book
@@ -272,7 +259,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 				<xsl:if test="$class=./site:java/@src">
 					Example: java
 					<xsl:element name="a">
-						<xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="site:java/@src" />.java</xsl:attribute>
+						<xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="site:java/@src" />.java</xsl:attribute>
 						com.lowagie.examples<xsl:value-of select="translate($branch, '/', '.')" />.<xsl:value-of select="site:java/@src" />
 					</xsl:element>
 					<xsl:if test="count(site:argument)!=0" >
@@ -283,7 +270,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 						<xsl:for-each select="site:result">
 							<xsl:value-of select="string(' ')" />
 							<xsl:element name="a">
-								<xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="." /></xsl:attribute>
+								<xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="." /></xsl:attribute>
 								<xsl:value-of select="." />
 							</xsl:element>
 						</xsl:for-each>
@@ -292,7 +279,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 						<xsl:for-each select="site:path">
 							<xsl:value-of select="string(' ')" />
 							<xsl:element name="a">
-								<xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="." /></xsl:attribute>
+								<xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="." /></xsl:attribute>
 								<xsl:value-of select="@name" />
 							</xsl:element>
 						</xsl:for-each>
@@ -303,7 +290,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 						<xsl:for-each select="site:externalresource">
 							<xsl:value-of select="string(' ')" />
 							<xsl:element name="a">
-								<xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="." /></xsl:attribute>
+								<xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$branch" />/<xsl:value-of select="." /></xsl:attribute>
 								<xsl:value-of select="." />
 							</xsl:element>
 						</xsl:for-each><br />
@@ -349,7 +336,7 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 				<xsl:if test="site:java/@src">
 					<xsl:element name="a">
 						<xsl:attribute name="class">source</xsl:attribute>
-						<xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$dir" />/<xsl:value-of select="site:java/@src" />.java</xsl:attribute>
+						<xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$dir" />/<xsl:value-of select="site:java/@src" />.java</xsl:attribute>
 						<xsl:value-of select="site:java/@src" />
 					</xsl:element><br />
 				</xsl:if>
@@ -376,14 +363,14 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 				<xsl:if test="count(site:externalresource)!=0" >
 					<div class="small">Input:</div>
 					<ul><xsl:for-each select="site:externalresource">
-						<li><xsl:element name="a"><xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$dir" />/<xsl:value-of select="." /></xsl:attribute><xsl:value-of select="." /></xsl:element></li>
+						<li><xsl:element name="a"><xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$dir" />/<xsl:value-of select="." /></xsl:attribute><xsl:value-of select="." /></xsl:element></li>
 					</xsl:for-each></ul>
 				</xsl:if>
 				<xsl:if test="count(site:result)!=0" >
 					<div class="small">Output:</div>
 					<ul><xsl:for-each select="site:result">
 						<li><xsl:element name="a">
-							<xsl:attribute name="href">http://itext.ugent.be/library/com/lowagie/examples<xsl:value-of select="$dir" />/<xsl:value-of select="." /></xsl:attribute>
+							<xsl:attribute name="href">/examples/com/lowagie/examples<xsl:value-of select="$dir" />/<xsl:value-of select="." /></xsl:attribute>
 							<xsl:value-of select="." />
 						</xsl:element></li>
 					</xsl:for-each></ul>
@@ -439,16 +426,6 @@ document.write('<iframe src="http://rcm.amazon.com/e/cm?t=itisacatalofwebp&o=1&p
 							<xsl:attribute name="href">.<xsl:value-of select="$root" />/index.php#<xsl:value-of select="translate(substring($branch, 2), '/', '_')" /></xsl:attribute>
 							Table of Contents
 						</xsl:element>
-						<div align="Center" class="small">Best viewed with:<br />
-						<script type="text/javascript"><![CDATA[<!--
-google_ad_client = "pub-0340380473790570";
-google_ad_width = 180;
-google_ad_height = 60;
-google_ad_format = "180x60_as_rimg";
-google_cpa_choice = "CAAQyaj8zwEaCIwcWMzeycafKMu293M";
-//-->]]></script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script></div>
 						<div class="sidetitle">Sections:</div>
 						<ul>
 							<xsl:for-each select="site:chapter/site:section">

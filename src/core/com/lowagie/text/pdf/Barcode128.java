@@ -1,5 +1,5 @@
 /*
- * $Id: Barcode128.java 2969 2007-10-24 16:30:35Z psoares33 $
+ * $Id: Barcode128.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2002-2006 by Paulo Soares.
  *
@@ -394,7 +394,7 @@ public class Barcode128 extends Barcode{
             if (ucc)
                 out += FNC1_INDEX;
             String out2 = getPackedRawDigits(text, index, 2);
-            index += (int)out2.charAt(0);
+            index += out2.charAt(0);
             out += out2.substring(1);
         }
         else if (c < ' ') {
@@ -423,7 +423,7 @@ public class Barcode128 extends Barcode{
                             currentCode = START_C;
                             out += CODE_AB_TO_C;
                             String out2 = getPackedRawDigits(text, index, 4);
-                            index += (int)out2.charAt(0);
+                            index += out2.charAt(0);
                             out += out2.substring(1);
                         }
                         else {
@@ -448,7 +448,7 @@ public class Barcode128 extends Barcode{
                             currentCode = START_C;
                             out += CODE_AB_TO_C;
                             String out2 = getPackedRawDigits(text, index, 4);
-                            index += (int)out2.charAt(0);
+                            index += out2.charAt(0);
                             out += out2.substring(1);
                         }
                         else {
@@ -470,7 +470,7 @@ public class Barcode128 extends Barcode{
                     {
                         if (isNextDigits(text, index, 2)) {
                             String out2 = getPackedRawDigits(text, index, 2);
-                            index += (int)out2.charAt(0);
+                            index += out2.charAt(0);
                             out += out2.substring(1);
                         }
                         else {
@@ -561,7 +561,7 @@ public class Barcode128 extends Barcode{
     }
     
     /** Places the barcode in a <CODE>PdfContentByte</CODE>. The
-     * barcode is always placed at coodinates (0, 0). Use the
+     * barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.<p>
      * The bars and text are written in the following colors:<p>
      * <P><TABLE BORDER=1>

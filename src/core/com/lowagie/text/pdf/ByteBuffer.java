@@ -1,6 +1,5 @@
 /*
- * $Id: ByteBuffer.java 2382 2006-09-15 23:37:38Z xlv $
- * $Name$
+ * $Id: ByteBuffer.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2000, 2001, 2002 by Paulo Soares.
  *
@@ -143,7 +142,7 @@ public class ByteBuffer extends OutputStream {
      * Converts an double (multiplied by 100 and cast to an int) into an array of bytes.
      *
      * @param   i   the int
-     * @return  a bytearray
+     * @return  a byte array
      */
     
     private static byte[] convertToBytes(int i) {

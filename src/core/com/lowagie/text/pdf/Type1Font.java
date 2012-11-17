@@ -1,6 +1,5 @@
 /*
- * $Id: Type1Font.java 3059 2007-12-03 17:29:20Z psoares33 $
- * $Name$
+ * $Id: Type1Font.java 3718 2009-02-23 16:56:55Z blowagie $
  *
  * Copyright 2001-2006 Paulo Soares
  *
@@ -56,6 +55,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.fonts.FontsResourceAnchor;
 
@@ -167,9 +167,10 @@ class Type1Font extends BaseFont
      * @param emb true if the font is to be embedded in the PDF
      * @throws DocumentException the AFM file is invalid
      * @throws IOException the AFM file could not be read
+     * @since	2.1.5
      */
-    Type1Font(String afmFile, String enc, boolean emb, byte ttfAfm[], byte pfb[]) throws DocumentException, IOException
-    {
+    Type1Font(String afmFile, String enc, boolean emb, byte ttfAfm[], byte pfb[], boolean forceRead)
+    	throws DocumentException, IOException {
         if (emb && ttfAfm != null && pfb == null)
             throw new DocumentException("Two byte arrays are needed if the Type1 font is embedded.");
         if (emb && ttfAfm != null)
@@ -230,7 +231,7 @@ class Type1Font extends BaseFont
         else if (afmFile.toLowerCase().endsWith(".afm")) {
             try {
                 if (ttfAfm == null)
-                    rf = new RandomAccessFileOrArray(afmFile);
+                    rf = new RandomAccessFileOrArray(afmFile, forceRead, Document.plainRandomAccess);
                 else
                     rf = new RandomAccessFileOrArray(ttfAfm);
                 process(rf);
@@ -250,7 +251,7 @@ class Type1Font extends BaseFont
             try {
                 ByteArrayOutputStream ba = new ByteArrayOutputStream();
                 if (ttfAfm == null)
-                    rf = new RandomAccessFileOrArray(afmFile);
+                    rf = new RandomAccessFileOrArray(afmFile, forceRead, Document.plainRandomAccess);
                 else
                     rf = new RandomAccessFileOrArray(ttfAfm);
                 Pfm2afm.convert(rf, ba);
@@ -310,12 +311,12 @@ class Type1Font extends BaseFont
  * @param char2 the second char
  * @return the kerning to be applied
  */
-    public int getKerning(char char1, char char2)
+    public int getKerning(int char1, int char2)
     {
-        String first = GlyphList.unicodeToName((int)char1);
+        String first = GlyphList.unicodeToName(char1);
         if (first == null)
             return 0;
-        String second = GlyphList.unicodeToName((int)char2);
+        String second = GlyphList.unicodeToName(char2);
         if (second == null)
             return 0;
         Object obj[] = (Object[])KernPairs.get(first);
@@ -495,8 +496,9 @@ class Type1Font extends BaseFont
  * otherwise the font is read and output in a PdfStream object.
  * @return the PdfStream containing the font or <CODE>null</CODE>
  * @throws DocumentException if there is an error reading the font
+ * @since 2.1.3
  */
-    private PdfStream getFontStream() throws DocumentException
+    public PdfStream getFullFontStream() throws DocumentException
     {
         if (builtinFont || !embedded)
             return null;
@@ -504,7 +506,7 @@ class Type1Font extends BaseFont
         try {
             String filePfb = fileName.substring(0, fileName.length() - 3) + "pfb";
             if (pfb == null)
-                rf = new RandomAccessFileOrArray(filePfb);
+                rf = new RandomAccessFileOrArray(filePfb, true, Document.plainRandomAccess);
             else
                 rf = new RandomAccessFileOrArray(pfb);
             int fileLength = rf.length();
@@ -529,7 +531,7 @@ class Type1Font extends BaseFont
                     size -= got;
                 }
             }
-            return new StreamFont(st, lengths);
+            return new StreamFont(st, lengths, compressionLevel);
         }
         catch (Exception e) {
             throw new DocumentException(e);
@@ -659,7 +661,7 @@ class Type1Font extends BaseFont
         PdfIndirectReference ind_font = null;
         PdfObject pobj = null;
         PdfIndirectObject obj = null;
-        pobj = getFontStream();
+        pobj = getFullFontStream();
         if (pobj != null){
             obj = writer.addToBody(pobj);
             ind_font = obj.getIndirectReference();
@@ -779,11 +781,11 @@ class Type1Font extends BaseFont
      * @param kern the kerning to apply in normalized 1000 units
      * @return <code>true</code> if the kerning was applied, <code>false</code> otherwise
      */
-    public boolean setKerning(char char1, char char2, int kern) {
-        String first = GlyphList.unicodeToName((int)char1);
+    public boolean setKerning(int char1, int char2, int kern) {
+        String first = GlyphList.unicodeToName(char1);
         if (first == null)
             return false;
-        String second = GlyphList.unicodeToName((int)char2);
+        String second = GlyphList.unicodeToName(char2);
         if (second == null)
             return false;
         Object obj[] = (Object[])KernPairs.get(first);

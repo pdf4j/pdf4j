@@ -1,6 +1,5 @@
 /*
- * $Id: RtfTOCandCellborders.java 2365 2006-09-14 22:52:48Z xlv $
- * $Name$
+ * $Id: RtfTOCandCellborders.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:

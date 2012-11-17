@@ -7,7 +7,7 @@
 		<site:title>iText Toolbox</site:title>
 		<site:summary>A Java Web Start application that allows you to do lots of cool stuff with PDF</site:summary>
 		<site:keywords>PDF, JAVA, iText, Toolbox, Lowagie, Bruno</site:keywords>
-		<site:updated>$Date: 2007-02-08 03:21:02 -0500 (Thu, 08 Feb 2007) $</site:updated>
+		<site:updated>$Date: 2009-06-28 09:22:47 -0400 (Sun, 28 Jun 2009) $</site:updated>
 	</site:metadata>
 	<site:content>
 	<div>
@@ -20,9 +20,9 @@ You can execute it with:
 java -jar iText.jar
 </pre>
 Or you can install it as a Java Web Start (JWS) application, just by clicking this
-<a href="http://itext.ugent.be/library/itext.jnlp">JNLP</a>-file.<br />
+<a href="http://1t3xt.com/jnlp/toolbox.jnlp">JNLP</a>-file.<br />
 All tools can also be called from the commandline with the same arguments in the same order as documented below.
-Or you can call the tools from your own Java applications (see the <a href="http://itext.ugent.be/library/api/com/lowagie/tools/plugins/package-summary.html">API</a> for more info).
+Or you can call the tools from your own Java applications.
 </div>
 
 <div class="title">Convert2Pdf</div>

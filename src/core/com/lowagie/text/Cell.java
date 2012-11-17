@@ -1,6 +1,5 @@
 /*
- * $Id: Cell.java 3004 2007-11-21 15:24:27Z blowagie $
- * $Name$
+ * $Id: Cell.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -490,7 +489,7 @@ public class Cell extends Rectangle implements TextElementArray {
 
 	/**
 	 * Sets the value of useBorderPadding.
-	 * @param use adjust layour for borders if true
+	 * @param use adjust layout for borders if true
 	 */
 	public void setUseBorderPadding(boolean use) {
 	    useBorderPadding = use;
@@ -753,29 +752,9 @@ public class Cell extends Rectangle implements TextElementArray {
 	/**
 	 * This method throws an <CODE>UnsupportedOperationException</CODE>.
 	 * @return NA
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getTop()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float top() {
-		return getTop();
-	}
-
-	/**
-	 * This method throws an <CODE>UnsupportedOperationException</CODE>.
-	 * @return NA
 	 */
 	public float getTop() {
 		throw new UnsupportedOperationException("Dimensions of a Cell can't be calculated. See the FAQ.");
-	}
-
-	/**
-	 * This method throws an <CODE>UnsupportedOperationException</CODE>.
-	 * @return NA
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getBottom()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float bottom() {
-		return getBottom();
 	}
 
 	/**
@@ -789,29 +768,9 @@ public class Cell extends Rectangle implements TextElementArray {
 	/**
 	 * This method throws an <CODE>UnsupportedOperationException</CODE>.
 	 * @return NA
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getLeft()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float left() {
-		return getLeft();
-	}
-
-	/**
-	 * This method throws an <CODE>UnsupportedOperationException</CODE>.
-	 * @return NA
 	 */
 	public float getLeft() {
 		throw new UnsupportedOperationException("Dimensions of a Cell can't be calculated. See the FAQ.");
-	}
-
-	/**
-	 * This method throws an <CODE>UnsupportedOperationException</CODE>.
-	 * @return NA
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getRight()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float right() {
-		return getRight();
 	}
 
 	/**
@@ -889,126 +848,5 @@ public class Cell extends Rectangle implements TextElementArray {
 	public void setRight(int value) {
 		throw new UnsupportedOperationException("Dimensions of a Cell are attributed automagically. See the FAQ.");
 	}
-    
-// deprecated stuff
 
-	/**
-	 * Returns a <CODE>Cell</CODE> that has been constructed taking in account
-	 * the value of some <VAR>attributes</VAR>.
-	 *
-	 * @param	attributes		Some attributes
-	 * @deprecated As of iText 2.0.3, use {@link com.lowagie.text.factories.ElementFactory#getCell(Properties)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public Cell(java.util.Properties attributes) {
-		this();
-		Cell tmp = com.lowagie.text.factories.ElementFactory.getCell(attributes);
-		this.cloneNonPositionParameters(tmp);
-		this.setHorizontalAlignment(tmp.getHorizontalAlignment());
-		this.setVerticalAlignment(tmp.getVerticalAlignment());
-		this.setWidth(tmp.getWidth());
-		this.setColspan(tmp.getColspan());
-		this.setRowspan(tmp.getRowspan());
-		this.setLeading(tmp.getLeading());
-		this.setHeader(tmp.isHeader());
-		this.setMaxLines(tmp.getMaxLines());
-	}
-    
-    /**
-	 * Gets the horizontal alignment.
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getHorizontalAlignment()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int horizontalAlignment() {
-		return getHorizontalAlignment();
-	}
-
-    /**
-	 * Gets the vertical alignment.
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getVerticalAlignment()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int verticalAlignment() {
-		return getVerticalAlignment();
-	}
-
-	/**
-	 * Gets the width.
-	 *
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getWidthAsString()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public String cellWidth() {
-		return getWidthAsString();
-	}
-	
-	/**
-	 * Gets the colspan.
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getColspan()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int colspan() {
-		return getColspan();
-	}
-
-	/**
-	 * Gets the rowspan.
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getRowspan()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public int rowspan() {
-		return getRowspan();
-	}
-	
-	/**
-	 * Gets the leading.
-	 *
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getLeading()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public float leading() {
-		return getLeading();
-	}
-
-	/**
-	 * Is this <CODE>Cell</CODE> a header?
-	 *
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, replaced by {@link #isHeader()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public boolean header() {
-		return isHeader();
-	}
-
-	/**
-	 * Set nowrap.
-	 *
-	 * @param	value	the new value
-	 * @deprecated As of iText 2.0.3, use setMaxLines(1) instead,
-	 * scheduled for removal at 2.1.0
-	 */
-	public void setNoWrap(boolean value) {
-		if (value)
-			maxLines = 1;
-		else
-			maxLines = Integer.MAX_VALUE;
-	}
-
-	/**
-	 * Get nowrap.
-	 *
-	 * @return	a value
-	 * @deprecated As of iText 2.0.3, use getMaxLines() == 1 instead,
-	 * scheduled for removal at 2.1.0
-	 */
-	public boolean noWrap() {
-		return maxLines == 1;
-	}
 }

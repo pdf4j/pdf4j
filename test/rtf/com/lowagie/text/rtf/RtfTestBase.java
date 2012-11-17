@@ -1,6 +1,5 @@
 /*
- * $Id: RtfAddableElement.java 2996 2007-11-20 22:40:36Z hallm $
- * $Name$
+ * $Id: RtfTestBase.java 3664 2009-01-26 22:11:53Z xlv $
  *
  * Copyright 2007 by Mark Hall
  *
@@ -56,20 +55,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Assert;
+import org.junit.Test;
 
+import com.lowagie.text.DocWriter;
 import com.lowagie.text.rtf.document.RtfDocument;
-
-import junit.framework.TestCase;
 
 /**
  * The <code>RtfTestBase</code> is a junit test case that provides
  * helper methods for the actual RTF test cases.
  * 
- * @version $Id:$
+ * @version $Id: RtfTestBase.java 3664 2009-01-26 22:11:53Z xlv $
  * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  * @since 2.0.8
  */
-public class RtfTestBase extends TestCase {
+public class RtfTestBase {
     
     /**
      * The <code>RtfDocument</code> to use for testing.
@@ -77,7 +76,7 @@ public class RtfTestBase extends TestCase {
     protected RtfDocument rtfDoc = null;
     
     /**
-     * Constructs a new <code>RtfTestBase</code>, initialising
+     * Constructs a new <code>RtfTestBase</code>, initializing
      * the <code>RtfDocument</code>.
      */
     public RtfTestBase() {
@@ -103,6 +102,7 @@ public class RtfTestBase extends TestCase {
      * 
      * @throws IOException On I/O errors.
      */
+    @Test
     public void testSelfEmpty() throws IOException {
         assertEquals("", new ByteArrayOutputStream());
     }
@@ -112,9 +112,10 @@ public class RtfTestBase extends TestCase {
      * 
      * @throws IOException On I/O errors.
      */
+    @Test
     public void testSelfSpecialChar() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        out.write("\n\t".getBytes());
+        out.write(DocWriter.getISOBytes("\n\t"));
         assertEquals("\n\t", out);
     }
     
@@ -123,13 +124,14 @@ public class RtfTestBase extends TestCase {
      * 
      * @throws IOException On I/O errors.
      */
+    @Test
     public void testRandomText() throws IOException {
         StringBuffer text = new StringBuffer();
         for(int i = 0; i < 100; i++) {
             text.append(Character.toString((char) (Math.random() * 52)));
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        out.write(text.toString().getBytes());
+        out.write(DocWriter.getISOBytes(text.toString()));
         assertEquals(text.toString(), out);
     }
 }

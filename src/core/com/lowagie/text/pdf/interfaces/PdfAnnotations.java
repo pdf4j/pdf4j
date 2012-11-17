@@ -1,5 +1,5 @@
 /*
- * $Id: PdfAnnotations.java 2569 2007-02-06 13:10:39Z blowagie $
+ * $Id: PdfAnnotations.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2006 Bruno Lowagie
  *

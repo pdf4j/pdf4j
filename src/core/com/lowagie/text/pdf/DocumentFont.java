@@ -47,7 +47,6 @@
 package com.lowagie.text.pdf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.lowagie.text.DocumentException;
@@ -64,6 +63,7 @@ public class DocumentFont extends BaseFont {
     private PRIndirectReference refFont;
     private PdfDictionary font;
     private IntHashtable uni2byte = new IntHashtable();
+    private IntHashtable diffmap;
     private float Ascender = 800;
     private float CapHeight = 700;
     private float Descender = -200;
@@ -114,8 +114,8 @@ public class DocumentFont extends BaseFont {
         this.refFont = refFont;
         fontType = FONT_TYPE_DOCUMENT;
         font = (PdfDictionary)PdfReader.getPdfObject(refFont);
-        fontName = PdfName.decodeName(((PdfName)PdfReader.getPdfObject(font.get(PdfName.BASEFONT))).toString());
-        PdfName subType = (PdfName)PdfReader.getPdfObject(font.get(PdfName.SUBTYPE));
+        fontName = PdfName.decodeName(font.getAsName(PdfName.BASEFONT).toString());
+        PdfName subType = font.getAsName(PdfName.SUBTYPE);
         if (PdfName.TYPE1.equals(subType) || PdfName.TRUETYPE.equals(subType))
             doType1TT();
         else {
@@ -131,7 +131,7 @@ public class DocumentFont extends BaseFont {
                     return;
                 }
             }
-            String enc = PdfName.decodeName(((PdfName)PdfReader.getPdfObject(font.get(PdfName.ENCODING))).toString());
+            String enc = PdfName.decodeName(font.getAsName(PdfName.ENCODING).toString());
             for (int k = 0; k < cjkEncs2.length; ++k) {
                 if (enc.startsWith(cjkEncs2[k])) {
                     try {
@@ -154,9 +154,9 @@ public class DocumentFont extends BaseFont {
     
     private void processType0(PdfDictionary font) {
         try {
-            byte[] touni = PdfReader.getStreamBytes((PRStream)PdfReader.getPdfObjectRelease(font.get(PdfName.TOUNICODE)));
+            PdfObject toUniObject = PdfReader.getPdfObjectRelease(font.get(PdfName.TOUNICODE));
             PdfArray df = (PdfArray)PdfReader.getPdfObjectRelease(font.get(PdfName.DESCENDANTFONTS));
-            PdfDictionary cidft = (PdfDictionary)PdfReader.getPdfObjectRelease((PdfObject)df.getArrayList().get(0));
+            PdfDictionary cidft = (PdfDictionary)PdfReader.getPdfObjectRelease(df.getPdfObject(0));
             PdfNumber dwo = (PdfNumber)PdfReader.getPdfObjectRelease(cidft.get(PdfName.DW));
             int dw = 1000;
             if (dwo != null)
@@ -164,7 +164,10 @@ public class DocumentFont extends BaseFont {
             IntHashtable widths = readWidths((PdfArray)PdfReader.getPdfObjectRelease(cidft.get(PdfName.W)));
             PdfDictionary fontDesc = (PdfDictionary)PdfReader.getPdfObjectRelease(cidft.get(PdfName.FONTDESCRIPTOR));
             fillFontDesc(fontDesc);
-            fillMetrics(touni, widths, dw);
+            if (toUniObject != null){
+                fillMetrics(PdfReader.getStreamBytes((PRStream)toUniObject), widths, dw);
+            }
+            
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -174,20 +177,19 @@ public class DocumentFont extends BaseFont {
         IntHashtable hh = new IntHashtable();
         if (ws == null)
             return hh;
-        ArrayList ar = ws.getArrayList();
-        for (int k = 0; k < ar.size(); ++k) {
-            int c1 = ((PdfNumber)PdfReader.getPdfObjectRelease((PdfObject)ar.get(k))).intValue();
-            PdfObject obj = PdfReader.getPdfObjectRelease((PdfObject)ar.get(++k));
+        for (int k = 0; k < ws.size(); ++k) {
+            int c1 = ((PdfNumber)PdfReader.getPdfObjectRelease(ws.getPdfObject(k))).intValue();
+            PdfObject obj = PdfReader.getPdfObjectRelease(ws.getPdfObject(++k));
             if (obj.isArray()) {
-                ArrayList ar2 = ((PdfArray)obj).getArrayList();
-                for (int j = 0; j < ar2.size(); ++j) {
-                    int c2 = ((PdfNumber)PdfReader.getPdfObjectRelease((PdfObject)ar2.get(j))).intValue();
+                PdfArray a2 = (PdfArray)obj;
+                for (int j = 0; j < a2.size(); ++j) {
+                    int c2 = ((PdfNumber)PdfReader.getPdfObjectRelease(a2.getPdfObject(j))).intValue();
                     hh.put(c1++, c2);
                 }
             }
             else {
                 int c2 = ((PdfNumber)obj).intValue();
-                int w = ((PdfNumber)PdfReader.getPdfObjectRelease((PdfObject)ar.get(++k))).intValue();
+                int w = ((PdfNumber)PdfReader.getPdfObjectRelease(ws.getPdfObject(++k))).intValue();
                 for (; c1 <= c2; ++c1)
                     hh.put(c1, w);
             }
@@ -215,8 +217,8 @@ public class DocumentFont extends BaseFont {
                             String cid = decodeString((PdfString)ps.readPRObject());
                             String uni = decodeString((PdfString)ps.readPRObject());
                             if (uni.length() == 1) {
-                                int cidc = (int)cid.charAt(0);
-                                int unic = (int)uni.charAt(uni.length() - 1);
+                                int cidc = cid.charAt(0);
+                                int unic = uni.charAt(uni.length() - 1);
                                 int w = dw;
                                 if (widths.containsKey(cidc))
                                     w = widths.get(cidc);
@@ -229,13 +231,13 @@ public class DocumentFont extends BaseFont {
                         for (int k = 0; k < n; ++k) {
                             String cid1 = decodeString((PdfString)ps.readPRObject());
                             String cid2 = decodeString((PdfString)ps.readPRObject());
-                            int cid1c = (int)cid1.charAt(0);
-                            int cid2c = (int)cid2.charAt(0);
+                            int cid1c = cid1.charAt(0);
+                            int cid2c = cid2.charAt(0);
                             PdfObject ob2 = ps.readPRObject();
                             if (ob2.isString()) {
                                 String uni = decodeString((PdfString)ob2);
                                 if (uni.length() == 1) {
-                                    int unic = (int)uni.charAt(uni.length() - 1);
+                                    int unic = uni.charAt(uni.length() - 1);
                                     for (; cid1c <= cid2c; cid1c++, unic++) {
                                         int w = dw;
                                         if (widths.containsKey(cid1c))
@@ -245,11 +247,11 @@ public class DocumentFont extends BaseFont {
                                 }
                             }
                             else {
-                                ArrayList ar = ((PdfArray)ob2).getArrayList();
-                                for (int j = 0; j < ar.size(); ++j, ++cid1c) {
-                                    String uni = decodeString((PdfString)ar.get(j));
+                                PdfArray a = (PdfArray)ob2;
+                                for (int j = 0; j < a.size(); ++j, ++cid1c) {
+                                    String uni = decodeString(a.getAsString(j));
                                     if (uni.length() == 1) {
-                                        int unic = (int)uni.charAt(uni.length() - 1);
+                                        int unic = uni.charAt(uni.length() - 1);
                                         int w = dw;
                                         if (widths.containsKey(cid1c))
                                             w = widths.get(cid1c);
@@ -283,27 +285,29 @@ public class DocumentFont extends BaseFont {
                     fillEncoding(null);
                 else
                     fillEncoding((PdfName)enc);
-                PdfArray diffs = (PdfArray)PdfReader.getPdfObject(encDic.get(PdfName.DIFFERENCES));
+                PdfArray diffs = encDic.getAsArray(PdfName.DIFFERENCES);
                 if (diffs != null) {
-                    ArrayList dif = diffs.getArrayList();
+                    diffmap = new IntHashtable();
                     int currentNumber = 0;
-                    for (int k = 0; k < dif.size(); ++k) {
-                        PdfObject obj = (PdfObject)dif.get(k);
+                    for (int k = 0; k < diffs.size(); ++k) {
+                        PdfObject obj = diffs.getPdfObject(k);
                         if (obj.isNumber())
                             currentNumber = ((PdfNumber)obj).intValue();
                         else {
                             int c[] = GlyphList.nameToUnicode(PdfName.decodeName(((PdfName)obj).toString()));
-                            if (c != null && c.length > 0)
+                            if (c != null && c.length > 0) {
                                 uni2byte.put(c[0], currentNumber);
+                                diffmap.put(c[0], currentNumber);
+                            }
                             ++currentNumber;
                         }
                     }
                 }
             }
         }
-        PdfArray newWidths = (PdfArray)PdfReader.getPdfObject(font.get(PdfName.WIDTHS));
-        PdfNumber first = (PdfNumber)PdfReader.getPdfObject(font.get(PdfName.FIRSTCHAR));
-        PdfNumber last = (PdfNumber)PdfReader.getPdfObject(font.get(PdfName.LASTCHAR));
+        PdfArray newWidths = font.getAsArray(PdfName.WIDTHS);
+        PdfNumber first = font.getAsNumber(PdfName.FIRSTCHAR);
+        PdfNumber last = font.getAsNumber(PdfName.LASTCHAR);
         if (BuiltinFonts14.containsKey(fontName)) {
             BaseFont bf;
             try {
@@ -317,6 +321,14 @@ public class DocumentFont extends BaseFont {
                 int n = uni2byte.get(e[k]);
                 widths[n] = bf.getRawWidth(n, GlyphList.unicodeToName(e[k]));
             }
+            if (diffmap != null) { //widths for diffmap must override existing ones
+                e = diffmap.toOrderedKeys();
+                for (int k = 0; k < e.length; ++k) {
+                    int n = diffmap.get(e[k]);
+                    widths[n] = bf.getRawWidth(n, GlyphList.unicodeToName(e[k]));
+                }
+                diffmap = null;
+            }
             Ascender = bf.getFontDescriptor(ASCENT, 1000);
             CapHeight = bf.getFontDescriptor(CAPHEIGHT, 1000);
             Descender = bf.getFontDescriptor(DESCENT, 1000);
@@ -328,36 +340,34 @@ public class DocumentFont extends BaseFont {
         }
         if (first != null && last != null && newWidths != null) {
             int f = first.intValue();
-            ArrayList ar = newWidths.getArrayList();
-            for (int k = 0; k < ar.size(); ++k) {
-                widths[f + k] = ((PdfNumber)ar.get(k)).intValue();
+            for (int k = 0; k < newWidths.size(); ++k) {
+                widths[f + k] = newWidths.getAsNumber(k).intValue();
             }
         }
-        fillFontDesc((PdfDictionary)PdfReader.getPdfObject(font.get(PdfName.FONTDESCRIPTOR)));
+        fillFontDesc(font.getAsDict(PdfName.FONTDESCRIPTOR));
     }
     
     private void fillFontDesc(PdfDictionary fontDesc) {
         if (fontDesc == null)
             return;
-        PdfNumber v = (PdfNumber)PdfReader.getPdfObject(fontDesc.get(PdfName.ASCENT));
+        PdfNumber v = fontDesc.getAsNumber(PdfName.ASCENT);
         if (v != null)
             Ascender = v.floatValue();
-        v = (PdfNumber)PdfReader.getPdfObject(fontDesc.get(PdfName.CAPHEIGHT));
+        v = fontDesc.getAsNumber(PdfName.CAPHEIGHT);
         if (v != null)
             CapHeight = v.floatValue();
-        v = (PdfNumber)PdfReader.getPdfObject(fontDesc.get(PdfName.DESCENT));
+        v = fontDesc.getAsNumber(PdfName.DESCENT);
         if (v != null)
             Descender = v.floatValue();
-        v = (PdfNumber)PdfReader.getPdfObject(fontDesc.get(PdfName.ITALICANGLE));
+        v = fontDesc.getAsNumber(PdfName.ITALICANGLE);
         if (v != null)
             ItalicAngle = v.floatValue();
-        PdfArray bbox = (PdfArray)PdfReader.getPdfObject(fontDesc.get(PdfName.FONTBBOX));
+        PdfArray bbox = fontDesc.getAsArray(PdfName.FONTBBOX);
         if (bbox != null) {
-            ArrayList ar = bbox.getArrayList();
-            llx = ((PdfNumber)ar.get(0)).floatValue();
-            lly = ((PdfNumber)ar.get(1)).floatValue();
-            urx = ((PdfNumber)ar.get(2)).floatValue();
-            ury = ((PdfNumber)ar.get(3)).floatValue();
+            llx = bbox.getAsNumber(0).floatValue();
+            lly = bbox.getAsNumber(1).floatValue();
+            urx = bbox.getAsNumber(2).floatValue();
+            ury = bbox.getAsNumber(3).floatValue();
             if (llx > urx) {
                 float t = llx;
                 llx = urx;
@@ -381,12 +391,14 @@ public class DocumentFont extends BaseFont {
                 enc = MACROMAN;
             String cv = PdfEncodings.convertToString(b, enc);
             char arr[] = cv.toCharArray();
-            for (int k = 0; k < 256; ++k)
+            for (int k = 0; k < 256; ++k) {
                 uni2byte.put(arr[k], k);
+            }
         }
         else {
-            for (int k = 0; k < 256; ++k)
+            for (int k = 0; k < 256; ++k) {
                 uni2byte.put(stdEnc[k], k);
+            }
         }
     }
     
@@ -474,7 +486,7 @@ public class DocumentFont extends BaseFont {
      * @return the kerning to be applied
      *
      */
-    public int getKerning(char char1, char char2) {
+    public int getKerning(int char1, int char2) {
         return 0;
     }
     
@@ -515,17 +527,26 @@ public class DocumentFont extends BaseFont {
      */
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
     }
+    
+    /**
+     * Always returns null.
+     * @return	null
+     * @since	2.1.3
+     */
+    public PdfStream getFullFontStream() {
+    	return null;
+    }
 
     /**
      * Gets the width of a <CODE>char</CODE> in normalized 1000 units.
      * @param char1 the unicode <CODE>char</CODE> to get the width of
      * @return the width in normalized 1000 units
      */
-    public int getWidth(char char1) {
+    public int getWidth(int char1) {
         if (cjkMirror != null)
             return cjkMirror.getWidth(char1);
         else if (isType0) {
-            int[] ws = (int[])metrics.get(new Integer((int)char1));
+            int[] ws = (int[])metrics.get(new Integer(char1));
             if (ws != null)
                 return ws[1];
             else
@@ -543,7 +564,7 @@ public class DocumentFont extends BaseFont {
             int len = chars.length;
             int total = 0;
             for (int k = 0; k < len; ++k) {
-                int[] ws = (int[])metrics.get(new Integer((int)chars[k]));
+                int[] ws = (int[])metrics.get(new Integer(chars[k]));
                 if (ws != null)
                     total += ws[1];
             }
@@ -562,7 +583,7 @@ public class DocumentFont extends BaseFont {
             byte[] b = new byte[len * 2];
             int bptr = 0;
             for (int k = 0; k < len; ++k) {
-                int[] ws = (int[])metrics.get(new Integer((int)chars[k]));
+                int[] ws = (int[])metrics.get(new Integer(chars[k]));
                 if (ws != null) {
                     int g = ws[0];
                     b[bptr++] = (byte)(g / 256);
@@ -595,11 +616,11 @@ public class DocumentFont extends BaseFont {
         }
     }
     
-    byte[] convertToBytes(char char1) {
+    byte[] convertToBytes(int char1) {
         if (cjkMirror != null)
-            return PdfEncodings.convertToBytes(char1, CJKFont.CJK_ENCODING);
+            return PdfEncodings.convertToBytes((char)char1, CJKFont.CJK_ENCODING);
         else if (isType0) {
-            int[] ws = (int[])metrics.get(new Integer((int)char1));
+            int[] ws = (int[])metrics.get(new Integer(char1));
             if (ws != null) {
                 int g = ws[0];
                 return new byte[]{(byte)(g / 256), (byte)(g)};
@@ -619,11 +640,11 @@ public class DocumentFont extends BaseFont {
         return refFont;
     }
     
-    public boolean charExists(char c) {
+    public boolean charExists(int c) {
         if (cjkMirror != null)
             return cjkMirror.charExists(c);
         else if (isType0) {
-            return metrics.containsKey(new Integer((int)c));
+            return metrics.containsKey(new Integer(c));
         }
         else
             return super.charExists(c);
@@ -637,15 +658,24 @@ public class DocumentFont extends BaseFont {
     public void setPostscriptFontName(String name) {
     }
     
-    public boolean setKerning(char char1, char char2, int kern) {
+    public boolean setKerning(int char1, int char2, int kern) {
         return false;
     }
     
-    public int[] getCharBBox(char c) {
+    public int[] getCharBBox(int c) {
         return null;
     }
     
     protected int[] getRawCharBBox(int c, String name) {
         return null;
+    }
+    
+    /**
+     * Exposes the unicode - > CID map that is constructed from the font's encoding
+     * @return the unicode to CID map
+     * @since 2.1.7
+     */
+    IntHashtable getUni2Byte(){
+        return uni2byte;
     }
 }

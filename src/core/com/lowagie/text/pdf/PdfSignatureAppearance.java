@@ -1,5 +1,5 @@
 /*
- * $Id: PdfSignatureAppearance.java 2752 2007-05-15 14:58:33Z blowagie $
+ * $Id: PdfSignatureAppearance.java 3905 2009-04-24 10:40:24Z blowagie $
  *
  * Copyright 2004-2006 by Paulo Soares.
  *
@@ -59,7 +59,6 @@ import java.security.cert.CRL;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -293,19 +292,18 @@ public class PdfSignatureAppearance {
         AcroFields.Item item = af.getFieldItem(fieldName);
         if (item == null)
             throw new IllegalArgumentException("The field " + fieldName + " does not exist.");
-        PdfDictionary merged = (PdfDictionary)item.merged.get(0);
+        PdfDictionary merged = item.getMerged(0);
         if (!PdfName.SIG.equals(PdfReader.getPdfObject(merged.get(PdfName.FT))))
             throw new IllegalArgumentException("The field " + fieldName + " is not a signature field.");
         this.fieldName = fieldName;
-        PdfArray r = (PdfArray)PdfReader.getPdfObject(merged.get(PdfName.RECT));
-        ArrayList ar = r.getArrayList();
-        float llx = ((PdfNumber)PdfReader.getPdfObject((PdfObject)ar.get(0))).floatValue();
-        float lly = ((PdfNumber)PdfReader.getPdfObject((PdfObject)ar.get(1))).floatValue();
-        float urx = ((PdfNumber)PdfReader.getPdfObject((PdfObject)ar.get(2))).floatValue();
-        float ury = ((PdfNumber)PdfReader.getPdfObject((PdfObject)ar.get(3))).floatValue();
+        PdfArray r = merged.getAsArray(PdfName.RECT);
+        float llx = r.getAsNumber(0).floatValue();
+        float lly = r.getAsNumber(1).floatValue();
+        float urx = r.getAsNumber(2).floatValue();
+        float ury = r.getAsNumber(3).floatValue();
         pageRect = new Rectangle(llx, lly, urx, ury);
         pageRect.normalize();
-        page = ((Integer)item.page.get(0)).intValue();
+        page = item.getPage(0).intValue();
         int rotation = writer.reader.getPageRotation(page);
         Rectangle pageSize = writer.reader.getPageSizeWithRotation(page);
         switch (rotation) {
@@ -850,7 +848,7 @@ public class PdfSignatureAppearance {
      * <p>
      * If calling preClose() <B>dont't</B> call PdfStamper.close().
      * <p>
-     * No external signatures are allowed if this methos is called.
+     * No external signatures are allowed if this method is called.
      * @throws IOException on error
      * @throws DocumentException on error
      */    
@@ -880,18 +878,18 @@ public class PdfSignatureAppearance {
         AcroFields af = writer.getAcroFields();
         String name = getFieldName();
         boolean fieldExists = !(isInvisible() || isNewField());
-        int flags = PdfAnnotation.FLAGS_PRINT | PdfAnnotation.FLAGS_LOCKED;
         PdfIndirectReference refSig = writer.getPdfIndirectReference();
         writer.setSigFlags(3);
         if (fieldExists) {
-            ArrayList widgets = af.getFieldItem(name).widgets;
-            PdfDictionary widget = (PdfDictionary)widgets.get(0);
+            PdfDictionary widget = af.getFieldItem(name).getWidget(0);
             writer.markUsed(widget);
             widget.put(PdfName.P, writer.getPageReference(getPage()));
             widget.put(PdfName.V, refSig);
             PdfObject obj = PdfReader.getPdfObjectRelease(widget.get(PdfName.F));
+            int flags = 0;
             if (obj != null && obj.isNumber())
-                flags = ((PdfNumber)obj).intValue() | PdfAnnotation.FLAGS_LOCKED;
+                flags = ((PdfNumber)obj).intValue();
+            flags |= PdfAnnotation.FLAGS_LOCKED;
             widget.put(PdfName.F, new PdfNumber(flags));
             PdfDictionary ap = new PdfDictionary();
             ap.put(PdfName.N, getAppearance().getIndirectReference());
@@ -901,7 +899,7 @@ public class PdfSignatureAppearance {
             PdfFormField sigField = PdfFormField.createSignature(writer);
             sigField.setFieldName(name);
             sigField.put(PdfName.V, refSig);
-            sigField.setFlags(flags);
+            sigField.setFlags(PdfAnnotation.FLAGS_PRINT | PdfAnnotation.FLAGS_LOCKED);
 
             int pagen = getPage();
             if (!isInvisible())
@@ -1202,7 +1200,7 @@ public class PdfSignatureAppearance {
     }
     
     /**
-     * Acrobat 6.0 and higher recomends that only layer n2 and n4 be present. This method sets that mode.
+     * Acrobat 6.0 and higher recommends that only layer n2 and n4 be present. This method sets that mode.
      * @param acro6Layers if <code>true</code> only the layers n2 and n4 will be present
      */
     public void setAcro6Layers(boolean acro6Layers) {

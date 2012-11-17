@@ -1,6 +1,5 @@
 /*
- * $Id: BadPdfFormatException.java 2367 2006-09-14 23:39:21Z xlv $
- * $Name$
+ * $Id: BadPdfFormatException.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -68,7 +67,7 @@ public class BadPdfFormatException extends PdfException {
 private static final long serialVersionUID = 1802317735708833538L;
 
 /**
- * Constructs a <CODE>BadPdfFormatException</CODE> whithout a message.
+ * Constructs a <CODE>BadPdfFormatException</CODE> without a message.
  */
     
     BadPdfFormatException() {

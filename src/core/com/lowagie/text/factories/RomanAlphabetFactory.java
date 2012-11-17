@@ -1,6 +1,5 @@
 /*
- * $Id: RomanAlphabetFactory.java 2685 2007-04-16 12:09:48Z blowagie $
- * $Name$
+ * $Id: RomanAlphabetFactory.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2007 by Bruno Lowagie.
  *

@@ -1,6 +1,5 @@
 /*
- * $Id: PdfXConformanceException.java 2367 2006-09-14 23:39:21Z xlv $
- * $Name$
+ * $Id: PdfXConformanceException.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2004 Paulo Soares
  *

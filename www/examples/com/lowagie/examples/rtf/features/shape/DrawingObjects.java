@@ -1,6 +1,5 @@
 /*
- * $Id: DrawingObjects.java 2664 2007-03-25 20:48:46Z hallm $
- * $Name$
+ * $Id: DrawingObjects.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -37,8 +36,8 @@ import com.lowagie.text.rtf.graphic.RtfShapeProperty;
  * class and how RtfShapeProperty objects are used to define the
  * different properties of the drawing objects.
  * 
- * @version $Revision: 2664 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class DrawingObjects {
     /**

@@ -11,7 +11,7 @@
 			<site:book asin="0321304748">PDF Reference (4th Edition)</site:book>
 			<site:keyword>Fonts</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2007-11-08 19:41:31 -0500 (Thu, 08 Nov 2007) $</site:updated>
+		<site:updated>$Date: 2009-06-28 09:22:47 -0400 (Sun, 28 Jun 2009) $</site:updated>
 		<site:author>Bruno Lowagie</site:author>
 	</site:metadata>
 	
@@ -25,12 +25,12 @@ The examples in the other chapters of this free online tutorial will help you ge
 with iText. Note that most examples are two years old. Some of the examples may be obsolete.
 Also the theory that comes with the examples isn't always 100% accurate.<br />
 If you want more recent examples or if you want to know more about the theoretical background of
-PDF and iText, please consult the book	<a href="http://itext.ugent.be/itext-in-action/">"iText in Action"</a>.
+PDF and iText, please consult the book	<a href="http://www.1t3xt.com/docs/book.php">"iText in Action"</a>.
 Note that the first and the third chapter of the book can be downloaded for free from
 <a href="http://www.manning.com/affiliate/idevaffiliate.php?id=223_53">http://manning.com/lowagie/</a><br />
 The book discusses most of the functionality that is available in iText 1.4.8, but all the source code that
 is printed in the book STILL WORKS in iText 2. Only a few changes were needed to make all the examples available
-on <a href="http://itext.ugent.be/itext-in-action/chapter.php">itext.ugent.be</a> (the support site for the book)
+on <a href="http://1t3xt.info/examples">1T3XT.info</a> (the support site for the book)
 were necessary. This iText 2 specific chapter in the free online tutorial will contain new examples that explain
 how to use the newly added functionality soon.
 		</div>
@@ -90,8 +90,6 @@ Note that you can download other versions of these jars for other JDKs from <a h
 <div class="subtitle">iText version / JDK version</div>
 This version of iText is compiled for use with JDK 1.4.
 It will also work for Java 5 and Java 6.
-However, if you need iText to work with earlier versions of the JDK,
-you should read <a href="http://itext.ugent.be/library/question.php?id=19">this FAQ entry</a>.
 </div>
 	</site:section>
 	<site:section name="functionality">

@@ -1,6 +1,5 @@
 /*
- * $Id: TrueTypeFontSubSet.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: TrueTypeFontSubSet.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -419,10 +418,10 @@ class TrueTypeFontSubSet {
         int v3 = 0;
         int ptr = 0;
         for (int k = 0; k < len; ++k) {
-            v3 += (int)b[ptr++] & 0xff;
-            v2 += (int)b[ptr++] & 0xff;
-            v1 += (int)b[ptr++] & 0xff;
-            v0 += (int)b[ptr++] & 0xff;
+            v3 += b[ptr++] & 0xff;
+            v2 += b[ptr++] & 0xff;
+            v1 += b[ptr++] & 0xff;
+            v0 += b[ptr++] & 0xff;
         }
         return v0 + (v1 << 8) + (v2 << 16) + (v3 << 24);
     }

@@ -78,7 +78,7 @@ public class BarcodePDF417 {
      */    
     public static final int PDF417_FIXED_ROWS = 4;
     /** The error level correction is set automatically according
-     * to ISO 15438 recomendations.
+     * to ISO 15438 recommendations.
      */    
     public static final int PDF417_AUTO_ERROR_LEVEL = 0;
     /** The error level correction is set by the user. It can be 0 to 8. */    
@@ -310,7 +310,8 @@ public class BarcodePDF417 {
             }
             if ((v & ISBYTE) != 0) {
                 if ((ptr & 1) != 0) {
-                    dest[ptr++] = (mode & PUNCTUATION) != 0 ? PAL : PS;
+                    //add a padding word
+                    dest[ptr++] = PAL;
                     mode = (mode & PUNCTUATION) != 0 ? ALPHA : mode;
                 }
                 dest[ptr++] = BYTESHIFT;
@@ -482,7 +483,7 @@ public class BarcodePDF417 {
             for (k = retLast; k >= 0; --k)
                 codewords[ret + k] *= 256;
             // add the digit
-            codewords[ret + retLast] += (int)text[ni] & 0xff;
+            codewords[ret + retLast] += text[ni] & 0xff;
             // propagate carry
             for (k = retLast; k > 0; --k) {
                 codewords[ret + k - 1] += codewords[ret + k] / 900;
@@ -502,7 +503,7 @@ public class BarcodePDF417 {
             size = length - k < 44 ? length - k : 6;
             if (size < 6) {
                 for (j = 0; j < size; ++j)
-                    codewords[cwPtr++] = (int)text[k + j] & 0xff;
+                    codewords[cwPtr++] = text[k + j] & 0xff;
             }
             else {
                 byteCompaction6(k);
@@ -971,7 +972,7 @@ public class BarcodePDF417 {
     }
     
     /** Gets the codeword array. This array is always 928 elements long.
-     * It can be writen to if the option <CODE>PDF417_USE_RAW_CODEWORDS</CODE>
+     * It can be written to if the option <CODE>PDF417_USE_RAW_CODEWORDS</CODE>
      * is set.
      * @return the codeword array
      */

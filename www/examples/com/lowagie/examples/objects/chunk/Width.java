@@ -1,6 +1,5 @@
 /*
- * $Id: Width.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Width.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

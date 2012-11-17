@@ -1,6 +1,5 @@
 /*
- * $Id: TableOfContents.java 2663 2007-03-25 20:41:26Z hallm $
- * $Name$
+ * $Id: TableOfContents.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -37,8 +36,8 @@ import com.lowagie.text.rtf.style.RtfParagraphStyle;
  * for creating tables of contents. It also shows how to use the RtfParagraphStyle
  * to define table of contents entries and how to style them.
  * 
- * @version $Revision: 2663 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class TableOfContents {
     /**

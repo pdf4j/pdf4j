@@ -1,6 +1,5 @@
 /*
- * $Id: PRAcroForm.java 2441 2006-10-27 17:24:01Z xlv $
- * $Name$
+ * $Id: PRAcroForm.java 3735 2009-02-26 01:44:03Z xlv $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *
@@ -122,7 +121,7 @@ public class PRAcroForm extends PdfDictionary {
     }
     /**
      * Read, and comprehend the acroform
-     * @param root the docment root
+     * @param root the document root
      */
     public void readAcroForm(PdfDictionary root) {
         if (root == null)
@@ -140,7 +139,7 @@ public class PRAcroForm extends PdfDictionary {
      * @param title the pathname of the field, up to this point or null
      */
     protected void iterateFields(PdfArray fieldlist, PRIndirectReference fieldDict, String title) {
-        for (Iterator it = fieldlist.getArrayList().iterator(); it.hasNext();) {
+        for (Iterator it = fieldlist.listIterator(); it.hasNext();) {
             PRIndirectReference ref = (PRIndirectReference)it.next();
             PdfDictionary dict = (PdfDictionary) PdfReader.getPdfObjectRelease(ref);
             

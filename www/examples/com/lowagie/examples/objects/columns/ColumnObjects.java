@@ -1,6 +1,5 @@
 /*
- * $Id: ColumnObjects.java 2742 2007-05-08 13:04:56Z blowagie $
- * $Name$
+ * $Id: ColumnObjects.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

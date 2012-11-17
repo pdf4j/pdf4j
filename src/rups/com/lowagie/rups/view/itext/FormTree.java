@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: FormTree.java 3146 2008-02-20 18:10:07Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -75,8 +75,8 @@ public class FormTree extends JTree implements TreeSelectionListener, Observer {
 
 	/**
 	 * Loads the fields of a PDF document into the FormTree.
-	 * @param	nodes	a factory that can produce new PDF object nodes
-	 * @param	tree	the main PdfTree
+	 * @param	observable	the observable object
+	 * @param	obj			the object
 	 */
 	public void update(Observable observable, Object obj) {
 		if (obj == null) {

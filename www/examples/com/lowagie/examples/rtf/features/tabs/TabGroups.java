@@ -1,6 +1,5 @@
 /*
- * $Id: TabGroups.java 2648 2007-03-08 22:03:51Z hallm $
- * $Name$
+ * $Id: TabGroups.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -35,8 +34,8 @@ import com.lowagie.text.rtf.text.RtfTabGroup;
  * The TabGroups example demonstrates how using the RtfTabGroup class
  * simplifies the repeated use of a set of tab stops.
  * 
- * @version $Revision: 2648 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class TabGroups {
     /**

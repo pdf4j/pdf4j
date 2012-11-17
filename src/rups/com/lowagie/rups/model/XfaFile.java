@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: XfaFile.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -40,7 +40,7 @@ public class XfaFile implements OutputStreamResource {
 	protected Document xfaDocument;
 	
 	/**
-	 * Contstructs an XFA file from an OutputStreamResource.
+	 * Constructs an XFA file from an OutputStreamResource.
 	 * This resource can be an XML file or a node in a RUPS application.
 	 * @param	resource	the XFA resource
 	 * @throws IOException 

@@ -1,6 +1,5 @@
 /*
- * $Id: Barcodes.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Barcodes.java 3635 2008-12-23 19:52:34Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -33,7 +32,6 @@ import com.lowagie.text.pdf.BarcodeInter25;
 import com.lowagie.text.pdf.BarcodePostnet;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 /**
  * List with different Barcode types.
@@ -86,8 +84,6 @@ public class Barcodes {
             codePlanet.setCode("50201402356");
             codePlanet.setCodeType(Barcode.PLANET);
             Image imagePlanet = codePlanet.createImageWithBarcode(cb, null, null);
-            PdfTemplate tp = cb.createTemplate(0, 0);
-            PdfTemplate ean = codeEAN.createTemplateWithBarcode(cb, null, Color.blue);
             BarcodeEAN codeSUPP = new BarcodeEAN();
             codeSUPP.setCodeType(Barcode.SUPP5);
             codeSUPP.setCode("54995");

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* $Id: HyphenationTree.java 2623 2007-02-23 22:28:28Z xlv $ */
+/* $Id: HyphenationTree.java 3117 2008-01-31 05:53:22Z xlv $ */
  
 package com.lowagie.text.pdf.hyphenation;
 
@@ -35,7 +35,7 @@ public class HyphenationTree extends TernaryTree
     private static final long serialVersionUID = -7763254239309429432L;
 
 	/**
-     * value space: stores the inteletter values
+     * value space: stores the interletter values
      */
     protected ByteVector vspace;
 

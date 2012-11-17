@@ -1,6 +1,5 @@
 /*
- * $Id: ImagesURL.java 2597 2007-02-15 13:31:05Z blowagie $
- * $Name$
+ * $Id: ImagesURL.java 3998 2009-06-28 13:22:47Z blowagie $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -51,22 +50,22 @@ public class ImagesURL {
             
             // step 4:
             document.add(new Paragraph("A picture of my dog: otsoe.jpg"));
-            Image jpg = Image.getInstance(new URL("http://itext.ugent.be/library/com/lowagie/examples/html/otsoe.jpg"));
+            Image jpg = Image.getInstance(new URL("/examples/com/lowagie/examples/html/otsoe.jpg"));
             document.add(jpg);
             document.add(new Paragraph("getacro.gif"));
-            Image gif= Image.getInstance(new URL("http://itext.ugent.be/library/com/lowagie/examples/html/getacro.gif"));
+            Image gif= Image.getInstance(new URL("/examples/com/lowagie/examples/html/getacro.gif"));
             document.add(gif);
             document.add(new Paragraph("pngnow.png"));
-            Image png = Image.getInstance(new URL("http://itext.ugent.be/library/com/lowagie/examples/html/pngnow.png"));
+            Image png = Image.getInstance(new URL("/examples/com/lowagie/examples/html/pngnow.png"));
             document.add(png);
             document.add(new Paragraph("iText.bmp"));
-            Image bmp = Image.getInstance(new URL("http://itext.ugent.be/library/com/lowagie/examples/html/iText.bmp"));
+            Image bmp = Image.getInstance(new URL("/examples/com/lowagie/examples/html/iText.bmp"));
             document.add(bmp);
             document.add(new Paragraph("iText.wmf"));
-            Image wmf = Image.getInstance(new URL("http://itext.ugent.be/library/com/lowagie/examples/html/iText.wmf"));
+            Image wmf = Image.getInstance(new URL("/examples/com/lowagie/examples/html/iText.wmf"));
             document.add(wmf);
             document.add(new Paragraph("iText.tif"));
-            Image tiff = Image.getInstance(new URL("http://itext.ugent.be/library/com/lowagie/examples/html/iText.tif"));
+            Image tiff = Image.getInstance(new URL("/examples/com/lowagie/examples/html/iText.tif"));
             document.add(tiff);
         }
         catch(DocumentException de) {

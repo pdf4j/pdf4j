@@ -1,5 +1,5 @@
 /*
- * $Id: PdfStructureTreeRoot.java 2366 2006-09-14 23:10:58Z xlv $
+ * $Id: PdfStructureTreeRoot.java 3914 2009-04-26 09:16:47Z blowagie $
  *
  * Copyright 2005 by Paulo Soares.
  *
@@ -100,6 +100,7 @@ public class PdfStructureTreeRoot extends PdfDictionary {
     /**
      * Gets the reference this object will be written to.
      * @return the reference this object will be written to
+     * @since	2.1.6 method removed in 2.1.5, but restored in 2.1.6
      */    
     public PdfIndirectReference getReference() {
         return this.reference;

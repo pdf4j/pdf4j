@@ -1,6 +1,5 @@
 /*
- * $Id: DocListener.java 2564 2007-02-01 15:47:38Z blowagie $
- * $Name$
+ * $Id: DocListener.java 3939 2009-05-27 13:09:45Z blowagie $
  *
  * Copyright (c) 1999, 2000, 2001, 2002 Bruno Lowagie.
  *
@@ -83,7 +82,6 @@ public interface DocListener extends ElementListener {
      * Signals that an new page has to be started.
      *
      * @return	<CODE>true</CODE> if the page was added, <CODE>false</CODE> if not.
-     * @throws	DocumentException	when a document isn't open yet, or has been closed
      */
         
     public boolean newPage(); // [L3]
@@ -110,11 +108,19 @@ public interface DocListener extends ElementListener {
     public boolean setMargins(float marginLeft, float marginRight, float marginTop, float marginBottom);  // [L5]
         
     /**
-     * Parameter that allows you to do margin mirroring (odd/even pages)
+     * Parameter that allows you to do left/right  margin mirroring (odd/even pages)
      * @param marginMirroring
-     * @return true if succesfull
+     * @return true if successful
      */
     public boolean setMarginMirroring(boolean marginMirroring); // [L6]
+    
+    /**
+     * Parameter that allows you to do top/bottom margin mirroring (odd/even pages)
+     * @param marginMirroringTopBottom
+     * @return true if successful
+     * @since	2.1.6
+     */
+    public boolean setMarginMirroringTopBottom(boolean marginMirroringTopBottom); // [L6]
         
     /**
      * Sets the page number.

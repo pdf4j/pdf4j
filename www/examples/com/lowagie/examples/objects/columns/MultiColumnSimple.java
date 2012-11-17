@@ -1,6 +1,5 @@
 /*
- * $Id: MultiColumnSimple.java 2739 2007-05-04 11:24:51Z blowagie $
- * $Name$
+ * $Id: MultiColumnSimple.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

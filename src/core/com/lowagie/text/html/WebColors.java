@@ -1,6 +1,5 @@
 /*
- * $Id: WebColors.java 2889 2007-08-17 18:17:17Z psoares33 $
- * $Name:  $
+ * $Id: WebColors.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *

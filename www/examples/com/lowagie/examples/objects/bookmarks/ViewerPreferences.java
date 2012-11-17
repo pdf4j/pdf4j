@@ -1,6 +1,5 @@
 /*
- * $Id: ViewerPreferences.java 2571 2007-02-06 13:37:06Z blowagie $
- * $Name$
+ * $Id: ViewerPreferences.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -59,7 +58,7 @@ public class ViewerPreferences {
 			// step 3:
 			writer1.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
 			writer2.setViewerPreferences(PdfWriter.HideMenubar
-					| PdfWriter.HideToolbar);
+					| PdfWriter.HideMenubar);
 			writer3.setViewerPreferences(PdfWriter.PageLayoutTwoColumnRight
 					| PdfWriter.PageModeFullScreen
 					| PdfWriter.NonFullScreenPageModeUseThumbs);

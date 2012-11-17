@@ -1,6 +1,5 @@
 /*
- * $Id: Chapter.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: Chapter.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -133,23 +132,5 @@ public class Chapter extends Section {
 	public boolean isNestable() {
 		return false;
 	}
-    
-// deprecated stuff
-    
-    /**
-     * Creates a new <CODE>Chapter</CODE> following a set of attributes.
-     *
-     * @param	attributes	the attributes
-     * @param number a userdefined Chapter number
-     * @deprecated As of iText 2.0.3, use {@link com.lowagie.text.factories.ElementFactory#getChapter(Properties)} instead,
-     * scheduled for removal at 2.1.0
-     */
-    public Chapter(java.util.Properties attributes, int number) {
-    	this("", number);
-    	Chapter chapter = com.lowagie.text.factories.ElementFactory.getChapter(attributes);
-    	setNumberDepth(chapter.getNumberDepth());
-    	setIndentation(chapter.getIndentation());
-    	setIndentationLeft(chapter.getIndentationLeft());
-    	setIndentationRight(chapter.getIndentationRight());
-    }
+
 }

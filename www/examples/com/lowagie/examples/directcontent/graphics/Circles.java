@@ -1,6 +1,5 @@
 /*
- * $Id: Circles.java 2365 2006-09-14 22:52:48Z xlv $
- * $Name$
+ * $Id: Circles.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -58,6 +57,8 @@ public class Circles {
             cb.setRGBColorFill(0xFF, 0xFF, 0xFF);
             cb.circle(250.0f, 500.0f, 50.0f);
             cb.fill();
+            
+            cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

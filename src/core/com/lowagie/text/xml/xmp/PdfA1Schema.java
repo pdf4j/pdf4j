@@ -1,6 +1,5 @@
 /*
- * $Id: PdfA1Schema.java 2364 2006-09-14 22:41:26Z xlv $
- * $Name$
+ * $Id: PdfA1Schema.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2005 by Bruno Lowagie.
  *

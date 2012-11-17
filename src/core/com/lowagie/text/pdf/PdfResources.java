@@ -1,6 +1,5 @@
 /*
- * $Id: PdfResources.java 1733 2005-05-04 14:33:54Z blowagie $
- * $Name$
+ * $Id: PdfResources.java 3712 2009-02-20 20:11:31Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -82,7 +81,7 @@ class PdfResources extends PdfDictionary {
     void add(PdfName key, PdfDictionary resource) {
         if (resource.size() == 0)
             return;
-        PdfDictionary dic = (PdfDictionary)PdfReader.getPdfObject(get(key));
+        PdfDictionary dic = getAsDict(key);
         if (dic == null)
             put(key, resource);
         else

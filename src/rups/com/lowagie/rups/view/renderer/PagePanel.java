@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: PagePanel.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  * Inspired by a demo shipped with SUN's PDF Renderer (released under the LGPL)

@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPages.java 2441 2006-10-27 17:24:01Z xlv $
- * $Name$
+ * $Id: PdfPages.java 3934 2009-05-27 11:23:23Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -53,6 +52,7 @@ package com.lowagie.text.pdf;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
 
@@ -147,6 +147,9 @@ public class PdfPages {
                     if ((p % leafSize) == 0)
                         nextParents.add(writer.getPdfIndirectReference());
                     top.put(PdfName.PARENT, (PdfIndirectReference)nextParents.get(p / leafSize));
+                }
+                else {
+                	top.put(PdfName.ITXT, new PdfString(Document.getRelease()));
                 }
                 writer.addToBody(top, (PdfIndirectReference)tParents.get(p));
             }

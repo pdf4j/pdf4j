@@ -1,6 +1,5 @@
 /*
- * $Id: Transparency.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: Transparency.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -104,6 +103,7 @@ public class Transparency {
             pictureCircles(0, 0, tp);
             PdfTransparencyGroup group = new PdfTransparencyGroup();
             tp.setGroup(group);
+            tp.sanityCheck();
             cb.setGState(gs1);
             cb.addTemplate(tp, gap, 500 - 200 - gap);
             cb.restoreState();
@@ -114,6 +114,7 @@ public class Transparency {
             gs2.setFillOpacity(0.5f);
             gs2.setBlendMode(PdfGState.BM_SOFTLIGHT);
             tp.setGState(gs2);
+            tp.sanityCheck();
             pictureCircles(0, 0, tp);
             tp.setGroup(group);
             cb.addTemplate(tp, 200 + 2 * gap, 500 - 200 - gap);
@@ -136,6 +137,8 @@ public class Transparency {
             ph = new Phrase("Transparency group\nObject opacity = 0.5\nGroup opacity = 1.0\nBlend mode = SoftLight");
             ct.setSimpleColumn(ph, 200 + 2 * gap, 0, 200 + 2 * gap + 200, 500 - 200 - gap, 18, Element.ALIGN_CENTER);
             ct.go();
+            
+            cb.sanityCheck();
         }
         catch (Exception de) {
             de.printStackTrace();

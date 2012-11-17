@@ -67,7 +67,7 @@ public class Type3Font extends BaseFont {
     /**
      * Creates a Type3 font.
      * @param writer the writer
-     * @param chars an array of chars corresponding to the glyphs used (not used, prisent for compability only)
+     * @param chars an array of chars corresponding to the glyphs used (not used, present for compatibility only)
      * @param colorized if <CODE>true</CODE> the font may specify color, if <CODE>false</CODE> no color commands are allowed
      * and only images as masks can be used
      */    
@@ -127,7 +127,7 @@ public class Type3Font extends BaseFont {
         if (c == 0 || c > 255)
             throw new IllegalArgumentException("The char " + (int)c + " doesn't belong in this Type3 font");
         usedSlot[c] = true;
-        Integer ck = new Integer((int)c);
+        Integer ck = new Integer(c);
         Type3Glyph glyph = (Type3Glyph)char2glyph.get(ck);
         if (glyph != null)
             return glyph;
@@ -170,7 +170,7 @@ public class Type3Font extends BaseFont {
         return new String[][]{{"4", "", "", "", ""}};
     }
     
-    public int getKerning(char char1, char char2) {
+    public int getKerning(int char1, int char2) {
         return 0;
     }
     
@@ -190,7 +190,7 @@ public class Type3Font extends BaseFont {
         return false;
     }
     
-    public boolean setKerning(char char1, char char2, int kern) {
+    public boolean setKerning(int char1, int char2, int kern) {
         return false;
     }
     
@@ -239,7 +239,7 @@ public class Type3Font extends BaseFont {
             diffs.add(n);
             Type3Glyph glyph = (Type3Glyph)char2glyph.get(new Integer(c2));
             PdfStream stream = new PdfStream(glyph.toPdf(null));
-            stream.flateCompress();
+            stream.flateCompress(compressionLevel);
             PdfIndirectReference refp = writer.addToBody(stream).getIndirectReference();
             charprocs.put(n, refp);
         }
@@ -262,6 +262,15 @@ public class Type3Font extends BaseFont {
         writer.addToBody(font, ref);
     }
     
+    /**
+     * Always returns null, because you can't get the FontStream of a Type3 font.
+   	 * @return	null
+     * @since	2.1.3
+     */
+    public PdfStream getFullFontStream() {
+    	return null;
+    }
+    
     
     byte[] convertToBytes(String text) {
         char[] cc = text.toCharArray();
@@ -279,15 +288,15 @@ public class Type3Font extends BaseFont {
         return b2;
     }
     
-    byte[] convertToBytes(char char1) {
+    byte[] convertToBytes(int char1) {
         if (charExists(char1))
             return new byte[]{(byte)char1};
         else return new byte[0];
     }
     
-    public int getWidth(char char1) {
+    public int getWidth(int char1) {
         if (!widths3.containsKey(char1))
-            throw new IllegalArgumentException("The char " + (int)char1 + " is not defined in a Type3 font");
+            throw new IllegalArgumentException("The char " + char1 + " is not defined in a Type3 font");
         return widths3.get(char1);
     }
     
@@ -299,11 +308,11 @@ public class Type3Font extends BaseFont {
         return total;
     }
     
-    public int[] getCharBBox(char c) {
+    public int[] getCharBBox(int c) {
         return null;
     }
     
-    public boolean charExists(char c) {
+    public boolean charExists(int c) {
         if (c > 0 && c < 256) {
             return usedSlot[c];
         } else {
@@ -311,7 +320,7 @@ public class Type3Font extends BaseFont {
         }
     }
     
-    public boolean setCharAdvance(char c, int advance) {
+    public boolean setCharAdvance(int c, int advance) {
         return false;
     }
     

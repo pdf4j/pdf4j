@@ -1,5 +1,5 @@
 /*
- * $Id: PdfStructureElement.java 2026 2005-11-01 12:27:05Z psoares33 $
+ * $Id: PdfStructureElement.java 3914 2009-04-26 09:16:47Z blowagie $
  *
  * Copyright 2005 by Paulo Soares.
  *
@@ -123,6 +123,7 @@ public class PdfStructureElement extends PdfDictionary {
     /**
      * Gets the reference this object will be written to.
      * @return the reference this object will be written to
+     * @since	2.1.6 method removed in 2.1.5, but restored in 2.1.6
      */    
     public PdfIndirectReference getReference() {
         return this.reference;

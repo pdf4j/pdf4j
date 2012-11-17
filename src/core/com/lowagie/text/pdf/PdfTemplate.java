@@ -1,6 +1,5 @@
 /*
- * $Id: PdfTemplate.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: PdfTemplate.java 3929 2009-05-22 13:26:41Z blowagie $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -112,7 +111,7 @@ public class PdfTemplate extends PdfContentByte {
      * @param writer the PdfWriter to use
      * @param width the bounding box width
      * @param height the bounding box height
-     * @return the templated created
+     * @return the created template
      */
     public static PdfTemplate createTemplate(PdfWriter writer, float width, float height) {
         return createTemplate(writer, width, height, null);
@@ -138,7 +137,7 @@ public class PdfTemplate extends PdfContentByte {
     }
     
     /**
-     * Sets the bounding heigth of this template.
+     * Sets the bounding height of this template.
      *
      * @param height the bounding height
      */
@@ -158,9 +157,9 @@ public class PdfTemplate extends PdfContentByte {
     }
     
     /**
-     * Gets the bounding heigth of this template.
+     * Gets the bounding height of this template.
      *
-     * @return heigth the bounding height
+     * @return height the bounding height
      */
     
     public float getHeight() {
@@ -212,6 +211,10 @@ public class PdfTemplate extends PdfContentByte {
      */
     
     public PdfIndirectReference getIndirectReference() {
+    	// uncomment the null check as soon as we're sure all examples still work
+    	if (thisReference == null /* && writer != null */) {
+    		thisReference = writer.getPdfIndirectReference();
+    	}
         return thisReference;
     }
         
@@ -236,11 +239,12 @@ public class PdfTemplate extends PdfContentByte {
     /**
      * Gets the stream representing this template.
      *
+     * @param	compressionLevel	the compressionLevel
      * @return the stream representing this template
+     * @since	2.1.3	(replacing the method without param compressionLevel)
      */
-    
-    PdfStream getFormXObject() throws IOException {
-        return new PdfFormXObject(this);
+    PdfStream getFormXObject(int compressionLevel) throws IOException {
+        return new PdfFormXObject(this, compressionLevel);
     }
         
     /**

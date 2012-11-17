@@ -1,6 +1,5 @@
 /*
- * $Id: FontFactoryImp.java 2838 2007-06-13 12:53:11Z blowagie $
- * $Name$
+ * $Id: FontFactoryImp.java 3548 2008-07-12 11:15:35Z blowagie $
  *
  * Copyright 2002 by Bruno Lowagie.
  *
@@ -401,6 +400,21 @@ public class FontFactoryImp {
         return getFont(fontname, encoding, defaultEmbedding, size, Font.UNDEFINED, null);
     }
     
+
+/**
+ * Constructs a <CODE>Font</CODE>-object.
+ *
+ * @param	fontname    the name of the font
+ * @param	size	    the size of this font
+ * @param	color	    the <CODE>Color</CODE> of this font.
+ * @return the Font constructed based on the parameters
+ * @since 2.1.0
+ */
+    
+    public Font getFont(String fontname, float size, Color color) {
+        return getFont(fontname, defaultEncoding, defaultEmbedding, size, Font.UNDEFINED, color);
+    }
+    
 /**
  * Constructs a <CODE>Font</CODE>-object.
  *
@@ -562,8 +576,8 @@ public class FontFactoryImp {
             }
             else if (path.toLowerCase().endsWith(".afm") || path.toLowerCase().endsWith(".pfm")) {
                 BaseFont bf = BaseFont.createFont(path, BaseFont.CP1252, false);
-                String fullName = (bf.getFullFontName()[0][3]).toLowerCase();
-                String familyName = (bf.getFamilyFontName()[0][3]).toLowerCase();
+                String fullName = bf.getFullFontName()[0][3].toLowerCase();
+                String familyName = bf.getFamilyFontName()[0][3].toLowerCase();
                 String psName = bf.getPostscriptFontName().toLowerCase();
                 registerFamily(familyName, fullName, null);
                 trueTypeFonts.setProperty(psName, path);
@@ -584,6 +598,17 @@ public class FontFactoryImp {
      * @return the number of fonts registered
      */    
     public int registerDirectory(String dir) {
+        return registerDirectory(dir, false);
+    }
+
+    /**
+     * Register all the fonts in a directory and possibly its subdirectories.
+     * @param dir the directory
+     * @param scanSubdirectories recursively scan subdirectories if <code>true</true>
+     * @return the number of fonts registered
+     * @since 2.1.2
+     */
+    public int registerDirectory(String dir, boolean scanSubdirectories) {
         int count = 0;
         try {
             File file = new File(dir);
@@ -595,10 +620,24 @@ public class FontFactoryImp {
             for (int k = 0; k < files.length; ++k) {
                 try {
                     file = new File(dir, files[k]);
-                    String name = file.getPath().toLowerCase();
-                    if (name.endsWith(".ttf") || name.endsWith(".otf") || name.endsWith(".afm") || name.endsWith(".pfm") || name.endsWith(".ttc")) {
-                        register(file.getPath(), null);
-                        ++count;
+                    if (file.isDirectory()) {
+                        if (scanSubdirectories) {
+                            count += registerDirectory(file.getAbsolutePath(), true);
+                        }
+                    } else {
+                        String name = file.getPath();
+                        String suffix = name.length() < 4 ? null : name.substring(name.length() - 4).toLowerCase();
+                        if (".afm".equals(suffix) || ".pfm".equals(suffix)) {
+                            /* Only register Type 1 fonts with matching .pfb files */
+                            File pfb = new File(name.substring(0, name.length() - 4) + ".pfb");
+                            if (pfb.exists()) {
+                                register(name, null);
+                                ++count;
+                            }
+                        } else if (".ttf".equals(suffix) || ".otf".equals(suffix) || ".ttc".equals(suffix)) {
+                            register(name, null);
+                            ++count;
+                        }
                     }
                 }
                 catch (Exception e) {
@@ -622,10 +661,11 @@ public class FontFactoryImp {
         count += registerDirectory("c:/winnt/fonts");
         count += registerDirectory("d:/windows/fonts");
         count += registerDirectory("d:/winnt/fonts");
-        count += registerDirectory("/usr/X/lib/X11/fonts/TrueType");
-        count += registerDirectory("/usr/openwin/lib/X11/fonts/TrueType");
-        count += registerDirectory("/usr/share/fonts/default/TrueType");
-        count += registerDirectory("/usr/X11R6/lib/X11/fonts/ttf");
+        count += registerDirectory("/usr/share/X11/fonts", true);
+        count += registerDirectory("/usr/X/lib/X11/fonts", true);
+        count += registerDirectory("/usr/openwin/lib/X11/fonts", true);
+        count += registerDirectory("/usr/share/fonts", true);
+        count += registerDirectory("/usr/X11R6/lib/X11/fonts", true);
         count += registerDirectory("/Library/Fonts");
         count += registerDirectory("/System/Library/Fonts");
         return count;

@@ -1,6 +1,5 @@
 /*
- * $Id: PdfAcroForm.java 2980 2007-11-09 01:17:05Z xlv $
- * $Name$
+ * $Id: PdfAcroForm.java 3912 2009-04-26 08:38:15Z blowagie $
  *
  * Copyright 2002 Bruno Lowagie
  *

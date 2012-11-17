@@ -1,6 +1,5 @@
 /*
- * $Id: MarkedSection.java 3047 2007-11-30 16:43:29Z xlv $
- * $Name$
+ * $Id: MarkedSection.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2007 by Bruno Lowagie.
  *
@@ -271,12 +270,12 @@ public class MarkedSection extends MarkedObject {
 	public void setBookmarkTitle(String bookmarkTitle) {
 	  	((Section)element).setBookmarkTitle(bookmarkTitle);
 	}
-	   
+
 	/**
-	 * Gets the title of this MarkedSection.
-	 * @deprecated As of iText 2.0.8, replaced by {@link #getTitle()}, scheduled for removal at 2.2.0
+	 * Adds a new page to the section.
+	 * @since	2.1.1
 	 */
-	public MarkedObject title() {
-		return getTitle();
+	public void newPage() {
+		((Section)element).newPage();
 	}
 }

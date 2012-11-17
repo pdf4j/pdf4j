@@ -1,6 +1,5 @@
 /*
- * $Id: SAXmyHandler.java 2377 2006-09-15 07:51:05Z xlv $
- * $Name$
+ * $Id: SAXmyHandler.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *
@@ -63,20 +62,16 @@ import com.lowagie.text.DocListener;
 
 public class SAXmyHandler extends SAXiTextHandler {
     
-/** This hashmap contains all the custom keys and peers. */
-    protected HashMap myTags;
-    
 /**
  * Constructs a new SAXiTextHandler that will translate all the events
  * triggered by the parser to actions on the <CODE>Document</CODE>-object.
  *
  * @param	document	this is the document on which events must be triggered
- * @param myTags a userdefined tagmap
+ * @param myTags a user defined tagmap
  */
     
     public SAXmyHandler(DocListener document, HashMap myTags) {
-        super(document);
-        this.myTags = myTags;
+        super(document, myTags);
     }
     
 /**

@@ -1,6 +1,5 @@
 /*
- * $Id: TemplateImages.java 2742 2007-05-08 13:04:56Z blowagie $
- * $Name$
+ * $Id: TemplateImages.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -64,6 +63,7 @@ public class TemplateImages {
             template.endText();
             template.setWidth(width);
             template.setHeight(size + 2);
+            template.sanityCheck();
             Image img = Image.getInstance(template);
             img.setRotationDegrees(90);
             Chunk ck = new Chunk(img, 0, 0);

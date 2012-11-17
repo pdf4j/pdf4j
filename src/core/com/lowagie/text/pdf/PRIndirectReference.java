@@ -1,6 +1,5 @@
 /*
- * $Id: PRIndirectReference.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: PRIndirectReference.java 3912 2009-04-26 08:38:15Z blowagie $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *

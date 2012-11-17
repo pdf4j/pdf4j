@@ -1,6 +1,5 @@
 /*
- * $Id: MetaDo.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: MetaDo.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *

@@ -1,6 +1,5 @@
 /*
- * $Id: ElementListener.java 2564 2007-02-01 15:47:38Z blowagie $
- * $Name$
+ * $Id: ElementListener.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *

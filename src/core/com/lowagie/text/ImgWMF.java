@@ -1,6 +1,5 @@
 /*
- * $Id: ImgWMF.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: ImgWMF.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Paulo Soares.
  *

@@ -97,8 +97,9 @@ public class RomanList extends List {
 		if (o instanceof ListItem) {
 			ListItem item = (ListItem) o;
 			Chunk chunk;
-			chunk = new Chunk(RomanNumberFactory.getString(first + list.size(), lowercase), symbol.getFont());
-			chunk.append(". ");
+			chunk = new Chunk(preSymbol, symbol.getFont());
+			chunk.append(RomanNumberFactory.getString(first + list.size(), lowercase));
+			chunk.append(postSymbol);
 			item.setListSymbol(chunk);
 			item.setIndentationLeft(symbolIndent, autoindent);
 			item.setIndentationRight(0);
@@ -113,50 +114,5 @@ public class RomanList extends List {
 		}
 		return false;
 	}
-	
-// deprecated methods
-	
-	/**
-	 * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.RomanNumberFactory#getString(int)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public static String toRoman(int number) {
-		return RomanNumberFactory.getString(number);
-	}
-	/**
-	 * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.RomanNumberFactory#getString(int, boolean)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public static String toRomanLowerCase(int number) {
-		return RomanNumberFactory.getString(number, true);
-	}
-	/**
-	 * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.RomanNumberFactory#getString(int, boolean)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public static String toRomanUpperCase(int number) {
-		return RomanNumberFactory.getString(number, false);
-	}
 
-	/**
-	 * set the roman-letters to lowercase otherwise to uppercase
-	 * 
-	 * @param romanlower
-	 * @deprecated As of iText 2.0.3, replaced by {@link #setLowercase(boolean)},
-	 * scheduled for removal at 2.1.0
-	 */
-	public void setRomanLower(boolean romanlower) {
-		setLowercase(romanlower);
-	}
-
-	/**
-	 * Checks if the list is roman-letter with lowercase
-	 *
-	 * @return	<CODE>true</CODE> if the roman-letter is lowercase, <CODE>false</CODE> otherwise.
-	 * @deprecated As of iText 2.0.3, replaced by {@link #isLowercase()},
-	 * scheduled for removal at 2.1.0
-	 */
-	public boolean isRomanLower() {
-		return isLowercase();
-	}
 }

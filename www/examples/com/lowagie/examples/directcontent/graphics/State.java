@@ -1,6 +1,5 @@
 /*
- * $Id: State.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: State.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -70,6 +69,8 @@ public class State {
 			cb.restoreState();
 			cb.circle(260.0f, 500.0f, 50.0f);
 			cb.fill();
+			
+			cb.sanityCheck();
 		} catch (DocumentException de) {
 			System.err.println(de.getMessage());
 		} catch (IOException ioe) {

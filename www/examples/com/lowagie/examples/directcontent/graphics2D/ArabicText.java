@@ -1,6 +1,5 @@
 /*
- * $Id: ArabicText.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: ArabicText.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -47,6 +46,7 @@ public class ArabicText {
             g2.setFont(font);
             g2.drawString(text1, 100, 100);
             g2.dispose();
+            cb.sanityCheck();
             // step 5
             document.close();
         }

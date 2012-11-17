@@ -1,6 +1,5 @@
 /*
- * $Id: ChapterSection.java 2857 2007-06-28 13:33:41Z blowagie $
- * $Name$
+ * $Id: ChapterSection.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

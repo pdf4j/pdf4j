@@ -1,6 +1,5 @@
 /*
- * $Id: ExtendedFont.java 2428 2006-10-05 21:25:54Z hallm $
- * $Name$
+ * $Id: ExtendedFont.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -35,8 +34,8 @@ import com.lowagie.text.rtf.style.RtfFont;
  * to generate RTF documents with fonts other than the core
  * iText fonts.
  * 
- * @version $Revision: 2428 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  * @see com.lowagie.text.rtf.style.RtfFont
  */
 public class ExtendedFont {

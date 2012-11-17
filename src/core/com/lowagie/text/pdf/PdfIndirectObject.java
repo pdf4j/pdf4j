@@ -1,5 +1,5 @@
 /*
- * $Id: PdfIndirectObject.java 2739 2007-05-04 11:24:51Z blowagie $
+ * $Id: PdfIndirectObject.java 3912 2009-04-26 08:38:15Z blowagie $
  * $Name$
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
@@ -80,7 +80,7 @@ public class PdfIndirectObject {
 /** the generation number */
     protected int generation = 0;
     
-    static final byte STARTOBJ[] = DocWriter.getISOBytes(" obj");
+    static final byte STARTOBJ[] = DocWriter.getISOBytes(" obj\n");
     static final byte ENDOBJ[] = DocWriter.getISOBytes("\nendobj\n");
     static final int SIZEOBJ = STARTOBJ.length + ENDOBJ.length;
     PdfObject object;
@@ -150,7 +150,7 @@ public class PdfIndirectObject {
     }
     
 /**
- * Writes eficiently to a stream
+ * Writes efficiently to a stream
  *
  * @param os the stream to write to
  * @throws IOException on write error
@@ -161,9 +161,6 @@ public class PdfIndirectObject {
         os.write(' ');
         os.write(DocWriter.getISOBytes(String.valueOf(generation)));
         os.write(STARTOBJ);
-        int type = object.type();
-        if (type != PdfObject.ARRAY && type != PdfObject.DICTIONARY && type != PdfObject.NAME && type != PdfObject.STRING)
-            os.write(' ');
         object.toPdf(writer, os);
         os.write(ENDOBJ);
     }

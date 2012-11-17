@@ -1,6 +1,5 @@
 /*
- * $Id: PdfOutline.java 2697 2007-04-19 11:59:59Z blowagie $
- * $Name$
+ * $Id: PdfOutline.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *

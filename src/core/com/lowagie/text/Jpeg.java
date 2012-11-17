@@ -1,6 +1,5 @@
 /*
- * $Id: Jpeg.java 2839 2007-06-14 15:10:49Z psoares33 $
- * $Name$
+ * $Id: Jpeg.java 3970 2009-06-16 08:09:54Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -249,8 +248,8 @@ public class Jpeg extends Image {
                             dpiY = dy;
                         }
                         else if (units == 2) {
-                            dpiX = (int)((float)dx * 2.54f + 0.5f);
-                            dpiY = (int)((float)dy * 2.54f + 0.5f);
+                            dpiX = (int)(dx * 2.54f + 0.5f);
+                            dpiY = (int)(dy * 2.54f + 0.5f);
                         }
                         Utilities.skip(is, len - 2 - bcomp.length - 7);
                         continue;
@@ -333,8 +332,13 @@ public class Jpeg extends Image {
                 System.arraycopy(icc[k], 14, ficc, total, icc[k].length - 14);
                 total += icc[k].length - 14;
             }
-            ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
-            tagICC(icc_prof);
+            try {
+            	ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
+            	tagICC(icc_prof);
+            }
+            catch(IllegalArgumentException e) {
+            	// ignore ICC profile if it's invalid.
+            }
             icc = null;
         }
     }

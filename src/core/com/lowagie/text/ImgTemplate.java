@@ -1,6 +1,5 @@
 /*
- * $Id: ImgTemplate.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: ImgTemplate.java 3517 2008-06-29 10:37:16Z blowagie $
  *
  * Copyright 2000, 2001, 2002 by Paulo Soares.
  *
@@ -69,7 +68,7 @@ public class ImgTemplate extends Image {
         super(image);
     }
     
-    /** Creats an Image from a PdfTemplate.
+    /** Creates an Image from a PdfTemplate.
      *
      * @param template the PdfTemplate
      * @throws BadElementException on error
@@ -89,4 +88,5 @@ public class ImgTemplate extends Image {
         plainWidth = getWidth();
         plainHeight = getHeight();
     }
+	
 }

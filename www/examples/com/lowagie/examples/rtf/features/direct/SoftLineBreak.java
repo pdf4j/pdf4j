@@ -1,6 +1,5 @@
 /*
- * $Id: SoftLineBreak.java 2667 2007-03-27 22:19:37Z hallm $
- * $Name$
+ * $Id: SoftLineBreak.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:
@@ -33,8 +32,8 @@ import com.lowagie.text.rtf.direct.RtfDirectContent;
  * The SoftLineBreak example demonstrates using the RtfDirectContent
  * to add a soft linebreak to a Paragraph. 
  * 
- * @version $Revision: 2667 $
- * @author Mark Hall (mhall@edu.uni-klu.ac.at)
+ * @version $Revision: 3373 $
+ * @author Mark Hall (Mark.Hall@mail.room3b.eu)
  */
 public class SoftLineBreak {
     /**

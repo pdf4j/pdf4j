@@ -1,6 +1,5 @@
 /*
- * $Id: BadElementException.java 2748 2007-05-12 15:11:48Z blowagie $
- * $Name$
+ * $Id: BadElementException.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -72,7 +71,7 @@ public class BadElementException extends DocumentException {
     }
     
     /**
-     * Constructs a <CODE>BadElementException</CODE> whithout a message.
+     * Constructs a <CODE>BadElementException</CODE> without a message.
      */
     BadElementException() {
         super();

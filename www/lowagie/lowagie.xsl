@@ -26,26 +26,36 @@
 <!-- releaselinks to SourceForge -->
 
 <xsl:template match="site:releasesrc">
-<xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+<xsl:element name="a">
 <xsl:attribute name="href">http://prdownloads.sourceforge.net/itext/iText-src-<xsl:call-template name="site:releasenumber" />.tar.gz</xsl:attribute>
 iText-src-<xsl:call-template name="site:releasenumber" />.tar.gz
 </xsl:element>
 or
-<xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+<xsl:element name="a">
 <xsl:attribute name="href">http://prdownloads.sourceforge.net/itext/iText-src-<xsl:call-template name="site:releasenumber" />.zip</xsl:attribute>
 iText-src-<xsl:call-template name="site:releasenumber" />.zip
 </xsl:element>
 </xsl:template>
 
 <xsl:template match="site:releasejar">
-<xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+<ul>
+<li>iText core: <xsl:element name="a">
 <xsl:attribute name="href">http://prdownloads.sourceforge.net/itext/iText-<xsl:call-template name="site:releasenumber" />.jar</xsl:attribute>
 iText-<xsl:call-template name="site:releasenumber" />.jar
-</xsl:element>
+</xsl:element></li>
+<li>iText RTF: <xsl:element name="a">
+<xsl:attribute name="href">http://prdownloads.sourceforge.net/itext/iText-rtf-<xsl:call-template name="site:releasenumber" />.jar</xsl:attribute>
+iText-rtf-<xsl:call-template name="site:releasenumber" />.jar
+</xsl:element></li>
+<li>iText RUPS: <xsl:element name="a">
+<xsl:attribute name="href">http://prdownloads.sourceforge.net/itext/iText-rups-<xsl:call-template name="site:releasenumber" />.jar</xsl:attribute>
+iText-rups-<xsl:call-template name="site:releasenumber" />.jar
+</xsl:element></li>
+</ul>
 </xsl:template>
 
 <xsl:template match="site:releasedocs">
-<xsl:element name="a" namespace="http://www.w3.org/1999/xhtml">
+<xsl:element name="a">
 <xsl:attribute name="href">http://prdownloads.sourceforge.net/itext/iText-docs-<xsl:call-template name="site:releasenumber" />.tar.gz</xsl:attribute>
 iText-docs-<xsl:call-template name="site:releasenumber" />.tar.gz
 </xsl:element>
@@ -184,7 +194,7 @@ mailto: <a href="mailto:itext-questions@lists.sourceforge.net">itext-questions@l
 
 <div id="navigation" xmlns="http://www.w3.org/1999/xhtml">
 	<div id="itext" xmlns="http://www.w3.org/1999/xhtml">
-		<a href="http://www.lowagie.com/iText/"><xsl:call-template name="tracker" /></a><br />
+		<a href="http://www.lowagie.com/iText/"><img src="images/logo.gif" /></a><br />
 		a Free Java-PDF library<br />by <a class="author" HREF="http://www.lowagie.com/">Bruno Lowagie</a><br /> and <a class="author" HREF="http://itextpdf.sourceforge.net/">Paulo Soares</a>
 	</div>
 	<div id="links" xmlns="http://www.w3.org/1999/xhtml">
@@ -198,10 +208,10 @@ mailto: <a href="mailto:itext-questions@lists.sourceforge.net">itext-questions@l
 		<a class="navigation" href="svn.html">SVN Repository</a>
 		<a class="navigation" href="eclipse.html">Using Eclipse</a>
 		<a class="navigation" href="ant.html">ANT Scripts</a>
-		<a class="navigation" href="http://itext.ugent.be/library/faq.php">FAQ</a>
+		<a class="navigation" href="http://1t3xt.info/tutorials/faq.php">FAQ</a>
 		<br />
 		<a class="navigation" href="http://lists.sourceforge.net/lists/listinfo/itext-questions">Mailing List Registration</a>
-		<a class="navigation" href="http://itext.ugent.be/info/contact.php">Mailing List Archives</a>
+		<a class="navigation" href="http://www.1t3xt.com/about/contact.php">Mailing List Archives</a>
 	</div>
 </div>
 
@@ -260,10 +270,4 @@ google_cpa_choice = "CAAQ_-KZzgEaCHfyBUS9wT0_KOP143Q";
 
 </xsl:template>
 
-<!-- tracker -->
-<xsl:template name="tracker">
-<script type="text/javascript"><![CDATA[<!--
-document.write('<img border="0" src="images/logo.php?r=' + escape(document.referrer) + '" class="logo"/>');
-//-->]]></script>
-</xsl:template>
 </xsl:stylesheet>

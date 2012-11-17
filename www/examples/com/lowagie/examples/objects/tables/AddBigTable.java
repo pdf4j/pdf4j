@@ -1,6 +1,5 @@
 /*
- * $Id: AddBigTable.java 2439 2006-10-27 09:12:01Z blowagie $
- * $Name$
+ * $Id: AddBigTable.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

@@ -1,4 +1,6 @@
 /*
+ * Copyright 2002 by Phillip Pan
+ * 
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at http://www.mozilla.org/MPL/
@@ -54,11 +56,11 @@ import com.lowagie.text.Rectangle;
  * Implements the pattern.
  */
 
-public class PdfPatternPainter extends PdfTemplate {
+public final class PdfPatternPainter extends PdfTemplate {
     
-    protected float xstep, ystep;
-    protected boolean stencil = false;
-    protected Color defaultColor;
+    float xstep, ystep;
+    boolean stencil = false;
+    Color defaultColor;
     
     /**
      *Creates a <CODE>PdfPattern</CODE>.
@@ -147,12 +149,20 @@ public class PdfPatternPainter extends PdfTemplate {
     }
     /**
      * Gets the stream representing this pattern
-     *
      * @return the stream representing this pattern
      */
-    
     PdfPattern getPattern() {
         return new PdfPattern(this);
+    }
+    
+    /**
+     * Gets the stream representing this pattern
+     * @param	compressionLevel	the compression level of the stream
+     * @return the stream representing this pattern
+     * @since	2.1.3
+     */
+    PdfPattern getPattern(int compressionLevel) {
+        return new PdfPattern(this, compressionLevel);
     }
     
     /**

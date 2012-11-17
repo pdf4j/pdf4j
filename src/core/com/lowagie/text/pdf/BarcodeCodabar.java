@@ -1,5 +1,5 @@
 /*
- * $Id: BarcodeCodabar.java 2376 2006-09-15 06:18:47Z xlv $
+ * $Id: BarcodeCodabar.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2002-2006 by Paulo Soares.
  *
@@ -187,7 +187,7 @@ public class BarcodeCodabar extends Barcode{
         byte bars[] = getBarsCodabar(text);
         int wide = 0;
         for (int k = 0; k < bars.length; ++k) {
-            wide += (int)bars[k];
+            wide += bars[k];
         }
         int narrow = bars.length - wide;
         float fullWidth = x * (narrow + wide * n);
@@ -197,7 +197,7 @@ public class BarcodeCodabar extends Barcode{
     }
     
     /** Places the barcode in a <CODE>PdfContentByte</CODE>. The
-     * barcode is always placed at coodinates (0, 0). Use the
+     * barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.<p>
      * The bars and text are written in the following colors:<p>
      * <P><TABLE BORDER=1>
@@ -245,7 +245,7 @@ public class BarcodeCodabar extends Barcode{
         byte bars[] = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
         for (int k = 0; k < bars.length; ++k) {
-            wide += (int)bars[k];
+            wide += bars[k];
         }
         int narrow = bars.length - wide;
         float fullWidth = x * (narrow + wide * n);
@@ -319,7 +319,7 @@ public class BarcodeCodabar extends Barcode{
         byte bars[] = getBarsCodabar(generateChecksum ? calculateChecksum(code) : code);
         int wide = 0;
         for (int k = 0; k < bars.length; ++k) {
-            wide += (int)bars[k];
+            wide += bars[k];
         }
         int narrow = bars.length - wide;
         int fullWidth = narrow + wide * (int)n;

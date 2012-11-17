@@ -1,6 +1,5 @@
 /*
- * $Id: PdfImage.java 2949 2007-09-28 13:40:06Z psoares33 $
- * $Name$
+ * $Id: PdfImage.java 3715 2009-02-23 15:02:23Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -102,7 +101,6 @@ public class PdfImage extends PdfStream {
             put(PdfName.INTERPOLATE, PdfBoolean.PDFTRUE);
         InputStream is = null;
         try {
-            
             // Raw Image data
             if (image.isImgRaw()) {
                 // will also have the CCITT parameters
@@ -166,12 +164,11 @@ public class PdfImage extends PdfStream {
                     if (image.isDeflated())
                         put(PdfName.FILTER, PdfName.FLATEDECODE);
                     else {
-                        flateCompress();
+                        flateCompress(image.getCompressionLevel());
                     }
                 }
                 return;
             }
-            
             // GIF, JPEG or PNG
             String errorID;
             if (image.getRawData() == null){
@@ -230,6 +227,18 @@ public class PdfImage extends PdfStream {
                     streamBytes = new ByteArrayOutputStream();
                     transferBytes(is, streamBytes, -1);
                     break;
+                case Image.JBIG2:
+                    put(PdfName.FILTER, PdfName.JBIG2DECODE);
+                    put(PdfName.COLORSPACE, PdfName.DEVICEGRAY);
+                    put(PdfName.BITSPERCOMPONENT, new PdfNumber(1));
+                    if (image.getRawData() != null){
+                        bytes = image.getRawData();
+                        put(PdfName.LENGTH, new PdfNumber(bytes.length));
+                        return;
+                    }
+                    streamBytes = new ByteArrayOutputStream();
+                    transferBytes(is, streamBytes, -1);
+                	break;
                 default:
                     throw new BadPdfFormatException(errorID + " is an unknown Image format.");
             }
@@ -277,6 +286,7 @@ public class PdfImage extends PdfStream {
     protected void importAll(PdfImage dup) {
         name = dup.name;
         compressed = dup.compressed;
+        compressionLevel = dup.compressionLevel;
         streamBytes = dup.streamBytes;
         bytes = dup.bytes;
         hashMap = dup.hashMap;

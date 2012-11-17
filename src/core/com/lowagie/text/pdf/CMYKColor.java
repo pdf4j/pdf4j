@@ -1,6 +1,5 @@
 /*
- * $Id: CMYKColor.java 2367 2006-09-14 23:39:21Z xlv $
- * $Name$
+ * $Id: CMYKColor.java 3427 2008-05-24 18:32:31Z xlv $
  *
  * Copyright 2001, 2002 by Paulo Soares.
  *
@@ -63,14 +62,14 @@ public class CMYKColor extends ExtendedColor {
     float black;
 
     /**
-     * Constructs a CMYK Color beased on 4 colorvalues (values are integers from 0 to 255).
+     * Constructs a CMYK Color based on 4 color values (values are integers from 0 to 255).
      * @param intCyan
      * @param intMagenta
      * @param intYellow
      * @param intBlack
      */
     public CMYKColor(int intCyan, int intMagenta, int intYellow, int intBlack) {
-        this((float)intCyan / 255f, (float)intMagenta / 255f, (float)intYellow / 255f, (float)intBlack / 255f);
+        this(intCyan / 255f, intMagenta / 255f, intYellow / 255f, intBlack / 255f);
     }
 
     /**

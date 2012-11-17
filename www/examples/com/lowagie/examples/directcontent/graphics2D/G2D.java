@@ -1,6 +1,5 @@
 /*
- * $Id: G2D.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: G2D.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -126,8 +125,9 @@ public class G2D {
             int width = metrics.stringWidth(pear);
             g2.drawString(pear, (w - width) / 2, 20);
             g2.dispose();
+            tp.sanityCheck(); // all the g2 content is written to tp, not cb
             cb.addTemplate(tp, 50, 400);
-            
+            cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

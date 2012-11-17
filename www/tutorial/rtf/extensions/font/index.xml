@@ -11,7 +11,7 @@
 			<site:keyword>JAVA</site:keyword>
 			<site:keyword>RTF</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2006-10-05 17:25:54 -0400 (Thu, 05 Oct 2006) $</site:updated>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
 		<site:author>Mark Hall</site:author>
 	</site:metadata>
 	
@@ -19,11 +19,13 @@
 		<site:example>
 			<site:java src="ExtendedFont" standalone="yes" />
 			<site:result>ExtendedFont.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
 			<site:description>Generates a simple document using the RtfFont class</site:description>
 		</site:example>
 		<site:example>
 			<site:java src="ExtendedFontStyles" standalone="yes" />
 			<site:result>ExtendedFontStyles.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
 			<site:description>Generates a simple document using the additional font styles in the RtfFont class</site:description>
 		</site:example>
 	</site:examples>

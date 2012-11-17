@@ -1,5 +1,5 @@
 /*
- * $Id: IVGenerator.java 2699 2007-04-19 12:19:40Z blowagie $
+ * $Id: IVGenerator.java 3242 2008-04-13 23:00:20Z xlv $
  *
  * Copyright 2006 Paulo Soares
  *
@@ -52,7 +52,7 @@ package com.lowagie.text.pdf.crypto;
  * An initialization vector generator for a CBC block encryption. It's a random generator based on ARCFOUR.
  * @author Paulo Soares (psoares@consiste.pt)
  */
-public class IVGenerator {
+public final class IVGenerator {
     
     private static ARCFOUREncryption arcfour;
     

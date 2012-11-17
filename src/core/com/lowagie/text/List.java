@@ -1,6 +1,5 @@
 /*
- * $Id: List.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: List.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -137,6 +136,16 @@ public class List implements TextElementArray {
     protected int first = 1;
     /** This is the listsymbol of a list that is not numbered. */
     protected Chunk symbol = new Chunk("- ");
+    /**
+     * In case you are using numbered/lettered lists, this String is added before the number/letter.
+     * @since	iText 2.1.1
+     */
+    protected String preSymbol = "";
+    /**
+     * In case you are using numbered/lettered lists, this String is added after the number/letter.	
+     * @since	iText 2.1.1
+     */
+    protected String postSymbol = ". ";
     
     /** The indentation of this list on the left side. */
     protected float indentationLeft = 0;
@@ -262,13 +271,13 @@ public class List implements TextElementArray {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
             if (numbered || lettered) {
-                Chunk chunk;
+                Chunk chunk = new Chunk(preSymbol, symbol.getFont());
                 int index = first + list.size();
                 if ( lettered )
-                    chunk = new Chunk(RomanAlphabetFactory.getString(index, lowercase), symbol.getFont());
+                    chunk.append(RomanAlphabetFactory.getString(index, lowercase));
                 else
-                    chunk = new Chunk(String.valueOf(index), symbol.getFont());
-                chunk.append(". ");
+                    chunk.append(String.valueOf(index));
+                chunk.append(postSymbol);
                 item.setListSymbol(chunk);
             }
             else {
@@ -539,92 +548,41 @@ public class List implements TextElementArray {
 	public boolean isNestable() {
 		return true;
 	}
-    
-    // deprecated constructor and methods
-	/**
-     * Returns a <CODE>List</CODE> that has been constructed taking in account
-     * the value of some <VAR>attributes</VAR>.
-     *
-     * @param	attributes		Some attributes
-     * 	 * @deprecated As of iText 2.0.3, replaced by {@link com.lowagie.text.factories.ElementFactory#getList(Properties)},
-	 * scheduled for removal at 2.1.0
-     */
 
-	public List(java.util.Properties attributes) {
-		this();
-		List l = com.lowagie.text.factories.ElementFactory.getList(attributes);
-		this.list = l.list;
-		this.numbered = l.numbered;
-		this.lettered = l.lettered;
-		this.lowercase = l.lowercase;
-		this.autoindent = l.autoindent;
-		this.alignindent = l.alignindent;
-		this.first = l.first;
-		this.symbol = l.symbol;
-		this.indentationLeft = l.indentationLeft;
-		this.indentationRight = l.indentationRight;
-		this.symbolIndent = l.symbolIndent;
+	/**
+	 * Returns the String that is after a number or letter in the list symbol.
+	 * @return	the String that is after a number or letter in the list symbol
+	 * @since	iText 2.1.1
+	 */
+	public String getPostSymbol() {
+		return postSymbol;
 	}
-	
-    /**
-     * Checks if the list lettering is lowercase.
-     * @return  <CODE>true</CODE> if it is lowercase, <CODE>false</CODE> otherwise.
-	 * @deprecated As of iText 2.0.3, replaced by {@link #isLowercase()},
-	 * scheduled for removal at 2.1.0
-     */
-    public boolean isLowerCase() {
-        return isLowercase();
-    }
-    
-    /**
-     * Gets the first number        .
-     * @return a number
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getFirst()},
-	 * scheduled for removal at 2.1.0
-     */
-    public int first() {
-        return getFirst();
-    }
-    
-    /**
-     * Gets the Chunk containing the symbol.
-     * @return a Chunk with a symbol
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getSymbol()},
-	 * scheduled for removal at 2.1.0
-     */
-    public Chunk symbol() {
-        return getSymbol();
-    }
-    
-    /**
-     * Gets the indentation of this paragraph on the left side.
-     * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationLeft()},
-	 * scheduled for removal at 2.1.0
-     */
-    
-    public float indentationLeft() {
-        return indentationLeft;
-    }
-    
-    /**
-     * Gets the indentation of this paragraph on the right side.
-     * @return	the indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getIndentationRight()},
-	 * scheduled for removal at 2.1.0
-     */
-    
-    public float indentationRight() {
-        return getIndentationRight();
-    }
 
 	/**
-     * Gets the symbol indentation.
-     * @return the symbol indentation
-	 * @deprecated As of iText 2.0.3, replaced by {@link #getSymbolIndent()},
-	 * scheduled for removal at 2.1.0
-     */
-    public float symbolIndent() {
-        return getSymbolIndent();
-    }
+	 * Sets the String that has to be added after a number or letter in the list symbol.
+	 * @since	iText 2.1.1
+	 * @param	postSymbol the String that has to be added after a number or letter in the list symbol.
+	 */
+	public void setPostSymbol(String postSymbol) {
+		this.postSymbol = postSymbol;
+	}
+
+	/**
+	 * Returns the String that is before a number or letter in the list symbol.
+	 * @return	the String that is before a number or letter in the list symbol
+	 * @since	iText 2.1.1
+	 */
+	public String getPreSymbol() {
+		return preSymbol;
+	}
+
+	/**
+	 * Sets the String that has to be added before a number or letter in the list symbol.
+	 * @since	iText 2.1.1
+	 * @param	preSymbol the String that has to be added before a number or letter in the list symbol.
+	 */
+	public void setPreSymbol(String preSymbol) {
+		this.preSymbol = preSymbol;
+	}
+
 }

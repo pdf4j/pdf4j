@@ -1,6 +1,5 @@
 /*
- * $Id: OrderedLayers.java 2570 2007-02-06 13:29:11Z blowagie $
- * $Name$
+ * $Id: OrderedLayers.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -77,6 +76,8 @@ public class OrderedLayers {
 			cb.beginLayer(l3);
 			ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, p3, 50, 500, 0);
 			cb.endLayer();
+			cb.sanityCheck();
+			
 			PdfOCProperties p = writer.getOCProperties();
 			PdfArray order = new PdfArray();
 			order.add(l1.getRef());

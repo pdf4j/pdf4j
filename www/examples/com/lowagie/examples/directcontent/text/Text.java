@@ -1,6 +1,5 @@
 /*
- * $Id: Text.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Text.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -85,6 +84,8 @@ public class Text {
             
             // we tell the contentByte, we've finished drawing text
             cb.endText();
+            
+            cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

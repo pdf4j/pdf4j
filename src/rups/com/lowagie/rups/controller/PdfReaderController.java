@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: PdfReaderController.java 3692 2009-02-13 00:51:21Z mstorer $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -7,12 +7,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -31,7 +31,6 @@ import com.lowagie.rups.model.PdfFile;
 import com.lowagie.rups.model.TreeNodeFactory;
 import com.lowagie.rups.view.PageNavigationListener;
 import com.lowagie.rups.view.RupsMenuBar;
-import com.lowagie.rups.view.Utilities;
 import com.lowagie.rups.view.itext.FormTree;
 import com.lowagie.rups.view.itext.OutlineTree;
 import com.lowagie.rups.view.itext.PagesTable;
@@ -67,10 +66,10 @@ public class PdfReaderController extends Observable implements Observer {
 	protected JTabbedPane editorTabs;
 	/** A panel that will show a stream. */
 	protected StreamTextArea streamArea;
-	
+
 	/** The factory producing tree nodes. */
 	protected TreeNodeFactory nodes;
-	
+
 	/**
 	 * Constructs the PdfReaderController.
 	 * This is an Observable object to which all iText related GUI components
@@ -92,11 +91,11 @@ public class PdfReaderController extends Observable implements Observer {
 		xref = new XRefTable(this);
 		addObserver(xref);
 		navigationTabs = new JTabbedPane();
-		navigationTabs.addTab("Pages", null, Utilities.getScrollPane(pages), "Pages");
-		navigationTabs.addTab("Outlines", null, Utilities.getScrollPane(outlines), "Outlines (Bookmarks)");
-		navigationTabs.addTab("Form", null, Utilities.getScrollPane(form), "Interactive Form");
+		navigationTabs.addTab("Pages", null, RupsController.getScrollPane(pages), "Pages");
+		navigationTabs.addTab("Outlines", null, RupsController.getScrollPane(outlines), "Outlines (Bookmarks)");
+		navigationTabs.addTab("Form", null, RupsController.getScrollPane(form), "Interactive Form");
 		navigationTabs.addTab("XFA", null, form.getXfaTree(), "Tree view of the XFA form");
-		navigationTabs.addTab("XRef", null, Utilities.getScrollPane(xref), "Cross-reference table");
+		navigationTabs.addTab("XRef", null, RupsController.getScrollPane(xref), "Cross-reference table");
 		objectPanel = new PdfObjectPanel();
 		addObserver(objectPanel);
 		streamArea = new StreamTextArea();
@@ -150,7 +149,7 @@ public class PdfReaderController extends Observable implements Observer {
 	public StreamTextArea getStreamArea() {
 		return streamArea;
 	}
-	
+
 	/**
 	 * Starts loading the PDF Objects in background.
 	 * @param file	the wrapper object that holds the PdfReader as member variable
@@ -182,7 +181,7 @@ public class PdfReaderController extends Observable implements Observer {
 		}
 		super.notifyObservers(obj);
 	}
-	
+
 	/**
 	 * Selects a node in the PdfTree.
 	 * @param node a node in the PdfTree
@@ -246,11 +245,11 @@ public class PdfReaderController extends Observable implements Observer {
 			if (node.isRecursive()) {
 				pdfTree.selectNode(node.getAncestor());
 				return;
-			}
+			}/*
 			if (node.isIndirect()) {
 				xref.selectRowByReference(node.getNumber());
 				return;
-			}
+			}*/
 			render(node.getPdfObject());
 		}
 	}

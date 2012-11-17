@@ -1,6 +1,5 @@
 /*
- * $Id: Measurements.java 2365 2006-09-14 22:52:48Z xlv $
- * $Name$
+ * $Id: Measurements.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

@@ -1,6 +1,5 @@
 /*
- * $Id: IanaEncodings.java 2696 2007-04-19 11:57:29Z blowagie $
- * $Name$
+ * $Id: IanaEncodings.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2003-2007 Paulo Soares and Bruno Lowagie.
  *

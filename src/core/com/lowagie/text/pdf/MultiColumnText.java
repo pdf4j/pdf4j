@@ -1,6 +1,5 @@
 /*
- * $Id: MultiColumnText.java 3049 2007-12-01 10:42:20Z blowagie $
- * $Name$
+ * $Id: MultiColumnText.java 3936 2009-05-27 12:40:12Z blowagie $
  *
  * Copyright 2004 Steve Appling
  *
@@ -95,11 +94,6 @@ public class MultiColumnText implements Element {
     private float top;
 
     /**
-     * used to store the y position of the bottom of the page
-     */
-    private float pageBottom;
-
-    /**
      * ColumnText object used to do all the real work.  This same object is used for all columns
      */
     private ColumnText columnText;
@@ -123,7 +117,7 @@ public class MultiColumnText implements Element {
     private PdfDocument document;
     /**
      * Default constructor.  Sets height to <CODE>AUTOMATIC</CODE>.
-     * Columns will repeat on each page as necessary to accomodate content length.
+     * Columns will repeat on each page as necessary to accommodate content length.
      */
     public MultiColumnText() {
         this(AUTOMATIC);
@@ -196,7 +190,7 @@ public class MultiColumnText implements Element {
      */
     public void addColumn(float[] left, float[] right) {
         ColumnDef nextDef = new ColumnDef(left, right);
-        simple = nextDef.isSimple();
+        if (!nextDef.isSimple()) simple = false;
         columnDefs.add(nextDef);
     }
 
@@ -214,7 +208,7 @@ public class MultiColumnText implements Element {
 
     /**
      * Add the specified number of evenly spaced rectangular columns.
-     * Columns will be seperated by the specified gutterWidth.
+     * Columns will be separated by the specified gutterWidth.
      *
      * @param left        left boundary of first column
      * @param right       right boundary of last column
@@ -231,6 +225,26 @@ public class MultiColumnText implements Element {
         }
     }
 
+    /**
+     * Adds a <CODE>Phrase</CODE> to the current text array.
+     * Will not have any effect if addElement() was called before.
+     * @param phrase the text
+     * @since	2.1.5
+     */
+    public void addText(Phrase phrase) {
+    	columnText.addText(phrase);
+    }
+    
+    /**
+     * Adds a <CODE>Chunk</CODE> to the current text array.
+     * Will not have any effect if addElement() was called before.
+     * @param chunk the text
+     * @since	2.1.5
+     */
+    public void addText(Chunk chunk) {
+    	columnText.addText(chunk);
+    }
+    
     /**
      * Add an element to be rendered in a column.
      * Note that you can only add a <CODE>Phrase</CODE>
@@ -270,18 +284,16 @@ public class MultiColumnText implements Element {
             throw new DocumentException("MultiColumnText has no columns");
         }
         overflow = false;
-        pageBottom = document.bottom();
         float currentHeight = 0;
         boolean done = false;
         try {
             while (!done) {
-                if (nextY == AUTOMATIC) {
-                    nextY = document.getVerticalPosition(true); // RS - 07/07/2005 - - Get current doc writing position for top of columns on new page.
-                }
                 if (top == AUTOMATIC) {
                     top = document.getVerticalPosition(true); // RS - 07/07/2005 - Get current doc writing position for top of columns on new page.
                 }
-
+                else if (nextY == AUTOMATIC) {
+                    nextY = document.getVerticalPosition(true); // RS - 07/07/2005 - - Get current doc writing position for top of columns on new page.
+                }
                 ColumnDef currentDef = (ColumnDef) columnDefs.get(getCurrentColumn());
                 columnText.setYLine(top);
 
@@ -430,9 +442,9 @@ public class MultiColumnText implements Element {
      */
     private float getColumnBottom() {
         if (desiredHeight == AUTOMATIC) {
-            return pageBottom;
+            return document.bottom();
         } else {
-            return Math.max(top - (desiredHeight - totalHeight), pageBottom);
+            return Math.max(top - (desiredHeight - totalHeight), document.bottom());
         }
     }
 
@@ -469,7 +481,7 @@ public class MultiColumnText implements Element {
     
     /**
      * Shifts the current column.
-     * @return true if the currentcolumn has changed
+     * @return true if the current column has changed
      */
     public boolean shiftCurrentColumn() {
     	if (currentColumn + 1 < columnDefs.size()) {
@@ -572,6 +584,7 @@ public class MultiColumnText implements Element {
 
         private float[] resolvePositions(float[] positions) {
             if (!isSimple()) {
+                positions[1] = top;
                 return positions;
             }
             if (top == AUTOMATIC) {

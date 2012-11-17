@@ -1,6 +1,5 @@
 /*
- * $Id: JFreeChartExample.java 1778 2005-06-02 11:05:39Z blowagie $
- * $Name$
+ * $Id: JFreeChartExample.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -76,7 +75,9 @@ public class JFreeChartExample {
     		Rectangle2D r2d = new Rectangle2D.Double(0, 0, width, height);
     		chart.draw(g2d, r2d);
     		g2d.dispose();
+    		tp.sanityCheck();
     		cb.addTemplate(tp, 0, 0);
+    		cb.sanityCheck();
     	}
     	catch(DocumentException de) {
     		de.printStackTrace();

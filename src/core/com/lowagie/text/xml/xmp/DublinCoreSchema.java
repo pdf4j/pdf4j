@@ -1,6 +1,5 @@
 /*
- * $Id: DublinCoreSchema.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: DublinCoreSchema.java 3596 2008-10-10 11:37:58Z psoares33 $
  *
  * Copyright 2005 by Bruno Lowagie.
  *
@@ -104,7 +103,9 @@ public class DublinCoreSchema extends XmpSchema {
 	 * @param title
 	 */
 	public void addTitle(String title) {
-		setProperty(TITLE, title);
+		XmpArray array = new XmpArray(XmpArray.ALTERNATIVE);
+		array.add(title);
+		setProperty(TITLE, array);
 	}
 
 	/**
@@ -112,7 +113,9 @@ public class DublinCoreSchema extends XmpSchema {
 	 * @param desc
 	 */
 	public void addDescription(String desc) {
-		setProperty(DESCRIPTION, desc);
+		XmpArray array = new XmpArray(XmpArray.ALTERNATIVE);
+		array.add(desc);
+		setProperty(DESCRIPTION, array);
 	}
 
 	/**

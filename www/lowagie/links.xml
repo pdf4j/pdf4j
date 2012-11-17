@@ -7,13 +7,6 @@
 		<site:title>Useful links</site:title>
 		<site:summary>Some links on iText, JAVA, PDF,...</site:summary>
 		<site:keywords>PDF, JAVA, iText, links, Lowagie, Bruno</site:keywords>
-		<site:updated>$Date: 2007-06-03 10:02:44 -0400 (Sun, 03 Jun 2007) $</site:updated>
+		<site:updated>$Date: 2009-06-28 09:22:47 -0400 (Sun, 28 Jun 2009) $</site:updated>
 	</site:metadata>
-	<site:content>
-	<div class="small" xmlns="http://www.w3.org/1999/xhtml">
-<div class="header">Links</div>
-<blockquote>The links have moved to <a href="http://itext.ugent.be/links/">http://itext.ugent.be/links/</a>.</blockquote>
-
-	</div>
-	</site:content>
 </site:page>

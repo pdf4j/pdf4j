@@ -1,8 +1,7 @@
 /*
- * $Id: SpecialSymbol.java 2748 2007-05-12 15:11:48Z blowagie $
- * $Name$
+ * $Id: SpecialSymbol.java 3963 2009-06-11 11:45:49Z psoares33 $
  *
- * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
+ * Copyright 2000, 2001, 2002 by Bruno Lowagie.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -147,7 +146,7 @@ public class SpecialSymbol {
             case 933:
                 return 'U'; // UPSILON
             case 934:
-                return 'J'; // PHI
+                return 'F'; // PHI
             case 935:
                 return 'C'; // CHI
             case 936:
@@ -197,7 +196,7 @@ public class SpecialSymbol {
             case 965:
                 return 'u'; // upsilon
             case 966:
-                return 'j'; // phi
+                return 'f'; // phi
             case 967:
                 return 'c'; // chi
             case 968:

@@ -11,7 +11,7 @@
 			<site:keyword>JAVA</site:keyword>
 			<site:keyword>RTF</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2007-03-27 17:49:12 -0400 (Tue, 27 Mar 2007) $</site:updated>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
 		<site:author>Mark Hall</site:author>
 	</site:metadata>
 	
@@ -19,11 +19,13 @@
 		<site:example>
 			<site:java src="PageNumber" standalone="yes" />
 			<site:result>PageNumber.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
 			<site:description>Generates a document with page numbers in the footer</site:description>
 		</site:example>
 		<site:example>
 			<site:java src="TotalPageNumber" standalone="yes" />
 			<site:result>TotalPageNumber.rtf</site:result>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
 			<site:description>Generates a document with page numbers and total number of pages in the header</site:description>
 		</site:example>
 	</site:examples>

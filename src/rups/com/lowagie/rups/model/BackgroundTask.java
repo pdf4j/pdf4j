@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: BackgroundTask.java 3146 2008-02-20 18:10:07Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
 /**
  * Allows you to perform long lasting tasks in background.
  * If we ever move to Java 6, we should use the SwingWorker class
- * (included in the JDK) instead of this custum Event Dispatching
+ * (included in the JDK) instead of this custom Event Dispatching
  * code.
  */
 
@@ -71,8 +71,6 @@ public abstract class BackgroundTask {
 
     /**
      * Implement this class; the time-consuming task will go here.
-     *
-     * @return Object
      */
     public abstract void doTask();
 

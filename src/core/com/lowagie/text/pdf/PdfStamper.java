@@ -54,6 +54,7 @@ import java.io.OutputStream;
 import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.DocumentException;
@@ -144,6 +145,19 @@ public class PdfStamper
         this.moreInfo = moreInfo;
     }
 
+    /**
+     * Replaces a page from this document with a page from other document. Only the content
+     * is replaced not the fields and annotations. This method must be called before 
+     * getOverContent() or getUndercontent() are called for the same page.
+     * @param r the <CODE>PdfReader</CODE> from where the new page will be imported
+     * @param pageImported the page number of the imported page
+     * @param pageReplaced the page to replace in this document
+     * @since iText 2.1.1
+     */
+    public void replacePage(PdfReader r, int pageImported, int pageReplaced) {
+        stamper.replacePage(r, pageImported, pageReplaced);
+    }
+    
     /**
      * Inserts a blank page. All the pages above and including <CODE>pageNumber</CODE> will
      * be shifted up. If <CODE>pageNumber</CODE> is bigger than the total number of pages
@@ -325,7 +339,7 @@ public class PdfStamper
      *  The permissions can be combined by ORing them.
      * Optionally DO_NOT_ENCRYPT_METADATA can be ored to output the metadata in cleartext
      * @param certs the public certificates to be used for the encryption
-     * @param permissions the user permissions for each of the certicates
+     * @param permissions the user permissions for each of the certificates
      * @param encryptionType the type of encryption. It can be one of STANDARD_ENCRYPTION_40, STANDARD_ENCRYPTION_128 or ENCRYPTION_AES128.
      * @throws DocumentException if the encryption was set too late
      */
@@ -396,6 +410,26 @@ public class PdfStamper
         stamper.addAnnotation(annot, page);
     }
 
+    /**
+     * Adds an empty signature.
+     * @param name	the name of the signature
+     * @param page	the page number
+     * @param llx	lower left x coordinate of the signature's position
+     * @param lly	lower left y coordinate of the signature's position
+     * @param urx	upper right x coordinate of the signature's position
+     * @param ury	upper right y coordinate of the signature's position
+     * @return	a signature form field
+     * @since	2.1.4
+     */
+    public PdfFormField addSignature(String name, int page, float llx, float lly, float urx, float ury) {
+        PdfAcroForm acroForm = stamper.getAcroForm();
+        PdfFormField signature = PdfFormField.createSignature(stamper);
+        acroForm.setSignatureParams(signature, name, llx, lly, urx, ury);
+        acroForm.drawSignatureAppearences(signature, llx, lly, urx, ury);
+        addAnnotation(signature, page);
+        return signature;
+    }
+    
     /**
      * Adds the comments present in an FDF file.
      * @param fdf the FDF file
@@ -713,5 +747,15 @@ public class PdfStamper
     public static PdfStamper createSignature(PdfReader reader, OutputStream os, char pdfVersion, File tempFile) throws DocumentException, IOException 
     {
         return createSignature(reader, os, pdfVersion, tempFile, false);
+    }
+    
+    /**
+     * Gets the PdfLayer objects in an existing document as a Map
+     * with the names/titles of the layers as keys.
+     * @return	a Map with all the PdfLayers in the document (and the name/title of the layer as key)
+     * @since	2.1.2
+     */
+    public Map getPdfLayers() {
+    	return stamper.getPdfLayers();
     }
 }

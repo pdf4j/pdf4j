@@ -1,5 +1,5 @@
 /*
- * $Id: PolylineShape.java 2772 2007-05-21 14:06:08Z blowagie $
+ * $Id: PolylineShape.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2007 Bruno Lowagie and Wil
  *

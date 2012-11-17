@@ -1,5 +1,5 @@
 /*
- * $Id: PdfVersion.java 2571 2007-02-06 13:37:06Z blowagie $
+ * $Id: PdfVersion.java 3811 2009-03-23 18:15:13Z blowagie $
  *
  * Copyright 2006 Bruno Lowagie
  *
@@ -49,6 +49,7 @@
 
 package com.lowagie.text.pdf.interfaces;
 
+import com.lowagie.text.pdf.PdfDeveloperExtension;
 import com.lowagie.text.pdf.PdfName;
 
 /**
@@ -72,7 +73,7 @@ public interface PdfVersion {
     /**
 	 * If the PDF Header hasn't been written yet,
 	 * this changes the version as it will appear in the PDF Header,
-	 * but only if param refers to a higher version.
+	 * but only if the parameter refers to a higher version.
 	 * If the PDF header was already written to the OutputStream,
 	 * this changes the version as it will appear in the Catalog.
 	 * @param version	a character representing the PDF version
@@ -86,4 +87,11 @@ public interface PdfVersion {
 	 * @param version	the PDF name that will be used for the Version key in the catalog
 	 */
 	public void setPdfVersion(PdfName version);
+	/**
+	 * Adds a developer extension to the Extensions dictionary
+	 * in the Catalog.
+	 * @param de	an object that contains the extensions prefix and dictionary
+	 * @since	2.1.6
+	 */
+	public void addDeveloperExtension(PdfDeveloperExtension de);
 }

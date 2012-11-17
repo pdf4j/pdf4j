@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPRow.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: PdfPRow.java 3999 2009-06-30 11:52:55Z blowagie $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -63,33 +62,47 @@ import com.lowagie.text.Rectangle;
  * 
  * @author Paulo Soares (psoares@consiste.pt)
  */
-
 public class PdfPRow {
 
 	/** the bottom limit (bottom right y) */
 	public static final float BOTTOM_LIMIT = -(1 << 30);
+	/**
+	 * the right limit
+	 * @since	2.1.5
+	 */
+	public static final float RIGHT_LIMIT = 20000;
 
 	protected PdfPCell cells[];
 
 	protected float widths[];
+	
+	/**
+	 * extra heights that needs to be added to a cell because of rowspans.
+	 * @since	2.1.6
+	 */
+	protected float extraHeights[];
 
 	protected float maxHeight = 0;
-
+	
 	protected boolean calculated = false;
     
     private int[] canvasesPos;
-
+    
 	/**
-	 * Constructs a new PdfPRow with the cells in the array that was passed as a parameter.
+	 * Constructs a new PdfPRow with the cells in the array that was passed
+	 * as a parameter.
+	 * 
 	 * @param cells
 	 */
 	public PdfPRow(PdfPCell cells[]) {
 		this.cells = cells;
 		widths = new float[cells.length];
+		initExtraHeights();
 	}
 
 	/**
 	 * Makes a copy of an existing row.
+	 * 
 	 * @param row
 	 */
 	public PdfPRow(PdfPRow row) {
@@ -102,10 +115,12 @@ public class PdfPRow {
 		}
 		widths = new float[cells.length];
 		System.arraycopy(row.widths, 0, widths, 0, cells.length);
+		initExtraHeights();
 	}
 
 	/**
 	 * Sets the widths of the columns in the row.
+	 * 
 	 * @param widths
 	 * @return true if everything went right
 	 */
@@ -117,6 +132,12 @@ public class PdfPRow {
 		calculated = false;
 		for (int k = 0; k < widths.length; ++k) {
 			PdfPCell cell = cells[k];
+			
+			if (cell == null) {
+				total += widths[k];
+				continue;
+			}
+			
 			cell.setLeft(total);
 			int last = k + cell.getColspan();
 			for (; k < last; ++k)
@@ -129,82 +150,46 @@ public class PdfPRow {
 	}
 
 	/**
+	 * Initializes the extra heights array.
+	 * @since	2.1.6
+	 */
+	public void initExtraHeights() {
+		extraHeights = new float[cells.length];
+		for (int i = 0; i < extraHeights.length; i++) {
+			extraHeights[i] = 0;
+		}
+	}
+	
+	/**
+	 * Sets an extra height for a cell.
+	 * @param	cell	the index of the cell that needs an extra height
+	 * @param	height	the extra height
+	 * @since	2.1.6
+	 */
+	public void setExtraHeight(int cell, float height) {
+		if (cell < 0 || cell >= cells.length)
+			return;
+		extraHeights[cell] = height;
+	}
+	
+	/**
 	 * Calculates the heights of each cell in the row.
+	 * 
 	 * @return the maximum height of the row.
 	 */
 	public float calculateHeights() {
 		maxHeight = 0;
 		for (int k = 0; k < cells.length; ++k) {
 			PdfPCell cell = cells[k];
-			if (cell == null)
+			float height = 0;
+			if (cell == null) {
 				continue;
-			Image img = cell.getImage();
-			if (img != null) {
-				img.scalePercent(100);
-                float refWidth = img.getScaledWidth();
-                if (cell.getRotation() == 90 || cell.getRotation() == 270) {
-                    refWidth = img.getScaledHeight();
-                }
-                float scale = (cell.getRight() - cell.getEffectivePaddingRight()
-                    - cell.getEffectivePaddingLeft() - cell.getLeft())
-                    / refWidth;
-                img.scalePercent(scale * 100);
-                float refHeight = img.getScaledHeight();
-                if (cell.getRotation() == 90 || cell.getRotation() == 270) {
-                    refHeight = img.getScaledWidth();
-                }
-                cell.setBottom(cell.getTop() - cell.getEffectivePaddingTop()
-                    - cell.getEffectivePaddingBottom()
-                    - refHeight);
-			} else {
-                if (cell.getRotation() == 0 || cell.getRotation() == 180) {
-                    float rightLimit = cell.isNoWrap() ? 20000 : cell.getRight()
-                            - cell.getEffectivePaddingRight();
-                    float bry = (cell.getFixedHeight() > 0) ? cell.getTop()
-                            - cell.getEffectivePaddingTop()
-                            + cell.getEffectivePaddingBottom()
-                            - cell.getFixedHeight() : BOTTOM_LIMIT;
-                    ColumnText ct = ColumnText.duplicate(cell.getColumn());
-                    setColumn(ct,
-                            cell.getLeft() + cell.getEffectivePaddingLeft(), bry,
-                            rightLimit, cell.getTop() - cell.getEffectivePaddingTop());
-                    try {
-                        ct.go(true);
-                    } catch (DocumentException e) {
-                        throw new ExceptionConverter(e);
-                    }
-                    float yLine = ct.getYLine();
-                    if (cell.isUseDescender())
-                        yLine += ct.getDescender();
-                    cell.setBottom(yLine - cell.getEffectivePaddingBottom());
-                }
-                else {
-                    if (cell.getFixedHeight() > 0) {
-                        cell.setBottom(cell.getTop() - cell.getFixedHeight());
-                    }
-                    else {
-                        ColumnText ct = ColumnText.duplicate(cell.getColumn());
-                        setColumn(ct, 0, cell.getLeft() + cell.getEffectivePaddingLeft(),
-                                20000, cell.getRight() - cell.getEffectivePaddingRight());
-                        try {
-                            ct.go(true);
-                        } catch (DocumentException e) {
-                            throw new ExceptionConverter(e);
-                        }
-                        cell.setBottom(cell.getTop() - cell.getEffectivePaddingTop() 
-                            - cell.getEffectivePaddingBottom() - ct.getFilledWidth());
-                    }
-                }
 			}
-			float height = cell.getFixedHeight();
-			if (height <= 0)
-				height = cell.getHeight();
-			if (height < cell.getFixedHeight())
-				height = cell.getFixedHeight();
-			else if (height < cell.getMinimumHeight())
-				height = cell.getMinimumHeight();
-			if (height > maxHeight)
-				maxHeight = height;
+			else {
+				height = cell.getMaxHeight();
+				if ((height > maxHeight) && (cell.getRowspan() == 1))
+					maxHeight = height;
+			}
 		}
 		calculated = true;
 		return maxHeight;
@@ -212,86 +197,48 @@ public class PdfPRow {
 
 	/**
 	 * Writes the border and background of one cell in the row.
-	 * @param xPos
-	 * @param yPos
+	 * 
+	 * @param xPos The x-coordinate where the table starts on the canvas
+	 * @param yPos The y-coordinate where the table starts on the canvas
+	 * @param currentMaxHeight The height of the cell to be drawn.
 	 * @param cell
 	 * @param canvases
+	 * @since	2.1.6	extra parameter currentMaxHeight
 	 */
-	public void writeBorderAndBackground(float xPos, float yPos, PdfPCell cell,
-			PdfContentByte[] canvases) {
-		PdfContentByte lines = canvases[PdfPTable.LINECANVAS];
-		PdfContentByte backgr = canvases[PdfPTable.BACKGROUNDCANVAS];
-		// the coordinates of the border are retrieved
-		float x1 = cell.getLeft() + xPos;
-		float y2 = cell.getTop() + yPos;
-		float x2 = cell.getRight() + xPos;
-		float y1 = y2 - maxHeight;
-
-		// the backgroundcolor is set
+	public void writeBorderAndBackground(float xPos, float yPos, float currentMaxHeight, PdfPCell cell, PdfContentByte[] canvases) {
 		Color background = cell.getBackgroundColor();
-		if (background != null) {
-			backgr.setColorFill(background);
-			backgr.rectangle(x1, y1, x2 - x1, y2 - y1);
-			backgr.fill();
-        }
-		// if the element hasn't got any borders, nothing is added
-		if (cell.hasBorders()) {
-			if (cell.isUseVariableBorders()) {
-				Rectangle borderRect = new Rectangle(cell.getLeft() + xPos, cell
-						.getTop()
-						- maxHeight + yPos, cell.getRight() + xPos, cell.getTop()
-						+ yPos);
-				borderRect.cloneNonPositionParameters(cell);
-                borderRect.setBackgroundColor(null);
-				lines.rectangle(borderRect);
-			} else {
-				// the width is set to the width of the element
-				if (cell.getBorderWidth() != Rectangle.UNDEFINED) {
-					lines.setLineWidth(cell.getBorderWidth());
-				}
-				// the color is set to the color of the element
-				Color color = cell.getBorderColor();
-				if (color != null) {
-					lines.setColorStroke(color);
-				}
-
-				// if the box is a rectangle, it is added as a rectangle
-				if (cell.hasBorder(Rectangle.BOX)) {
-					lines.rectangle(x1, y1, x2 - x1, y2 - y1);
-				}
-				// if the border isn't a rectangle, the different sides are
-				// added apart
-				else {
-					if (cell.hasBorder(Rectangle.RIGHT)) {
-						lines.moveTo(x2, y1);
-						lines.lineTo(x2, y2);
-					}
-					if (cell.hasBorder(Rectangle.LEFT)) {
-						lines.moveTo(x1, y1);
-						lines.lineTo(x1, y2);
-					}
-					if (cell.hasBorder(Rectangle.BOTTOM)) {
-						lines.moveTo(x1, y1);
-						lines.lineTo(x2, y1);
-					}
-					if (cell.hasBorder(Rectangle.TOP)) {
-						lines.moveTo(x1, y2);
-						lines.lineTo(x2, y2);
-					}
-				}
-				lines.stroke();
-				if (color != null) {
-					lines.resetRGBColorStroke();
-				}
+		if (background != null || cell.hasBorders()) {
+			// Add xPos resp. yPos to the cell's coordinates for absolute coordinates
+			float right = cell.getRight() + xPos;
+			float top = cell.getTop() + yPos;
+			float left = cell.getLeft() + xPos;
+			float bottom = top - currentMaxHeight;
+			
+			if (background != null) {
+				PdfContentByte backgr = canvases[PdfPTable.BACKGROUNDCANVAS];
+				backgr.setColorFill(background);
+				backgr.rectangle(left, bottom, right - left, top - bottom);
+				backgr.fill();
+			}
+			if (cell.hasBorders()) {
+				Rectangle newRect = new Rectangle(left, bottom, right, top);
+				// Clone non-position parameters except for the background color
+				newRect.cloneNonPositionParameters(cell);
+				newRect.setBackgroundColor(null);
+				// Write the borders on the line canvas
+				PdfContentByte lineCanvas = canvases[PdfPTable.LINECANVAS];
+				lineCanvas.rectangle(newRect);
 			}
 		}
 	}
 
-    private void saveAndRotateCanvases(PdfContentByte[] canvases, float a, float b, float c, float d, float e, float f) {
+	/**
+	 * @since	2.1.6 private is now protected
+	 */
+    protected void saveAndRotateCanvases(PdfContentByte[] canvases, float a, float b, float c, float d, float e, float f) {
         int last = PdfPTable.TEXTCANVAS + 1;
-        if (canvasesPos == null) {
+        if (canvasesPos == null)
             canvasesPos = new int[last * 2];
-        }
         for (int k = 0; k < last; ++k) {
             ByteBuffer bb = canvases[k].getInternalBuffer();
             canvasesPos[k * 2] = bb.size();
@@ -300,8 +247,11 @@ public class PdfPRow {
             canvasesPos[k * 2 + 1] = bb.size();
         }
     }
-    
-    private void restoreCanvases(PdfContentByte[] canvases) {
+
+	/**
+	 * @since	2.1.6 private is now protected
+	 */
+    protected void restoreCanvases(PdfContentByte[] canvases) {
         int last = PdfPTable.TEXTCANVAS + 1;
         for (int k = 0; k < last; ++k) {
             ByteBuffer bb = canvases[k].getInternalBuffer();
@@ -311,61 +261,79 @@ public class PdfPRow {
                 bb.setSize(canvasesPos[k * 2]);
         }
     }
-    
-    private float setColumn(ColumnText ct, float llx, float lly, float urx, float ury) {
-        if (llx > urx)
-            urx = llx;
-        if (lly > ury)
-            ury = lly;
-        ct.setSimpleColumn(llx, lly, urx, ury);
-        return ury;
+
+	/**
+	 * @since	3.0.0 protected is now public static
+	 */
+    public static float setColumn(ColumnText ct, float left, float bottom, float right, float top) {
+        if (left > right)
+            right = left;
+        if (bottom > top)
+            top = bottom;
+        ct.setSimpleColumn(left, bottom, right, top);
+        return top;
     }
     
 	/**
 	 * Writes a number of cells (not necessarily all cells).
-	 * @param colStart
-	 * @param colEnd
-	 * @param xPos
-	 * @param yPos
-	 * @param canvases
+	 * 
+	 * @param	colStart The first column to be written.
+	 * Remember that the column index starts with 0.
+	 * @param	colEnd The last column to be written.
+	 * Remember that the column index starts with 0.
+	 * If -1, all the columns to the end are written.
+	 * @param	xPos The x-coordinate where the table starts on the canvas
+	 * @param	yPos The y-coordinate where the table starts on the canvas
 	 */
-	public void writeCells(int colStart, int colEnd, float xPos, float yPos,
-			PdfContentByte[] canvases) {
+	public void writeCells(int colStart, int colEnd, float xPos, float yPos, PdfContentByte[] canvases) {
 		if (!calculated)
 			calculateHeights();
 		if (colEnd < 0)
 			colEnd = cells.length;
-		colEnd = Math.min(colEnd, cells.length);
+		else
+			colEnd = Math.min(colEnd, cells.length);
 		if (colStart < 0)
 			colStart = 0;
 		if (colStart >= colEnd)
 			return;
+		
 		int newStart;
 		for (newStart = colStart; newStart >= 0; --newStart) {
 			if (cells[newStart] != null)
 				break;
-			xPos -= widths[newStart - 1];
+			if (newStart > 0)
+				xPos -= widths[newStart - 1];
 		}
-		xPos -= cells[newStart].getLeft();
+		
+		if (newStart < 0)
+			newStart = 0;
+		if (cells[newStart] != null)
+			xPos -= cells[newStart].getLeft();
+		
 		for (int k = newStart; k < colEnd; ++k) {
 			PdfPCell cell = cells[k];
 			if (cell == null)
 				continue;
-			writeBorderAndBackground(xPos, yPos, cell, canvases);
+			float currentMaxHeight = maxHeight + extraHeights[k];
+			
+			writeBorderAndBackground(xPos, yPos, currentMaxHeight, cell, canvases);
+
 			Image img = cell.getImage();
-			float tly = 0;
-			switch (cell.getVerticalAlignment()) {
-			case Element.ALIGN_BOTTOM:
-				tly = cell.getTop() + yPos - maxHeight + cell.getHeight()
-						- cell.getEffectivePaddingTop();
-				break;
-			case Element.ALIGN_MIDDLE:
-				tly = cell.getTop() + yPos + (cell.getHeight() - maxHeight) / 2
-						- cell.getEffectivePaddingTop();
-				break;
-			default:
-				tly = cell.getTop() + yPos - cell.getEffectivePaddingTop();
-				break;
+			
+			float tly = cell.getTop() + yPos - cell.getEffectivePaddingTop();
+			if (cell.getHeight() <= currentMaxHeight) {
+				switch (cell.getVerticalAlignment()) {
+				case Element.ALIGN_BOTTOM:
+					tly = cell.getTop() + yPos - currentMaxHeight + cell.getHeight()
+							- cell.getEffectivePaddingTop();
+					break;
+				case Element.ALIGN_MIDDLE:
+					tly = cell.getTop() + yPos + (cell.getHeight() - currentMaxHeight) / 2
+							- cell.getEffectivePaddingTop();
+					break;
+				default:
+					break;
+				}
 			}
 			if (img != null) {
                 if (cell.getRotation() != 0) {
@@ -373,9 +341,9 @@ public class PdfPRow {
                     img.setRotation(img.getImageRotation() + (float)(cell.getRotation() * Math.PI / 180.0));
                 }
 				boolean vf = false;
-				if (cell.getHeight() > maxHeight) {
+				if (cell.getHeight() > currentMaxHeight) {
 					img.scalePercent(100);
-					float scale = (maxHeight - cell.getEffectivePaddingTop() - cell
+					float scale = (currentMaxHeight - cell.getEffectivePaddingTop() - cell
 							.getEffectivePaddingBottom())
 							/ img.getScaledHeight();
 					img.scalePercent(scale * 100);
@@ -411,7 +379,7 @@ public class PdfPRow {
 			} else {
                 // rotation sponsored by Connection GmbH
                 if (cell.getRotation() == 90 || cell.getRotation() == 270) {
-                    float netWidth = maxHeight - cell.getEffectivePaddingTop() - cell.getEffectivePaddingBottom();
+                    float netWidth = currentMaxHeight - cell.getEffectivePaddingTop() - cell.getEffectivePaddingBottom();
                     float netHeight = cell.getWidth() - cell.getEffectivePaddingLeft() - cell.getEffectivePaddingRight();
                     ColumnText ct = ColumnText.duplicate(cell.getColumn());
                     ct.setCanvases(canvases);
@@ -429,11 +397,11 @@ public class PdfPRow {
                             calcHeight -= ct.getDescender();
                         ct = ColumnText.duplicate(cell.getColumn());
                         ct.setCanvases(canvases);
-                        ct.setSimpleColumn(0, -0.001f, netWidth + 0.001f, calcHeight);
+                        ct.setSimpleColumn(-0.003f, -0.001f, netWidth + 0.003f, calcHeight);
                         float pivotX;
                         float pivotY;
                         if (cell.getRotation() == 90) {
-                            pivotY = cell.getTop() + yPos - maxHeight + cell.getEffectivePaddingBottom();
+                            pivotY = cell.getTop() + yPos - currentMaxHeight + cell.getEffectivePaddingBottom();
                             switch (cell.getVerticalAlignment()) {
                             case Element.ALIGN_BOTTOM:
                                 pivotX = cell.getLeft() + xPos + cell.getWidth() - cell.getEffectivePaddingRight();
@@ -484,29 +452,39 @@ public class PdfPRow {
                                 leftLimit -= 10000;
                                 break;
                             case Element.ALIGN_RIGHT:
-                                leftLimit -= 20000;
+                            	if (cell.getRotation() == 180) {
+                            		rightLimit += RIGHT_LIMIT;
+                            	}
+                            	else {
+                            		leftLimit -= RIGHT_LIMIT;
+                            	}
                                 break;
                             default:
-                                rightLimit += 20000;
+                            	if (cell.getRotation() == 180) {
+                            		leftLimit -= RIGHT_LIMIT;
+                            	}
+                            	else {
+                            		rightLimit += RIGHT_LIMIT;
+                            	}
                                 break;
                         }
                     }
                     ColumnText ct = ColumnText.duplicate(cell.getColumn());
                     ct.setCanvases(canvases);
                     float bry = tly
-                            - (maxHeight /* cell.height() */
+                            - (currentMaxHeight
                             - cell.getEffectivePaddingTop() - cell.getEffectivePaddingBottom());
                     if (fixedHeight > 0) {
-                        if (cell.getHeight() > maxHeight) {
+                        if (cell.getHeight() > currentMaxHeight) {
                             tly = cell.getTop() + yPos - cell.getEffectivePaddingTop();
-                            bry = cell.getTop() + yPos - maxHeight + cell.getEffectivePaddingBottom();
+                            bry = cell.getTop() + yPos - currentMaxHeight + cell.getEffectivePaddingBottom();
                         }
                     }
-                    if (tly > bry && leftLimit < rightLimit) {
+                    if ((tly > bry || ct.zeroHeightElement()) && leftLimit < rightLimit) {
                         ct.setSimpleColumn(leftLimit, bry - 0.001f,	rightLimit, tly);
                         if (cell.getRotation() == 180) {
                             float shx = leftLimit + rightLimit;
-                            float shy = yPos + yPos - maxHeight + cell.getEffectivePaddingBottom() - cell.getEffectivePaddingTop();
+                            float shy = yPos + yPos - currentMaxHeight + cell.getEffectivePaddingBottom() - cell.getEffectivePaddingTop();
                             saveAndRotateCanvases(canvases, -1,0,0,-1,shx,shy);
                         }
                         try {
@@ -524,15 +502,16 @@ public class PdfPRow {
 			PdfPCellEvent evt = cell.getCellEvent();
 			if (evt != null) {
 				Rectangle rect = new Rectangle(cell.getLeft() + xPos, cell.getTop()
-						+ yPos - maxHeight, cell.getRight() + xPos, cell.getTop()
+						+ yPos - currentMaxHeight, cell.getRight() + xPos, cell.getTop()
 						+ yPos);
 				evt.cellLayout(cell, rect, canvases);
 			}
 		}
 	}
-
+	
 	/**
 	 * Checks if the dimensions of the columns were calculated.
+	 * 
 	 * @return true if the dimensions of the columns were calculated
 	 */
 	public boolean isCalculated() {
@@ -541,18 +520,19 @@ public class PdfPRow {
 
 	/**
 	 * Gets the maximum height of the row (i.e. of the 'highest' cell).
+	 * 
 	 * @return the maximum height of the row
 	 */
 	public float getMaxHeights() {
 		if (calculated)
 			return maxHeight;
-		else
-			return calculateHeights();
+		return calculateHeights();
 	}
 
 	/**
 	 * Changes the maximum height of the row (to make it higher).
 	 * (added by Jin-Hsia Yang)
+	 * 
 	 * @param maxHeight the new maximum height
 	 */
 	public void setMaxHeights(float maxHeight) {
@@ -580,71 +560,86 @@ public class PdfPRow {
 	}
 
 	/**
-	 * Splits a row to newHeight. The returned row is the remainder. It will
-	 * return null if the newHeight was so small that only an empty row would
-	 * result.
+	 * Splits a row to newHeight.
+	 * The returned row is the remainder. It will return null if the newHeight
+	 * was so small that only an empty row would result.
 	 * 
-	 * @param newHeight
-	 *            the new height
+	 * @param new_height	the new height
 	 * @return the remainder row or null if the newHeight was so small that only
-	 *         an empty row would result
+	 * an empty row would result
 	 */
-	public PdfPRow splitRow(float newHeight) {
+	public PdfPRow splitRow(PdfPTable table, int rowIndex, float new_height) {
 		PdfPCell newCells[] = new PdfPCell[cells.length];
-		float fh[] = new float[cells.length * 2];
+		float fixHs[] = new float[cells.length];
+		float minHs[] = new float[cells.length];
 		boolean allEmpty = true;
 		for (int k = 0; k < cells.length; ++k) {
+			float newHeight = new_height;
 			PdfPCell cell = cells[k];
-			if (cell == null)
+			if (cell == null) {
+				int index = rowIndex;
+				if (table.rowSpanAbove(index, k)) {
+					newHeight += table.getRowHeight(index);
+					while (table.rowSpanAbove(--index, k)) {
+						newHeight += table.getRowHeight(index);
+					}
+					PdfPRow row = table.getRow(index);
+					if (row != null && row.getCells()[k] != null) {
+						newCells[k] = new PdfPCell(row.getCells()[k]);
+						newCells[k].consumeHeight(newHeight);
+						newCells[k].setRowspan(row.getCells()[k].getRowspan() - rowIndex + index);
+						allEmpty = false;
+					}
+				}
 				continue;
-			fh[k * 2] = cell.getFixedHeight();
-			fh[k * 2 + 1] = cell.getMinimumHeight();
+			}
+			fixHs[k] = cell.getFixedHeight();
+			minHs[k] = cell.getMinimumHeight();
 			Image img = cell.getImage();
-			PdfPCell c2 = new PdfPCell(cell);
+			PdfPCell newCell = new PdfPCell(cell);
 			if (img != null) {
-				if (newHeight > cell.getEffectivePaddingBottom()
-						+ cell.getEffectivePaddingTop() + 2) {
-					c2.setPhrase(null);
+				if (newHeight > cell.getEffectivePaddingBottom() + cell.getEffectivePaddingTop() + 2) {
+					newCell.setPhrase(null);
 					allEmpty = false;
 				}
-			} else {
-                int status;
+			}
+			else {
                 float y;
 				ColumnText ct = ColumnText.duplicate(cell.getColumn());
-                if (cell.getRotation() == 90 || cell.getRotation() == 270) {
-                    y = setColumn(ct,
-                            cell.getTop() - newHeight + cell.getEffectivePaddingBottom(),
-                            cell.getLeft() + cell.getEffectivePaddingLeft(),
-                            cell.getTop() - cell.getEffectivePaddingTop(),
-                            cell.getRight() - cell.getEffectivePaddingRight());
-                }
-                else {
-                    float rightLimit = cell.isNoWrap() ? 20000 : cell.getRight()
-                            - cell.getEffectivePaddingRight();
-                    float y1 = cell.getTop() - newHeight
-                            + cell.getEffectivePaddingBottom();
-                    float y2 = cell.getTop() - cell.getEffectivePaddingTop();
-                    y = setColumn(ct,
-                            cell.getLeft() + cell.getEffectivePaddingLeft(), y1,
-                            rightLimit, y2);
-                }
+	            float left = cell.getLeft() + cell.getEffectivePaddingLeft();
+	            float bottom = cell.getTop() + cell.getEffectivePaddingBottom() - newHeight;
+	            float right = cell.getRight() - cell.getEffectivePaddingRight();
+	            float top = cell.getTop() - cell.getEffectivePaddingTop();
+	            switch (cell.getRotation()) {
+	                case 90:
+	                case 270:
+	                    y = setColumn(ct, bottom, left, top, right);
+	                    break;
+	                default:
+	                    y = setColumn(ct, left, bottom, cell.isNoWrap() ? RIGHT_LIMIT : right, top);
+	                    break;
+	            }
+	            int status;
 				try {
 					status = ct.go(true);
-				} catch (DocumentException e) {
+				}
+				catch (DocumentException e) {
 					throw new ExceptionConverter(e);
 				}
 				boolean thisEmpty = (ct.getYLine() == y);
-				if (thisEmpty)
-					ct = ColumnText.duplicate(cell.getColumn());
-				allEmpty = (allEmpty && thisEmpty);
-				if ((status & ColumnText.NO_MORE_TEXT) == 0 || thisEmpty) {
-					c2.setColumn(ct);
-                    ct.setFilledWidth(0);
-				} else {
-					c2.setPhrase(null);
+				if (thisEmpty) {
+					newCell.setColumn(ColumnText.duplicate(cell.getColumn()));
+					ct.setFilledWidth(0);
 				}
+				else if ((status & ColumnText.NO_MORE_TEXT) == 0) {
+					newCell.setColumn(ct);
+                    ct.setFilledWidth(0);
+				}
+				else
+					newCell.setPhrase(null);
+				allEmpty = (allEmpty && thisEmpty);
 			}
-			newCells[k] = c2;
+			newCells[k] = newCell;
 			cell.setFixedHeight(newHeight);
 		}
 		if (allEmpty) {
@@ -652,12 +647,10 @@ public class PdfPRow {
 				PdfPCell cell = cells[k];
 				if (cell == null)
 					continue;
-				float f = fh[k * 2];
-				float m = fh[k * 2 + 1];
-				if (f <= 0)
-					cell.setMinimumHeight(m);
+				if (fixHs[k] > 0)
+					cell.setFixedHeight(fixHs[k]);
 				else
-					cell.setFixedHeight(f);
+					cell.setMinimumHeight(minHs[k]);
 			}
 			return null;
 		}
@@ -666,5 +659,17 @@ public class PdfPRow {
 		split.widths = (float[]) widths.clone();
 		split.calculateHeights();
 		return split;
+	}
+	
+	/**
+	 * Returns the array of cells in the row.
+	 * Please be extremely careful with this method.
+	 * Use the cells as read only objects.
+	 * 
+	 * @return	an array of cells
+	 * @since	2.1.1
+	 */
+	public PdfPCell[] getCells() {
+		return cells;
 	}
 }

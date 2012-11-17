@@ -1,5 +1,5 @@
 /*
- * $Id: XfaForm.java 2768 2007-05-21 08:48:44Z blowagie $
+ * $Id: XfaForm.java 3961 2009-06-09 10:06:10Z blowagie $
  *
  * Copyright 2006 Paulo Soares
  *
@@ -74,19 +74,35 @@ import com.lowagie.text.xml.XmlDomWriter;
 public class XfaForm {
 
     private Xml2SomTemplate templateSom;
+    private Node templateNode;
     private Xml2SomDatasets datasetsSom;
+    private Node datasetsNode;
     private AcroFieldsSearch acroFieldsSom;
     private PdfReader reader;
     private boolean xfaPresent;
     private org.w3c.dom.Document domDocument;
     private boolean changed;
-    private Node datasetsNode;
     public static final String XFA_DATA_SCHEMA = "http://www.xfa.org/schema/xfa-data/1.0/";
     
     /**
      * An empty constructor to build on.
      */
     public XfaForm() {
+    }
+    
+    /**
+     * Return the XFA Object, could be an array, could be a Stream.
+     * Returns null f no XFA Object is present.
+     * @param	reader	a PdfReader instance
+     * @return	the XFA object
+     * @since	2.1.3
+     */
+    public static PdfObject getXfaObject(PdfReader reader) {
+    	PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
+        if (af == null) {
+            return null;
+        }
+        return PdfReader.getPdfObjectRelease(af.get(PdfName.XFA));
     }
     
     /**
@@ -99,22 +115,17 @@ public class XfaForm {
      */
     public XfaForm(PdfReader reader) throws IOException, ParserConfigurationException, SAXException {
         this.reader = reader;
-        PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
-        if (af == null) {
-            xfaPresent = false;
-            return;
-        }
-        PdfObject xfa = PdfReader.getPdfObjectRelease(af.get(PdfName.XFA));
+        PdfObject xfa = getXfaObject(reader);
         if (xfa == null) {
-            xfaPresent = false;
-            return;
+        	xfaPresent = false;
+        	return;
         }
         xfaPresent = true;
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         if (xfa.isArray()) {
-            ArrayList ar = ((PdfArray)xfa).getArrayList();
+            PdfArray ar = (PdfArray)xfa;
             for (int k = 1; k < ar.size(); k += 2) {
-                PdfObject ob = PdfReader.getPdfObject((PdfObject)ar.get(k));
+                PdfObject ob = ar.getDirectObject(k);
                 if (ob instanceof PRStream) {
                     byte[] b = PdfReader.getStreamBytes((PRStream)ob);
                     bout.write(b);
@@ -129,13 +140,25 @@ public class XfaForm {
         DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
         fact.setNamespaceAware(true);
         DocumentBuilder db = fact.newDocumentBuilder();
-        domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));
+        domDocument = db.parse(new ByteArrayInputStream(bout.toByteArray()));   
+        extractNodes();
+    }
+    
+    /**
+     * Extracts the nodes from the domDocument.
+     * @since	2.1.5
+     */
+    private void extractNodes() {
         Node n = domDocument.getFirstChild();
+        while (n.getChildNodes().getLength() == 0) {
+        	n = n.getNextSibling();
+        }
         n = n.getFirstChild();
         while (n != null) {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 String s = n.getLocalName();
                 if (s.equals("template")) {
+                	templateNode = n;
                     templateSom = new Xml2SomTemplate(n);
                 }
                 else if (s.equals("datasets")) {
@@ -149,19 +172,46 @@ public class XfaForm {
     
     /**
      * Sets the XFA key from a byte array. The old XFA is erased.
-     * @param xfaData the data
+     * @param form the data
      * @param reader the reader
      * @param writer the writer
      * @throws java.io.IOException on error
      */
-    public static void setXfa(byte[] xfaData, PdfReader reader, PdfWriter writer) throws IOException {
+    public static void setXfa(XfaForm form, PdfReader reader, PdfWriter writer) throws IOException {
         PdfDictionary af = (PdfDictionary)PdfReader.getPdfObjectRelease(reader.getCatalog().get(PdfName.ACROFORM));
         if (af == null) {
             return;
         }
+        PdfObject xfa = getXfaObject(reader);
+        if (xfa.isArray()) {
+            PdfArray ar = (PdfArray)xfa;
+            int t = -1;
+            int d = -1;
+            for (int k = 0; k < ar.size(); k += 2) {
+                PdfString s = ar.getAsString(k);
+                if ("template".equals(s.toString())) {
+                	t = k + 1;
+                }
+                if ("datasets".equals(s.toString())) {
+                	d = k + 1;
+                }
+            }
+            if (t > -1 && d > -1) {
+                reader.killXref(ar.getAsIndirectObject(t));
+                reader.killXref(ar.getAsIndirectObject(d));
+                PdfStream tStream = new PdfStream(serializeDoc(form.templateNode));
+                tStream.flateCompress(writer.getCompressionLevel());
+                ar.set(t, writer.addToBody(tStream).getIndirectReference());
+                PdfStream dStream = new PdfStream(serializeDoc(form.datasetsNode));
+                dStream.flateCompress(writer.getCompressionLevel());
+                ar.set(d, writer.addToBody(dStream).getIndirectReference());
+                af.put(PdfName.XFA, new PdfArray(ar));
+            	return;
+            }
+        }
         reader.killXref(af.get(PdfName.XFA));
-        PdfStream str = new PdfStream(xfaData);
-        str.flateCompress();
+        PdfStream str = new PdfStream(serializeDoc(form.domDocument));
+        str.flateCompress(writer.getCompressionLevel());
         PdfIndirectReference ref = writer.addToBody(str).getIndirectReference();
         af.put(PdfName.XFA, ref);
     }
@@ -172,7 +222,7 @@ public class XfaForm {
      * @throws java.io.IOException on error
      */
     public void setXfa(PdfWriter writer) throws IOException {
-        setXfa(serializeDoc(domDocument), reader, writer);
+        setXfa(this, reader, writer);
     }
 
     /**
@@ -220,7 +270,10 @@ public class XfaForm {
         if (items.containsKey(name))
             return name;
         if (acroFieldsSom == null) {
-            acroFieldsSom = new AcroFieldsSearch(items.keySet());
+        	if (items.isEmpty() && xfaPresent)
+        		acroFieldsSom = new AcroFieldsSearch(datasetsSom.getName2Node().keySet());
+        	else
+        		acroFieldsSom = new AcroFieldsSearch(items.keySet());
         }
         if (acroFieldsSom.getAcroShort2LongName().containsKey(name))
             return (String)acroFieldsSom.getAcroShort2LongName().get(name);
@@ -313,6 +366,7 @@ public class XfaForm {
      */
     public void setDomDocument(org.w3c.dom.Document domDocument) {
         this.domDocument = domDocument;
+        extractNodes();
     }
 
     /**
@@ -349,14 +403,14 @@ public class XfaForm {
     
     /**
      * A structure to store each part of a SOM name and link it to the next part
-     * beginning from the lower hierarchie.
+     * beginning from the lower hierarchy.
      */
     public static class InverseStore {
         protected ArrayList part = new ArrayList();
         protected ArrayList follow = new ArrayList();
         
         /**
-         * Gets the full name by traversing the hiearchie using only the
+         * Gets the full name by traversing the hierarchy using only the
          * index 0.
          * @return the full name
          */
@@ -372,7 +426,7 @@ public class XfaForm {
         
         /**
          * Search the current node for a similar name. A similar name starts
-         * with the same name but has a differnt index. For example, "detail[3]" 
+         * with the same name but has a different index. For example, "detail[3]" 
          * is similar to "detail[9]". The main use is to discard names that
          * correspond to out of bounds records.
          * @param name the name to search
@@ -450,7 +504,7 @@ public class XfaForm {
          */
         protected HashMap name2Node;
         /**
-         * The data to do a search from the bottom hierarchie.
+         * The data to do a search from the bottom hierarchy.
          */
         protected HashMap inverseSearch;
         /**
@@ -551,7 +605,7 @@ public class XfaForm {
         /**
          * Adds a SOM name to the search node chain.
          * @param inverseSearch the start point
-         * @param stack the stack with the separeted SOM parts
+         * @param stack the stack with the separated SOM parts
          * @param unstack the full name
          */
         public static void inverseSearchAdd(HashMap inverseSearch, Stack2 stack, String unstack) {
@@ -579,7 +633,7 @@ public class XfaForm {
         }
 
         /**
-         * Searchs the SOM hiearchie from the bottom.
+         * Searches the SOM hierarchy from the bottom.
          * @param parts the SOM parts
          * @return the full name or <CODE>null</CODE> if not found
          */
@@ -673,16 +727,16 @@ public class XfaForm {
         }
 
         /**
-         * Gets the data to do a search from the bottom hierarchie.
-         * @return the data to do a search from the bottom hierarchie
+         * Gets the data to do a search from the bottom hierarchy.
+         * @return the data to do a search from the bottom hierarchy
          */
         public HashMap getInverseSearch() {
             return inverseSearch;
         }
 
         /**
-         * Sets the data to do a search from the bottom hierarchie.
-         * @param inverseSearch the data to do a search from the bottom hierarchie
+         * Sets the data to do a search from the bottom hierarchy.
+         * @param inverseSearch the data to do a search from the bottom hierarchy
          */
         public void setInverseSearch(HashMap inverseSearch) {
             this.inverseSearch = inverseSearch;

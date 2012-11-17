@@ -1,8 +1,7 @@
 /*
- * $Id: PdfSpotColor.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: PdfSpotColor.java 3514 2008-06-27 09:26:36Z blowagie $
  *
- * Copyright 2001, 2002 Paulo Soares
+ * Copyright 2002 by Phillip Pan
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -75,7 +74,7 @@ public class PdfSpotColor{
      *
      * @param		name		a String value
      * @param		tint		a tint value between 0 and 1
-     * @param		altcs		a altnative colorspace value
+     * @param		altcs		an alternative colorspace value
      */
     
     public PdfSpotColor(String name, float tint, Color altcs) {
@@ -94,7 +93,7 @@ public class PdfSpotColor{
     
     /**
      * Gets the alternative ColorSpace.
-     * @return a Colot
+     * @return a Color
      */
     public Color getAlternativeCS() {
         return altcs;

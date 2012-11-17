@@ -1,5 +1,5 @@
 /*
- * $Id: BarcodeDatamatrix.java 2771 2007-05-21 10:53:31Z psoares33 $
+ * $Id: BarcodeDatamatrix.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2007 by Paulo Soares.
  *

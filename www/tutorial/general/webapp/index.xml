@@ -13,7 +13,7 @@
 			<site:keyword>J2EE</site:keyword>
 			<site:keyword>JSP</site:keyword>
 		</site:amazonbooks>
-		<site:updated>$Date: 2006-09-17 06:13:59 -0400 (Sun, 17 Sep 2006) $</site:updated>
+		<site:updated>$Date: 2008-05-16 12:35:34 -0400 (Fri, 16 May 2008) $</site:updated>
 		<site:author>Bruno Lowagie</site:author>
 	</site:metadata>
 	
@@ -25,6 +25,7 @@
 		<site:example>
 			<site:java src="HelloWorldServlet" standalone="no" webapp="ROOT" />
 			<site:extrajar>servlet.jar</site:extrajar>
+			<site:extrajar>itext-rtf.jar</site:extrajar>
 			<site:description>Generates a simple 'Hello World' file from a servlet (PDF, HTML or RTF)</site:description>
 			<site:path name="presentationtype=pdf">http://blowagie.users.mcs2.netarray.com/servlet/HelloWorld?presentationtype=pdf</site:path>
 			<site:path name="presentationtype=html">http://blowagie.users.mcs2.netarray.com/servlet/HelloWorld?presentationtype=html</site:path>

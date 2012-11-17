@@ -1,6 +1,5 @@
 /*
- * $Id: FontFactory.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: FontFactory.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2002 by Bruno Lowagie.
  *
@@ -64,7 +63,7 @@ import com.lowagie.text.pdf.BaseFont;
  * @author  Bruno Lowagie
  */
 
-public class FontFactory {
+public final class FontFactory {
     
 /** This is a possible value of a base 14 type 1 font */
     public static final String COURIER = BaseFont.COURIER;
@@ -285,6 +284,20 @@ public class FontFactory {
  *
  * @param	fontname    the name of the font
  * @param	size	    the size of this font
+ * @param	color	    the <CODE>Color</CODE> of this font.
+ * @return the Font constructed based on the parameters
+ * @since 2.1.0
+ */
+    
+    public static Font getFont(String fontname, float size, Color color) {
+        return getFont(fontname, defaultEncoding, defaultEmbedding, size, Font.UNDEFINED, color);
+    }
+    
+/**
+ * Constructs a <CODE>Font</CODE>-object.
+ *
+ * @param	fontname    the name of the font
+ * @param	size	    the size of this font
  * @param	style	    the style of this font
  * @return the Font constructed based on the parameters
  */
@@ -353,6 +366,17 @@ public class FontFactory {
      */    
     public static int registerDirectory(String dir) {
         return fontImp.registerDirectory(dir);
+    }
+
+    /**
+     * Register all the fonts in a directory and possibly its subdirectories.
+     * @param dir the directory
+     * @param scanSubdirectories recursively scan subdirectories if <code>true</true>
+     * @return the number of fonts registered
+     * @since 2.1.2
+     */
+    public static int registerDirectory(String dir, boolean scanSubdirectories) {
+        return fontImp.registerDirectory(dir, scanSubdirectories);
     }
 
     /** Register fonts in some probable directories. It usually works in Windows,

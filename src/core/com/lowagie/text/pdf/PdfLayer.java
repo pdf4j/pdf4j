@@ -144,6 +144,16 @@ public class PdfLayer extends PdfDictionary implements PdfOCG {
     }
     
     /**
+     * Sets the <CODE>PdfIndirectReference</CODE> that represents this layer.
+     * This can only be done from PdfStamperImp.
+     * @param	ref	The reference to the OCG object
+     * @since	2.1.2
+     */
+    void setRef(PdfIndirectReference ref) {
+    	this.ref = ref;
+    }
+    
+    /**
      * Sets the name of this layer.
      * @param name the name of this layer
      */    
@@ -247,9 +257,9 @@ public class PdfLayer extends PdfDictionary implements PdfOCG {
         PdfDictionary usage = getUsage();
         PdfDictionary dic = new PdfDictionary();
         if (min > 0)
-            dic.put(PdfName.MIN, new PdfNumber(min));
+            dic.put(PdfName.MIN_LOWER_CASE, new PdfNumber(min));
         if (max >= 0)
-            dic.put(PdfName.MAX, new PdfNumber(max));
+            dic.put(PdfName.MAX_LOWER_CASE, new PdfNumber(max));
         usage.put(PdfName.ZOOM, dic);
     }
 

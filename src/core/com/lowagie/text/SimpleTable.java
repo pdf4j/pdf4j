@@ -1,8 +1,7 @@
 /*
- * $Id: SimpleTable.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: SimpleTable.java 3752 2009-03-04 18:02:40Z blowagie $
  *
- * Copyright 1999-2005 by Bruno Lowagie.
+ * Copyright 2005 by Bruno Lowagie.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -244,18 +243,6 @@ public class SimpleTable extends Rectangle implements PdfPTableEvent, TextElemen
 			table.setWidthPercentage(widthpercentage);
 		}
 		return table;
-	}
-	
-	/**
-	 * @param rectangle
-	 * @param spacing
-	 * @return a rectangle
-	 */
-	public static SimpleTable getDimensionlessInstance(Rectangle rectangle, float spacing) {
-		SimpleTable event = new SimpleTable();
-		event.cloneNonPositionParameters(rectangle);
-		event.setCellspacing(spacing);
-		return event;
 	}
 	
 	/**

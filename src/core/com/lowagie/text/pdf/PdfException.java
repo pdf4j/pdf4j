@@ -1,6 +1,5 @@
 /*
- * $Id: PdfException.java 2367 2006-09-14 23:39:21Z xlv $
- * $Name$
+ * $Id: PdfException.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 Bruno Lowagie
  *
@@ -69,7 +68,7 @@ public class PdfException extends DocumentException {
     }
 
  /**
- * Constructs a <CODE>PdfException</CODE> whithout a message.
+ * Constructs a <CODE>PdfException</CODE> without a message.
  */
     
     PdfException() {

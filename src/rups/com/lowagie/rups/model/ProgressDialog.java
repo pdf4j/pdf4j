@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: ProgressDialog.java 3146 2008-02-20 18:10:07Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -46,8 +46,8 @@ public class ProgressDialog extends JDialog {
 	
 	/**
 	 * Creates a Progress frame displaying a certain message
-	 * and a progressbar in indeterminate mode.
-	 * @param	the parent frame of this dialog (used to position the dialog)
+	 * and a progress bar in indeterminate mode.
+	 * @param	parent the parent frame of this dialog (used to position the dialog)
 	 * @param	msg	the message that will be displayed.
 	 */
 	public ProgressDialog(JFrame parent, String msg) {

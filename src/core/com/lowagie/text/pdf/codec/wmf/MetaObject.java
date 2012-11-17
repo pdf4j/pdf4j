@@ -1,6 +1,5 @@
 /*
- * $Id: MetaObject.java 1733 2005-05-04 14:33:54Z blowagie $
- * $Name$
+ * $Id: MetaObject.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *

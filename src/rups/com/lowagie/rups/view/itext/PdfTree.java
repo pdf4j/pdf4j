@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: PdfTree.java 3242 2008-04-13 23:00:20Z xlv $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -70,7 +70,6 @@ public class PdfTree extends JTree implements Observer {
 		}
 		setModel(new DefaultTreeModel(root));
 		repaint();
-		return;
 	}
 
 	/**

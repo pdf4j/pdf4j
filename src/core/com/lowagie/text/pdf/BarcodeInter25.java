@@ -1,5 +1,5 @@
 /*
- * $Id: BarcodeInter25.java 2374 2006-09-15 05:11:54Z xlv $
+ * $Id: BarcodeInter25.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2002-2006 by Paulo Soares.
  *
@@ -198,7 +198,7 @@ public class BarcodeInter25 extends Barcode{
     }
     
     /** Places the barcode in a <CODE>PdfContentByte</CODE>. The
-     * barcode is always placed at coodinates (0, 0). Use the
+     * barcode is always placed at coordinates (0, 0). Use the
      * translation matrix to move it elsewhere.<p>
      * The bars and text are written in the following colors:<p>
      * <P><TABLE BORDER=1>

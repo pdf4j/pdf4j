@@ -1,6 +1,5 @@
 /*
- * $Id: PdfSmartCopy.java 3099 2008-01-18 16:55:35Z psoares33 $
- * $Name$
+ * $Id: PdfSmartCopy.java 3991 2009-06-18 21:21:09Z psoares33 $
  *
  * Copyright 2007 Michael Neuweiler and Bruno Lowagie
  *
@@ -53,16 +52,13 @@ package com.lowagie.text.pdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
-import com.lowagie.text.pdf.PdfCopy.IndirectReferences;
-import com.lowagie.text.pdf.PdfCopy.RefKey;
-import java.security.MessageDigest;
-import java.util.Arrays;
 
 /**
  * PdfSmartCopy has the same functionality as PdfCopy,
@@ -120,6 +116,12 @@ public class PdfSmartCopy extends PdfCopy {
             theRef = body.getPdfIndirectReference();
             iRef = new IndirectReferences(theRef);
             indirects.put(key, iRef);
+        }
+        if (srcObj.isDictionary()) {
+            PdfObject type = PdfReader.getPdfObjectRelease(((PdfDictionary)srcObj).get(PdfName.TYPE));
+            if (type != null && PdfName.PAGE.equals(type)) {
+                return theRef;
+            }
         }
         iRef.setCopied();
 
@@ -185,9 +187,8 @@ public class PdfSmartCopy extends PdfCopy {
             bb.append("$A");
             if (level <= 0)
                 return;
-            ArrayList ar = array.getArrayList();
-            for (int k = 0; k < ar.size(); ++k) {
-                serObject((PdfObject)ar.get(k), level, bb);
+            for (int k = 0; k < array.size(); ++k) {
+                serObject(array.getPdfObject(k), level, bb);
             }
         }
         
@@ -199,7 +200,7 @@ public class PdfSmartCopy extends PdfCopy {
                 throw new ExceptionConverter(e);
             }
             ByteBuffer bb = new ByteBuffer();
-            int level = 10;
+            int level = 100;
             serObject(str, level, bb);
             this.b = bb.toByteArray();
             md5 = null;

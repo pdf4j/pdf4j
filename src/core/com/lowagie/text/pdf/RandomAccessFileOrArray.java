@@ -1,6 +1,5 @@
 /*
- * $Id: RandomAccessFileOrArray.java 3085 2007-12-24 18:14:33Z xlv $
- * $Name$
+ * $Id: RandomAccessFileOrArray.java 3488 2008-06-02 14:19:26Z blowagie $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -153,6 +152,7 @@ public class RandomAccessFileOrArray implements DataInput {
                 break;
             out.write(b, 0, read);
         }
+        out.close();
         return out.toByteArray();
     }
 

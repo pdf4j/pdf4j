@@ -1,5 +1,5 @@
 /*
- * $Id: OutputStreamEncryption.java 2730 2007-04-28 12:52:49Z blowagie $
+ * $Id: OutputStreamEncryption.java 3117 2008-01-31 05:53:22Z xlv $
  *
  * Copyright 2006 Paulo Soares
  *

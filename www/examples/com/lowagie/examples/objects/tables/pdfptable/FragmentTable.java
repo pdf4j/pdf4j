@@ -1,6 +1,5 @@
 /*
- * $Id: FragmentTable.java 2767 2007-05-20 11:58:29Z blowagie $
- * $Name$
+ * $Id: FragmentTable.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:

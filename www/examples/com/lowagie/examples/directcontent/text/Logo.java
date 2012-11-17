@@ -1,6 +1,5 @@
 /*
- * $Id: Logo.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Logo.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -71,10 +70,12 @@ public class Logo {
             template.resetRGBColorFill();
             template.showTextAligned(PdfContentByte.ALIGN_LEFT, "ext", 220f, 35f, 0f);
             template.endText();
+            template.sanityCheck();
             
             cb.addTemplate(template, 0, 1, -1, 0, 500, 200);
             cb.addTemplate(template, .5f, 0, 0, .5f, 100, 400);
             cb.addTemplate(template, 0.25f, 0, 0, 0.25f, 100, 100);
+            cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());

@@ -1,8 +1,7 @@
 /*
- * $Id: Jpeg2000.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: Jpeg2000.java 3583 2008-08-12 00:00:09Z xlv $
  *
- * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
+ * Copyright 2007 by Paulo Soares.
  *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * (the "License"); you may not use this file except in compliance with the License.
@@ -158,7 +157,6 @@ public class Jpeg2000 extends Image {
     
     /**
      * This method checks if the image is a valid JPEG and processes some parameters.
-     * @throws BadElementException
      * @throws IOException
      */
     private void processParameters() throws IOException {

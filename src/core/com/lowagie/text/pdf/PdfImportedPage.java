@@ -1,6 +1,5 @@
 /*
- * $Id: PdfImportedPage.java 2366 2006-09-14 23:10:58Z xlv $
- * $Name$
+ * $Id: PdfImportedPage.java 3929 2009-05-22 13:26:41Z blowagie $
  *
  * Copyright 2001, 2002 Paulo Soares
  *
@@ -66,8 +65,9 @@ public class PdfImportedPage extends com.lowagie.text.pdf.PdfTemplate {
     PdfImportedPage(PdfReaderInstance readerInstance, PdfWriter writer, int pageNumber) {
         this.readerInstance = readerInstance;
         this.pageNumber = pageNumber;
-        thisReference = writer.getPdfIndirectReference();
+        this.writer = writer;
         bBox = readerInstance.getReader().getPageSize(pageNumber);
+        setMatrix(1, 0, 0, 1, -bBox.getLeft(), -bBox.getBottom());
         type = TYPE_IMPORTED;
     }
 
@@ -116,9 +116,16 @@ public class PdfImportedPage extends com.lowagie.text.pdf.PdfTemplate {
         throwError();
         return null;
     }
-    
-    PdfStream getFormXObject() throws IOException {
-         return readerInstance.getFormXObject(pageNumber);
+
+    /**
+     * Gets the stream representing this page.
+     *
+     * @param	compressionLevel	the compressionLevel
+     * @return the stream representing this page
+     * @since	2.1.3	(replacing the method without param compressionLevel)
+     */
+    PdfStream getFormXObject(int compressionLevel) throws IOException {
+         return readerInstance.getFormXObject(pageNumber, compressionLevel);
     }
     
     public void setColorFill(PdfSpotColor sp, float tint) {
@@ -140,7 +147,16 @@ public class PdfImportedPage extends com.lowagie.text.pdf.PdfTemplate {
         throwError();
     }
     
-    void throwError() {
+    /**
+     * Always throws an error. This operation is not allowed.
+     * @param group New value of property group.
+     * @since	2.1.6
+     */ 
+    public void setGroup(PdfTransparencyGroup group) {
+        throwError();
+	}
+
+	void throwError() {
         throw new RuntimeException("Content can not be added to a PdfImportedPage.");
     }
     

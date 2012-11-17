@@ -1,6 +1,5 @@
 /*
- * $Id: HtmlEncoder.java 2547 2007-01-26 13:46:13Z blowagie $
- * $Name$
+ * $Id: HtmlEncoder.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -82,7 +81,7 @@ import com.lowagie.text.Element;
  * @author  mario.maccarini@ugent.be
  */
 
-public class HtmlEncoder {
+public final class HtmlEncoder {
     
     // membervariables
     

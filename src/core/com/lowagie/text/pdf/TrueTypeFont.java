@@ -1,6 +1,5 @@
 /*
- * $Id: TrueTypeFont.java 3061 2007-12-03 20:08:33Z xlv $
- * $Name$
+ * $Id: TrueTypeFont.java 3854 2009-04-14 08:02:10Z blowagie $
  *
  * Copyright 2001-2006 Paulo Soares
  *
@@ -57,8 +56,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
+
 /** Reads a Truetype font
  *
  * @author Paulo Soares (psoares@consiste.pt)
@@ -192,6 +193,9 @@ class TrueTypeFont extends BaseFont {
      * units.
      */
     protected HashMap cmap31;
+
+    protected HashMap cmapExt;
+
     /** The map containing the kerning information. It represents the content of
      * table 'kern'. The key is an <CODE>Integer</CODE> where the top 16 bits
      * are the glyph number for the first character and the lower 16 bits are the
@@ -343,10 +347,6 @@ class TrueTypeFont extends BaseFont {
     protected TrueTypeFont() {
     }
     
-    TrueTypeFont(String ttFile, String enc, boolean emb, byte ttfAfm[]) throws DocumentException, IOException {
-        this(ttFile, enc, emb, ttfAfm, false);
-    }
-    
     /** Creates a new TrueType font.
      * @param ttFile the location of the font on file. The file must end in '.ttf' or
      * '.ttc' but can have modifiers after the name
@@ -355,9 +355,10 @@ class TrueTypeFont extends BaseFont {
      * @param ttfAfm the font as a <CODE>byte</CODE> array
      * @throws DocumentException the font is invalid
      * @throws IOException the font file could not be read
+     * @since	2.1.5
      */
-    TrueTypeFont(String ttFile, String enc, boolean emb, byte ttfAfm[], boolean justNames) throws DocumentException, IOException {
-        this.justNames = justNames;
+    TrueTypeFont(String ttFile, String enc, boolean emb, byte ttfAfm[], boolean justNames, boolean forceRead) throws DocumentException, IOException {
+    	this.justNames = justNames;
         String nameBase = getBaseName(ttFile);
         String ttcName = getTTCName(nameBase);
         if (nameBase.length() < ttFile.length()) {
@@ -371,7 +372,7 @@ class TrueTypeFont extends BaseFont {
         if (ttcName.length() < nameBase.length())
             ttcIndex = nameBase.substring(ttcName.length() + 1);
         if (fileName.toLowerCase().endsWith(".ttf") || fileName.toLowerCase().endsWith(".otf") || fileName.toLowerCase().endsWith(".ttc")) {
-            process(ttfAfm);
+            process(ttfAfm, forceRead);
             if (!justNames && embedded && os_2.fsType == 2)
                 throw new DocumentException(fileName + style + " cannot be embedded due to licensing restrictions.");
         }
@@ -487,7 +488,7 @@ class TrueTypeFont extends BaseFont {
         rf.seek(table_location[0] + 4);
         short mantissa = rf.readShort();
         int fraction = rf.readUnsignedShort();
-        italicAngle = (double)mantissa + (double)fraction / 16384.0;
+        italicAngle = mantissa + fraction / 16384.0d;
         underlinePosition = rf.readShort();
         underlineThickness = rf.readShort();
         isFixedPitch = rf.readInt() != 0;
@@ -621,13 +622,14 @@ class TrueTypeFont extends BaseFont {
      * @param ttfAfm the font as a <CODE>byte</CODE> array, possibly <CODE>null</CODE>
      * @throws DocumentException the font is invalid
      * @throws IOException the font file could not be read
+     * @since	2.1.5
      */
-    void process(byte ttfAfm[]) throws DocumentException, IOException {
+    void process(byte ttfAfm[], boolean preload) throws DocumentException, IOException {
         tables = new HashMap();
         
         try {
             if (ttfAfm == null)
-                rf = new RandomAccessFileOrArray(fileName);
+                rf = new RandomAccessFileOrArray(fileName, preload, Document.plainRandomAccess);
             else
                 rf = new RandomAccessFileOrArray(ttfAfm);
             if (ttcIndex.length() > 0) {
@@ -801,6 +803,7 @@ class TrueTypeFont extends BaseFont {
         int map10 = 0;
         int map31 = 0;
         int map30 = 0;
+        int mapExt = 0;
         for (int k = 0; k < num_tables; ++k) {
             int platId = rf.readUnsignedShort();
             int platSpecId = rf.readUnsignedShort();
@@ -811,6 +814,9 @@ class TrueTypeFont extends BaseFont {
             }
             else if (platId == 3 && platSpecId == 1) {
                 map31 = offset;
+            }
+            else if (platId == 3 && platSpecId == 10) {
+                mapExt = offset;
             }
             if (platId == 1 && platSpecId == 0) {
                 map10 = offset;
@@ -845,6 +851,45 @@ class TrueTypeFont extends BaseFont {
                 cmap10 = readFormat4();
             }
         }
+        if (mapExt > 0) {
+            rf.seek(table_location[0] + mapExt);
+            int format = rf.readUnsignedShort();
+            switch (format) {
+                case 0:
+                    cmapExt = readFormat0();
+                    break;
+                case 4:
+                    cmapExt = readFormat4();
+                    break;
+                case 6:
+                    cmapExt = readFormat6();
+                    break;
+                case 12:
+                    cmapExt = readFormat12();
+                    break;
+            }
+        }
+    }
+
+    HashMap readFormat12() throws IOException {
+        HashMap h = new HashMap();
+        rf.skipBytes(2);
+        int table_lenght = rf.readInt();
+        rf.skipBytes(4);
+        int nGroups = rf.readInt();
+        for (int k = 0; k < nGroups; k++) {
+            int startCharCode = rf.readInt();
+            int endCharCode = rf.readInt();
+            int startGlyphID = rf.readInt();
+            for (int i = startCharCode; i <= endCharCode; i++) {
+                int[] r = new int[2];
+                r[0] = startGlyphID;
+                r[1] = getGlyphWidth(r[0]);
+                h.put(new Integer(i), r);
+                startGlyphID++;
+            }
+        }
+        return h;
     }
     
     /** The information in the maps of the table 'cmap' is coded in several formats.
@@ -960,7 +1005,7 @@ class TrueTypeFont extends BaseFont {
                 rf.skipBytes(6);
                 for (int j = 0; j < nPairs; ++j) {
                     int pair = rf.readInt();
-                    int value = ((int)rf.readShort() * 1000) / head.unitsPerEm;
+                    int value = rf.readShort() * 1000 / head.unitsPerEm;
                     kerning.put(pair, value);
                 }
             }
@@ -972,7 +1017,7 @@ class TrueTypeFont extends BaseFont {
      * @param char2 the second char
      * @return the kerning to be applied
      */
-    public int getKerning(char char1, char char2) {
+    public int getKerning(int char1, int char2) {
         int metrics[] = getMetricsTT(char1);
         if (metrics == null)
             return 0;
@@ -991,14 +1036,7 @@ class TrueTypeFont extends BaseFont {
      * @return the width of the char
      */
     int getRawWidth(int c, String name) {
-        HashMap map = null;
-        if (name == null || cmap31 == null)
-            map = cmap10;
-        else
-            map = cmap31;
-        if (map == null)
-            return 0;
-        int metric[] = (int[])map.get(new Integer(c));
+        int[] metric = getMetricsTT(c);
         if (metric == null)
             return 0;
         return metric[1];
@@ -1008,18 +1046,17 @@ class TrueTypeFont extends BaseFont {
      * @return the PdfDictionary containing the font descriptor or <CODE>null</CODE>
      * @param subsetPrefix the subset prefix
      * @param fontStream the indirect reference to a PdfStream containing the font or <CODE>null</CODE>
-     * @throws DocumentException if there is an error
      */
     protected PdfDictionary getFontDescriptor(PdfIndirectReference fontStream, String subsetPrefix, PdfIndirectReference cidset) {
         PdfDictionary dic = new PdfDictionary(PdfName.FONTDESCRIPTOR);
-        dic.put(PdfName.ASCENT, new PdfNumber((int)os_2.sTypoAscender * 1000 / head.unitsPerEm));
-        dic.put(PdfName.CAPHEIGHT, new PdfNumber((int)os_2.sCapHeight * 1000 / head.unitsPerEm));
-        dic.put(PdfName.DESCENT, new PdfNumber((int)os_2.sTypoDescender * 1000 / head.unitsPerEm));
+        dic.put(PdfName.ASCENT, new PdfNumber(os_2.sTypoAscender * 1000 / head.unitsPerEm));
+        dic.put(PdfName.CAPHEIGHT, new PdfNumber(os_2.sCapHeight * 1000 / head.unitsPerEm));
+        dic.put(PdfName.DESCENT, new PdfNumber(os_2.sTypoDescender * 1000 / head.unitsPerEm));
         dic.put(PdfName.FONTBBOX, new PdfRectangle(
-        (int)head.xMin * 1000 / head.unitsPerEm,
-        (int)head.yMin * 1000 / head.unitsPerEm,
-        (int)head.xMax * 1000 / head.unitsPerEm,
-        (int)head.yMax * 1000 / head.unitsPerEm));
+        head.xMin * 1000 / head.unitsPerEm,
+        head.yMin * 1000 / head.unitsPerEm,
+        head.xMax * 1000 / head.unitsPerEm,
+        head.yMax * 1000 / head.unitsPerEm));
         if (cidset != null)
             dic.put(PdfName.CIDSET, cidset);
         if (cff) {
@@ -1053,12 +1090,11 @@ class TrueTypeFont extends BaseFont {
     
     /** Generates the font dictionary for this font.
      * @return the PdfDictionary containing the font dictionary
-     * @param subsetPrefix the subset prefx
+     * @param subsetPrefix the subset prefix
      * @param firstChar the first valid character
      * @param lastChar the last valid character
      * @param shortTag a 256 bytes long <CODE>byte</CODE> array where each unused byte is represented by 0
      * @param fontDescriptor the indirect reference to a PdfDictionary containing the font descriptor or <CODE>null</CODE>
-     * @throws DocumentException if there is an error
      */
     protected PdfDictionary getFontBaseType(PdfIndirectReference fontDescriptor, String subsetPrefix, int firstChar, int lastChar, byte shortTag[]) {
         PdfDictionary dic = new PdfDictionary(PdfName.FONT);
@@ -1214,22 +1250,7 @@ class TrueTypeFont extends BaseFont {
         String subsetPrefix = "";
         if (embedded) {
             if (cff) {
-                RandomAccessFileOrArray rf2 = new RandomAccessFileOrArray(rf);
-                byte b[] = new byte[cffLength];
-                try {
-                    rf2.reOpen();
-                    rf2.seek(cffOffset);
-                    rf2.readFully(b);
-                }
-                finally {
-                    try {
-                        rf2.close();
-                    }
-                    catch (Exception e) {
-                        // empty on purpose
-                    }
-                }
-                pobj = new StreamFont(b, "Type1C");
+                pobj = new StreamFont(readCffFont(), "Type1C", compressionLevel);
                 obj = writer.addToBody(pobj);
                 ind_font = obj.getIndirectReference();
             }
@@ -1265,7 +1286,7 @@ class TrueTypeFont extends BaseFont {
                     b = getFullFont();
                 }
                 int lengths[] = new int[]{b.length};
-                pobj = new StreamFont(b, lengths);
+                pobj = new StreamFont(b, lengths, compressionLevel);
                 obj = writer.addToBody(pobj);
                 ind_font = obj.getIndirectReference();
             }
@@ -1279,6 +1300,48 @@ class TrueTypeFont extends BaseFont {
         writer.addToBody(pobj, ref);
     }
     
+    /**
+     * If this font file is using the Compact Font File Format, then this method
+     * will return the raw bytes needed for the font stream. If this method is
+     * ever made public: make sure to add a test if (cff == true).
+     * @return	a byte array
+     * @since	2.1.3
+     */
+    protected byte[] readCffFont() throws IOException {
+        RandomAccessFileOrArray rf2 = new RandomAccessFileOrArray(rf);
+        byte b[] = new byte[cffLength];
+        try {
+            rf2.reOpen();
+            rf2.seek(cffOffset);
+            rf2.readFully(b);
+        }
+        finally {
+            try {
+                rf2.close();
+            }
+            catch (Exception e) {
+                // empty on purpose
+            }
+        }
+    	return b;
+    }
+
+    /**
+     * Returns a PdfStream object with the full font program.
+     * @return	a PdfStream with the font program
+     * @since	2.1.3
+     */
+    public PdfStream getFullFontStream() throws IOException, DocumentException {
+        if (cff) {
+            return new StreamFont(readCffFont(), "Type1C", compressionLevel);
+        }
+        else {
+        	byte[] b = getFullFont();
+        	int lengths[] = new int[]{b.length};
+        	return new StreamFont(b, lengths, compressionLevel);
+        }
+    }
+    
     /** Gets the font parameter identified by <CODE>key</CODE>. Valid values
      * for <CODE>key</CODE> are <CODE>ASCENT</CODE>, <CODE>CAPHEIGHT</CODE>, <CODE>DESCENT</CODE>
      * and <CODE>ITALICANGLE</CODE>.
@@ -1289,29 +1352,29 @@ class TrueTypeFont extends BaseFont {
     public float getFontDescriptor(int key, float fontSize) {
         switch (key) {
             case ASCENT:
-                return (float)os_2.sTypoAscender * fontSize / (float)head.unitsPerEm;
+                return os_2.sTypoAscender * fontSize / head.unitsPerEm;
             case CAPHEIGHT:
-                return (float)os_2.sCapHeight * fontSize / (float)head.unitsPerEm;
+                return os_2.sCapHeight * fontSize / head.unitsPerEm;
             case DESCENT:
-                return (float)os_2.sTypoDescender * fontSize / (float)head.unitsPerEm;
+                return os_2.sTypoDescender * fontSize / head.unitsPerEm;
             case ITALICANGLE:
                 return (float)italicAngle;
             case BBOXLLX:
-                return fontSize * (int)head.xMin / head.unitsPerEm;
+                return fontSize * head.xMin / head.unitsPerEm;
             case BBOXLLY:
-                return fontSize * (int)head.yMin / head.unitsPerEm;
+                return fontSize * head.yMin / head.unitsPerEm;
             case BBOXURX:
-                return fontSize * (int)head.xMax / head.unitsPerEm;
+                return fontSize * head.xMax / head.unitsPerEm;
             case BBOXURY:
-                return fontSize * (int)head.yMax / head.unitsPerEm;
+                return fontSize * head.yMax / head.unitsPerEm;
             case AWT_ASCENT:
-                return fontSize * (int)hhea.Ascender / head.unitsPerEm;
+                return fontSize * hhea.Ascender / head.unitsPerEm;
             case AWT_DESCENT:
-                return fontSize * (int)hhea.Descender / head.unitsPerEm;
+                return fontSize * hhea.Descender / head.unitsPerEm;
             case AWT_LEADING:
-                return fontSize * (int)hhea.LineGap / head.unitsPerEm;
+                return fontSize * hhea.LineGap / head.unitsPerEm;
             case AWT_MAXADVANCE:
-                return fontSize * (int)hhea.advanceWidthMax / head.unitsPerEm;
+                return fontSize * hhea.advanceWidthMax / head.unitsPerEm;
             case UNDERLINE_POSITION:
                 return (underlinePosition - underlineThickness / 2) * fontSize / head.unitsPerEm;
             case UNDERLINE_THICKNESS:
@@ -1337,6 +1400,8 @@ class TrueTypeFont extends BaseFont {
      * @return an <CODE>int</CODE> array with {glyph index, width}
      */    
     public int[] getMetricsTT(int c) {
+        if (cmapExt != null)
+            return (int[])cmapExt.get(new Integer(c));
         if (!fontSpecific && cmap31 != null) 
             return (int[])cmap31.get(new Integer(c));
         if (fontSpecific && cmap10 != null) 
@@ -1359,7 +1424,7 @@ class TrueTypeFont extends BaseFont {
      * @return the code pages supported by the font
      */
     public String[] getCodePagesSupported() {
-        long cp = (((long)os_2.ulCodePageRange2) << 32) + ((long)os_2.ulCodePageRange1 & 0xffffffffL);
+        long cp = (((long)os_2.ulCodePageRange2) << 32) + (os_2.ulCodePageRange1 & 0xffffffffL);
         int count = 0;
         long bit = 1;
         for (int k = 0; k < 64; ++k) {
@@ -1437,7 +1502,7 @@ class TrueTypeFont extends BaseFont {
      * @param kern the kerning to apply in normalized 1000 units
      * @return <code>true</code> if the kerning was applied, <code>false</code> otherwise
      */
-    public boolean setKerning(char char1, char char2, int kern) {
+    public boolean setKerning(int char1, int char2, int kern) {
         int metrics[] = getMetricsTT(char1);
         if (metrics == null)
             return false;

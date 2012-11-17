@@ -1,5 +1,5 @@
 /*
- * $Id:  $
+ * $Id: PdfRendererController.java 3146 2008-02-20 18:10:07Z blowagie $
  *
  * Copyright 2007 Bruno Lowagie.
  *
@@ -65,7 +65,7 @@ public class PdfRendererController extends JSplitPane
 	/**
 	 * Starts loading pages.
 	 * Shows page 1 of this file as soon as possible.
-	 * @param	PdfFile	the PdfFile that needs to be rendered
+	 * @param	file	the PdfFile that needs to be rendered
 	 */
 	public void startPageLoader(PdfFile file) {
 		this.pageLoader = new PageLoader(file.getPDFFile());

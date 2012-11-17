@@ -1,6 +1,5 @@
 /*
- * $Id: TagMap.java 2478 2006-11-23 11:42:17Z blowagie $
- * $Name$
+ * $Id: TagMap.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 by Bruno Lowagie.
  *

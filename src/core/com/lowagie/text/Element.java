@@ -1,6 +1,5 @@
 /*
- * $Id: Element.java 3048 2007-12-01 10:33:01Z blowagie $
- * $Name$
+ * $Id: Element.java 3672 2009-02-01 15:32:09Z blowagie $
  *
  * Copyright 1999, 2000, 2001, 2002 by Bruno Lowagie.
  *
@@ -174,11 +173,22 @@ public interface Element {
 	/** This is a possible type of <CODE>Element</CODE>. */
 	public static final int IMGTEMPLATE = 35;
 
+	/**
+	 * This is a possible type of <CODE>Element</CODE>.
+	 * @since	2.1.5
+	 */
+	public static final int JBIG2 = 36;
+
 	/** This is a possible type of <CODE>Element</CODE>. */
 	public static final int MULTI_COLUMN_TEXT = 40;
 	
 	/** This is a possible type of <CODE>Element</CODE>. */
 	public static final int MARKED = 50;
+
+	/** This is a possible type of <CODE>Element</CODE>.
+	 * @since 2.1.2
+	 */
+	public static final int YMARK = 55;
 
 	// static membervariables (alignment)
 
@@ -313,7 +323,7 @@ public interface Element {
 	 * Checks if this element is a content object.
 	 * If not, it's a metadata object.
 	 * @since	iText 2.0.8
-	 * @return	true if this is a 'content' element; false if this is a 'medadata' element
+	 * @return	true if this is a 'content' element; false if this is a 'metadata' element
 	 */
 	
 	public boolean isContent();

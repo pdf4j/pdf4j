@@ -1,6 +1,5 @@
 /*
- * $Id: Tables.java 2752 2007-05-15 14:58:33Z blowagie $
- * $Name$
+ * $Id: Tables.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * This code is free software. It may only be copied or modified
  * if you include the following copyright notice:

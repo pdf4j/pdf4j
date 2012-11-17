@@ -1,6 +1,5 @@
 /*
- * $Id: PdfPageLabels.java 2890 2007-08-17 18:44:04Z psoares33 $
- * $Name$
+ * $Id: PdfPageLabels.java 3373 2008-05-12 16:21:24Z xlv $
  *
  * Copyright 2001, 2002 Paulo Soares
  *

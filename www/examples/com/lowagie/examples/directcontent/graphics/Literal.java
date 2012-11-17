@@ -1,6 +1,5 @@
 /*
- * $Id: Literal.java 1742 2005-05-09 11:52:51Z blowagie $
- * $Name$
+ * $Id: Literal.java 3838 2009-04-07 18:34:15Z mstorer $
  *
  * This code is part of the 'iText Tutorial'.
  * You can find the complete tutorial at the following address:
@@ -64,6 +63,9 @@ public class Literal {
                 + "56.413 18.708 l\n33.587 18.708 l\n"
                 + "52.053 5.292 l\nf";
             cb.setLiteral(star);
+            
+            // sanityCheck doesn't check literals.
+            //cb.sanityCheck();
         }
         catch(DocumentException de) {
             System.err.println(de.getMessage());
